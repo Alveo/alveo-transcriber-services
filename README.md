@@ -8,4 +8,5 @@ Repository to provide additional services to the alveo-transcriber webapp. Provi
 
 ## Running
 1. Install requirements with pip, recommended you use a python virtual environment
-2. `export FLASK_APP=application && python -m flask run`
+2. Optionally enable debug `export FLASK_DEBUG=1`
+3. `export FLASK_APP=application && python -m flask run`
