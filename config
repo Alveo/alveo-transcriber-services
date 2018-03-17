@@ -1,0 +1,11 @@
+DEBUG = True
+DEVELOPMENT = True
+
+# Set to allow transcriber to access if hosted on a different domain
+ACCESS_CONTROL_ALLOW_ORIGIN = '*'
+
+SSAD_AGGRESSIVENESS = 2
+
+MAX_CONTENT_LENGTH = 1 * 1024 * 1024 # After 1mb, throw RequestEntityTooLarge exception
+
+ALVEO_URL = 'app.alveo.edu.au'
