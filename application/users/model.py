@@ -1,6 +1,6 @@
 from secrets import token_hex
 
-from application import db
+from application import app, db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
