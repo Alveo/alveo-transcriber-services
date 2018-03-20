@@ -2,9 +2,8 @@ from flask import jsonify, g
 from application import app
 import application.users.auth
 
+from application.segmentation.component import segmentor_service
 from application.datastore.model import Datastore
-
-#from application.modules.segmentation.web import segment_url
 
 def url_error(error_code):
     response = jsonify({'error': True, 'code': error_code})
@@ -23,3 +22,5 @@ def server_error(error):
 app.register_error_handler(403, not_allowed)
 app.register_error_handler(404, not_found)
 app.register_error_handler(500, server_error)
+
+app.add_url_rule('/segment', view_func=segmentor_service, methods=['GET', 'POST'])
