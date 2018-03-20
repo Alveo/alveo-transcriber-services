@@ -1,7 +1,12 @@
 from flask import Flask
+from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_pyfile('../config')
+login_manager = LoginManager()
+login_manager.init_app(app)
+db = SQLAlchemy(app)
 
 @app.after_request
 def after_request(response):

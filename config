@@ -1,5 +1,7 @@
-DEBUG = True
-DEVELOPMENT = True
+SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SESSION_TYPE = 'filesystem'
+CSRF_ENABLED = True
 
 # Set to allow transcriber to access if hosted on a different domain
 ACCESS_CONTROL_ALLOW_ORIGIN = '*'
