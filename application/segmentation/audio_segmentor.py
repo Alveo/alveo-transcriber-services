@@ -1,7 +1,7 @@
 import sndhdr
 
 from application import app
-from application.modules.speechtools import sad
+from application.segmentation.speechtools import sad
 
 class AudioSegmentor:
     """ AudioSegmentor is a class for validating and segmenting wave files. """
