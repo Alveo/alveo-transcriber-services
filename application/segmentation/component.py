@@ -3,6 +3,7 @@ from flask.views import MethodView
 
 from application import app, db
 from application.segmentation.audio_segmentor import AudioSegmentor
+from application.segmentation.model import CachedSegmentationResult
 from application.users.auth import auth_required
 
 class SegmentorService(MethodView):
