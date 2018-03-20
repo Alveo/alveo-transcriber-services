@@ -1,6 +1,7 @@
-from flask import jsonify
-
+from flask import jsonify, g
 from application import app
+import application.users.auth
+
 #from application.modules.segmentation.web import segment_url
 
 def url_error(error_code):
@@ -20,5 +21,3 @@ def server_error(error):
 app.register_error_handler(403, not_allowed)
 app.register_error_handler(404, not_found)
 app.register_error_handler(500, server_error)
-
-#app.add_url_rule('/api/segmentation/url', 'url', segment_url)
