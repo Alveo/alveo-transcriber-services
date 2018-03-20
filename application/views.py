@@ -2,6 +2,8 @@ from flask import jsonify, g
 from application import app
 import application.users.auth
 
+from application.datastore.model import Datastore
+
 #from application.modules.segmentation.web import segment_url
 
 def url_error(error_code):
