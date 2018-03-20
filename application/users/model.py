@@ -20,4 +20,3 @@ class User(db.Model):
     def generate_token(self):
         self.api_key = token_hex(app.config['TOKEN_LENGTH'])
         return self.api_key
-

@@ -10,8 +10,9 @@ class SegmentorService(MethodView):
     @auth_required
     def get(self, identifier=None):
         if identifier is None:
-            abort(400, "This GET request did not receive an Alveo identifier to segment.")
+            abort(400, "This GET request did not receive an Alveo document identifier to segment.")
 
+        # TODO
         # If cached
         #  Check if user can access document
         #  Return result if permissable, else 403
@@ -24,6 +25,6 @@ class SegmentorService(MethodView):
 
     @auth_required
     def post(self):
-        return "Not Implemented"
+        return "Not Implemented" # TODO
 
 segmentor_service = SegmentorService.as_view('segmentor_service')
