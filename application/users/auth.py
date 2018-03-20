@@ -41,18 +41,22 @@ def before_request():
 
 @app.route('/authorize')
 def authorize():
+    # TODO
     # Require Alveo API key
-    # Require Alveo user_id
+    # Require Alveo user_id (Not yet implemented on Alveo API)
+    user_id = request.args.get('user_id')
+    api_key = request.args.get('api_key')
+    if not user_id:
+        abort(400, "Alveo user_id was not provided")
+    if not api_key:
+        abort(400, "API key was not provided")
 
-    # Use alveo API key to confirm user info
-    # Check it's valid, match user info
+    # abort(400, "Provided API key is invalid")
+    # Use alveo API key to retrieve user info
+    #  code 400 if user_ids do not match
+    #    abort(400, "Provided user_id does not match this key") 
 
     # If user doesn't exist, create new one
     # Return services API key (not Alveo)
 
     return "Not Implemented"
-
-@app.route('/authtest')
-@auth_required
-def authtest():
-    return "Authenticated"
