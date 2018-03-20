@@ -7,4 +7,5 @@ Jinja2==2.10
 MarkupSafe==1.0
 psycopg2==2.7.4
 SQLAlchemy==1.2.5
+webrtcvad==2.0.10
 Werkzeug==0.14.1
