@@ -1,7 +1,8 @@
 from functools import wraps
-from flask import abort, g, request
+from flask import abort, g, request, jsonify
+from pyalveo import *
 
-from application import app, login_manager
+from application import app, db, login_manager
 from application.users.model import User
 
 def auth_required(f):
@@ -41,22 +42,29 @@ def before_request():
 
 @app.route('/authorize')
 def authorize():
-    # TODO
-    # Require Alveo API key
-    # Require Alveo user_id (Not yet implemented on Alveo API)
-    user_id = request.args.get('user_id')
     api_key = request.args.get('api_key')
-    if not user_id:
-        abort(400, "Alveo user_id was not provided")
     if not api_key:
-        abort(400, "API key was not provided")
+        abort(400, "Alveo API key was not provided")
 
-    # abort(400, "Provided API key is invalid")
-    # Use alveo API key to retrieve user info
-    #  code 400 if user_ids do not match
-    #    abort(400, "Provided user_id does not match this key") 
+    client = pyalveo.OAuth2(api_url="https://app.alveo.edu.au/", api_key=api_key)
+    user_data = client.get_user_data()
 
-    # If user doesn't exist, create new one
-    # Return services API key (not Alveo)
+    # PyAlveo doesn't return any meaningful errors, so if nothing is returned we will
+    #  have to hope and assume it is just because the API key is not valid.
+    if user_data is None:
+        abort(400, "Request could not be completed. API key may be invalid.")
 
-    return "Not Implemented"
+    user_id = user_data['user_id']
+
+    if user_id is None:
+        abort(400, "Malformed or unexpected data was received from the Alveo application server. Request could not be completed.")
+
+    user_ref = User.query.filter(User.alveo_id == user_id).first()
+    new_user = False
+    if user_ref is None:
+        user_ref = User(user_id)
+        db.session.add(user_ref)
+        db.session.commit()
+        new_user = True
+
+    return jsonify({'status': 200, 'new_user': new_user, 'ats-api-key': user_ref.api_key}) 
