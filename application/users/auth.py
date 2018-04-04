@@ -53,6 +53,9 @@ def get_api_access(ats_api_key):
     except:
         return None
 
+def unregister_api_access(ats_api_key):
+    API_STORE[ats_api_key] = None
+
 @app.route('/authorize')
 def authorize():
     api_key = request.args.get('api_key')
