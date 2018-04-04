@@ -1,27 +1,52 @@
-from flask import jsonify, abort
+from flask import jsonify, abort, g, request
 from flask.views import MethodView
+
+import uuid
+
+import pyalveo
 
 from application import app, db
 from application.segmentation.audio_segmentor import AudioSegmentor
 from application.segmentation.model import CachedSegmentationResult
-from application.users.auth import auth_required
+from application.users.auth import auth_required, get_api_access
 
 class SegmentorService(MethodView):
     @auth_required
     def get(self, identifier=None):
-        if identifier is None:
-            abort(400, "This GET request did not receive an Alveo document identifier to segment.")
+        document_id = request.args.get('document_id')
+        if not document_id:
+            abort(400, "Request did not receive an Alveo document identifier to segment.")
 
-        # TODO
-        # If cached
-        #  Check if user can access document
-        #  Return result if permissable, else 403
+        aas_key = get_api_access(g.user.api_key)
+        print(aas_key)
+        if aas_key is None:
+            abort(400, "You're not authorised to access the Alveo API, register your API key at /authorize first.")
 
-        # Else
-        #  Request document with user's API key: will this work with constantly changing keys?
-        #  Segment it, cache result 
+        client = pyalveo.Client(api_url="https://app.alveo.edu.au/", api_key=aas_key, use_cache=False, cache_dir=None)
 
-        return jsonify({})
+        # TODO cache reading, check if user has permission to access file somehow
+        audio_result = None
+        try:
+            audio_result = client.get_document(document_id)
+        except:
+            pass
+
+        if audio_result is None:
+            abort(400, "Could not access requested document.")
+
+
+        
+        # TODO - Cleanup
+        file_path = '/tmp/alveo/'+str(uuid.uuid4());
+        with open(file_path, 'wb') as f:
+            f.write(audio_result)
+
+        testseg = AudioSegmentor(file_path)
+        result = testseg.segment()
+
+        # TODO cache writing
+
+        return jsonify(result)
 
     @auth_required
     def post(self):
