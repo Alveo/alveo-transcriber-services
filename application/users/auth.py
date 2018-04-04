@@ -85,6 +85,4 @@ def authorize():
 
     activate_api_access(user_ref.api_key, api_key)
 
-    print(get_api_access(user_ref.api_key))
-
     return jsonify({'status': 200, 'new_user': new_user, 'ats-api-key': user_ref.api_key}) 
