@@ -5,6 +5,10 @@ from pyalveo import *
 from application import app, db, login_manager
 from application.users.model import User
 
+# TODO more elegant solution
+#  Ideally do not persistently store AAS API keys for security reasons
+API_STORE = {}
+
 def auth_required(f):
     """ Provides a wrapper for views to enforce login requirements """
     @wraps(f)
@@ -40,6 +44,15 @@ def before_request():
     """ Attempt to authenticate the user on each request """
     g.user = load_user_from_request(request)
 
+def activate_api_access(ats_api_key, aas_api_key):
+    API_STORE[ats_api_key] = aas_api_key
+
+def get_api_access(ats_api_key):
+    try:
+        return API_STORE[ats_api_key]
+    except:
+        return None
+
 @app.route('/authorize')
 def authorize():
     api_key = request.args.get('api_key')
@@ -66,5 +79,9 @@ def authorize():
         db.session.add(user_ref)
         db.session.commit()
         new_user = True
+
+    activate_api_access(user_ref.api_key, api_key)
+
+    print(get_api_access(user_ref.api_key))
 
     return jsonify({'status': 200, 'new_user': new_user, 'ats-api-key': user_ref.api_key}) 
