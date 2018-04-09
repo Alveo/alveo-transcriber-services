@@ -10,6 +10,7 @@ SSAD_AGGRESSIVENESS = 2
 
 TOKEN_LENGTH = 16
 
-MAX_CONTENT_LENGTH = 1 * 1024 * 1024 # After 1mb, throw RequestEntityTooLarge exception
+MAX_CONTENT_LENGTH = 40 * 1024 * 1024 # After 40mb, throw RequestEntityTooLarge exception
 
-ALVEO_URL = 'app.alveo.edu.au'
+ALVEO_API_URL = 'https://app.alveo.edu.au/'
+DOWNLOAD_CACHE_PATH = '/tmp/alveo-transcriber-services/'
