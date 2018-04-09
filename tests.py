@@ -100,7 +100,7 @@ if __name__ == '__main__':
     try:
         ALVEO_API_KEY = os.environ['ALVEO_API_KEY']
     except:
-        print('Error: Alveo API key OS environment variable is not set. Cannot proceed.')
+        print('Error: ALVEO_API_KEY environment variable is not set. Cannot proceed.')
 
     if ALVEO_API_KEY is not None:
         unittest.main()
