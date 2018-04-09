@@ -53,6 +53,10 @@ class TestCase(unittest.TestCase):
         self.assertEqual(200, response['status'], "Expected 200 response when sending a valid Alveo API key argument for authentication.")
         self.assertTrue(response['new_user'], "Expected to be flagged as a new user when registering for the first time. Is the test database being reused when it shouldn't be?")
 
+        response = self.get_json_response('/authorize?api_key='+ALVEO_API_KEY)
+        self.assertEqual(200, response['status'], "Expected 200 response when sending a valid Alveo API key argument for authentication, a second time.")
+        self.assertFalse(response['new_user'], "Expected to NOT be flagged as a new user when authenticating after the first time.")
+
     def testSegmentationNoAuth(self):
         response = self.get_json_response('/segment')
         self.assertEqual(401, response['status'], "Expected unauthorised status when attempting to segment without logging in.")
