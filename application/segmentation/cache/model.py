@@ -1,3 +1,5 @@
+import json
+
 from application import db
 
 # See: https://bitbucket.org/zzzeek/sqlalchemy/issues/3850/request-sqlite-json1-ext-support
@@ -23,8 +25,7 @@ class CachedSegmentation(db.Model):
 def cache_result(document_id, result):
     if len(document_id) is 0:
         raise Exception("Attempting to store something to the cache without a valid document identifier")
-    cached_result = CachedSegmentation(document_id, str(result))
-    db.session.add(cached_result)
+    db.session.add(CachedSegmentation(document_id, json.dumps(result)))
     db.session.commit()
 
 def get_cached_result(document_id):
@@ -32,4 +33,4 @@ def get_cached_result(document_id):
     if result is None:
         return None
 
-    return jsonify(result.data)
+    return json.loads(result.data)
