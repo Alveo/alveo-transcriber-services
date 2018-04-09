@@ -11,3 +11,8 @@ Repository to provide additional services to the alveo-transcriber webapp. Provi
 2. Optionally enable debug `export FLASK_DEBUG=1`
 3. Optionally rebuild database `python utility.py init_db`
 4. `export FLASK_APP=application && python -m flask run`
+
+## Unit tests
+1. Make sure requirements installed and config file set (see above)
+2. `export ALVEO_API_KEY=<YOUR ALVEO API KEY>` must be valid to test authentication
+3. `python tests.py`
