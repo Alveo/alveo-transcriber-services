@@ -36,21 +36,21 @@ def get_cached_result(document_id):
 def remote_segment(document_id, aas_key):
     client = pyalveo.Client(api_url=app.config['ALVEO_API_URL'], api_key=aas_key, use_cache=False, update_cache=False, cache_dir=None)
 
-    audio_result = None
+    audio_data = None
     try:
-        audio_result = client.get_document(document_id)
+        audio_data = client.get_document(document_id)
     except:
         pass
 
-    if audio_result is None:
+    if audio_data is None:
         return None
 
     file_path = app.config['DOWNLOAD_CACHE_PATH'] + str(uuid.uuid4())
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    with open(file_path, 'wb') as f:
-        f.write(audio_result)
+    downloader = FileManager(file_path, audio_data)
 
     result = AudioSegmentor(file_path).segment()
+
+    downloader.cleanup()
 
     cache_result(document_id, result)
 
@@ -90,14 +90,13 @@ class SegmentorService(MethodView):
         if 'file' not in request.files:
             abort(400, 'No file attached to query')
 
-        filedata = request.files['file']
-        if filedata.filename is '':
+        audiofile = request.files['file']
+        if audiofile.filename is '':
             abort(400, 'No file selected in query')
 
         file_path = app.config['DOWNLOAD_CACHE_PATH'] + str(uuid.uuid4())
 
-        downloader = FileManager(file_path, filedata)
-        downloader.save()
+        downloader = FileManager(file_path, audiofile.read())
 
         # Attempt to segment the file
         processor = AudioSegmentor(file_path)
