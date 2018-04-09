@@ -4,10 +4,11 @@ from flask import jsonify, abort, g, request
 from flask.views import MethodView
 
 from application import app
+from application.session import auth_required
 from application.segmentation.cache.model import cache_result, get_cached_result
-from application.users.auth import auth_required, get_api_access
 from application.alveo.document_segmentation import segment_document
 from application.segmentation.audio_segmentor import segment_audio_data
+from application.alveo.api_registrant import get_api_access
 
 def shorten_id(document_id):
     url = urlparse(document_id)
@@ -37,7 +38,7 @@ class AlveoAuthSegmentor(MethodView):
                 cache_result(shorten_id(document_id), result)
 
         response = {'status': 200, 'result': result}
-
+        
         return jsonify(response)
 
     @auth_required
