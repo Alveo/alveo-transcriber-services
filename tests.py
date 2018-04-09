@@ -94,6 +94,14 @@ class TestCase(unittest.TestCase):
         response = self.get_json_response('/segment?document_id='+document_id, {'Api-Key': ATS_API_KEY})
         self.assertEqual(200, response['status'], 'Expected status OK when attempting to segment a valid document.')
         self.assertTrue(len(response['result']) > 0, 'Expected a list of segments when segmenting a valid document.')
+        results = response['result']
+
+        response = self.get_json_response('/segment?document_id='+document_id, {'Api-Key': ATS_API_KEY})
+        self.assertEqual(200, response['status'], 'Expected status OK when attempting to segment a valid document, again (cache check).')
+        self.assertTrue(len(response['result']) > 0, 'Expected a list of segments when segmenting a valid document, again (cache check).')
+        cached_results = response['result']
+
+        self.assertTrue(len(results) is len(cached_results), 'Expected the original segmentation results to match the number of cached segmentation results when segmenting twice.')
 
 
 if __name__ == '__main__':
