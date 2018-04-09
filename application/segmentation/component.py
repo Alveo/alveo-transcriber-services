@@ -1,9 +1,9 @@
-from flask import jsonify, abort, g, request
-from flask.views import MethodView
-
+import os
 import uuid
 
 import pyalveo
+from flask import jsonify, abort, g, request
+from flask.views import MethodView
 
 from application import app, db
 from application.segmentation.audio_segmentor import AudioSegmentor
@@ -15,14 +15,13 @@ class SegmentorService(MethodView):
     def get(self, identifier=None):
         document_id = request.args.get('document_id')
         if not document_id:
-            abort(400, "Request did not receive an Alveo document identifier to segment.")
+            abort(400, 'Request did not receive an Alveo document identifier to segment.')
 
         aas_key = get_api_access(g.user.api_key)
-        print(aas_key)
         if aas_key is None:
-            abort(400, "You're not authorised to access the Alveo API, register your API key at /authorize first.")
+            abort(400, 'You\'re not authorised to access the Alveo API, register your API key at /authorize first.')
 
-        client = pyalveo.Client(api_url="https://app.alveo.edu.au/", api_key=aas_key, use_cache=False, cache_dir=None)
+        client = pyalveo.Client(api_url='https://app.alveo.edu.au/', api_key=aas_key, use_cache=False, cache_dir=None)
 
         # TODO cache reading, check if user has permission to access file somehow
         audio_result = None
@@ -32,24 +31,26 @@ class SegmentorService(MethodView):
             pass
 
         if audio_result is None:
-            abort(400, "Could not access requested document.")
+            abort(400, 'Could not access requested document.')
 
 
         
         # TODO - Cleanup
         file_path = '/tmp/alveo/'+str(uuid.uuid4());
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, 'wb') as f:
             f.write(audio_result)
 
         testseg = AudioSegmentor(file_path)
         result = testseg.segment()
-
         # TODO cache writing
 
-        return jsonify(result)
+        response = {'status': 200, 'result': result}
+
+        return jsonify(response)
 
     @auth_required
     def post(self):
-        return "Not Implemented" # TODO
+        return 'Not Implemented' # TODO
 
 segmentor_service = SegmentorService.as_view('segmentor_service')
