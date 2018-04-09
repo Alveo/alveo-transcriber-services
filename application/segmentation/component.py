@@ -7,6 +7,7 @@ from flask import jsonify, abort, g, request
 from flask.views import MethodView
 
 from application import app, db
+from application.segmentation.filemanager import FileManager
 from application.segmentation.audio_segmentor import AudioSegmentor
 from application.segmentation.model import CachedSegmentationResult
 from application.users.auth import auth_required, get_api_access
@@ -33,7 +34,7 @@ def get_cached_result(document_id):
     return jsonify(result.data)
 
 def remote_segment(document_id, aas_key):
-    client = pyalveo.Client(api_url='https://app.alveo.edu.au/', api_key=aas_key, use_cache=False, update_cache=False, cache_dir=None)
+    client = pyalveo.Client(api_url=app.config['ALVEO_API_URL'], api_key=aas_key, use_cache=False, update_cache=False, cache_dir=None)
 
     audio_result = None
     try:
@@ -44,7 +45,7 @@ def remote_segment(document_id, aas_key):
     if audio_result is None:
         return None
 
-    file_path = '/tmp/alveo/'+str(uuid.uuid4());
+    file_path = app.config['DOWNLOAD_CACHE_PATH'] + str(uuid.uuid4())
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, 'wb') as f:
         f.write(audio_result)
@@ -65,7 +66,7 @@ class SegmentorService(MethodView):
     def get(self, identifier=None):
         document_id = request.args.get('document_id')
 
-        if "/" not in str(urlparse(document_id).path):
+        if '/' not in str(urlparse(document_id).path):
             abort(400, 'Request did not receive an Alveo document identifier to segment.')
 
         aas_key = get_api_access(g.user.api_key)
@@ -86,6 +87,28 @@ class SegmentorService(MethodView):
 
     @auth_required
     def post(self):
-        return 'Not Implemented' # TODO
+        if 'file' not in request.files:
+            abort(400, 'No file attached to query')
+
+        filedata = request.files['file']
+        if filedata.filename is '':
+            abort(400, 'No file selected in query')
+
+        file_path = app.config['DOWNLOAD_CACHE_PATH'] + str(uuid.uuid4())
+
+        downloader = FileManager(file_path, filedata)
+        downloader.save()
+
+        # Attempt to segment the file
+        processor = AudioSegmentor(file_path)
+        if not processor.isValid():
+            abort(400, "Uploaded file is not a valid .wav audio file.")
+
+        result = processor.segment()
+
+        # Cleanup after segmenting
+        downloader.cleanup()
+
+        return jsonify(result)
 
 segmentor_service = SegmentorService.as_view('segmentor_service')
