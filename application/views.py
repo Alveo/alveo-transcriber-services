@@ -6,7 +6,7 @@ from application.segmentation.component import segmentor_service
 from application.datastore.model import Datastore
 
 def url_error(error_code, description):
-    response = jsonify({'error': True, 'code': error_code, 'description': description})
+    response = jsonify({'error': True, 'status': error_code, 'description': description})
     response.status_code = error_code;
     return response
 
