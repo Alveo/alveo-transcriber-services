@@ -10,7 +10,7 @@ def load_user_from_request(request):
     api_user_id = request.headers.get('X-Api-UserId')
 
     if api_type is None:
-        abort(400, "X-Api-Type not provided. No idea who to try authenticate with!")
+        abort(401, "X-Api-Type not provided. No idea who to try authenticate with!")
 
     for handler in auth_handlers:
         if handler.auth_name == api_type:

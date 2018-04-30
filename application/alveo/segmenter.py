@@ -14,7 +14,8 @@ def shorten_path(path):
 @auth_required
 @register_segmenter("alveo")
 def alveo_segmenter(path, user_ref):
-    if '/' not in str(urlparse(path).path):
+    api_path = str(urlparse(path).path)
+    if '/' not in api_path or api_path == "/":
         abort(400, 'Request did not receive an Alveo document identifier to segment.')
 
     api_key = g.user.remote_api_key
