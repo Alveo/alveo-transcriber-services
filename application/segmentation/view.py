@@ -4,7 +4,7 @@ from flask import jsonify, abort, g, request
 from flask.views import MethodView
 
 from application import app, segment_handlers
-from application.session import auth_required
+from application.auth.auth_handler import auth_required
 from application.segmentation.audio_segmentor import segment_audio_data
 
 class SegmenterAPI(MethodView):

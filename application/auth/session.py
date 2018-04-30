@@ -1,17 +1,6 @@
-from functools import wraps
-from flask import abort, g, request
+from flask import g, request
 
 from application import app, login_manager, auth_handlers
-from application.users.model import User
-
-def auth_required(f):
-    """ Provides a wrapper for views to enforce login requirements """
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if g.user is None:
-            abort(401)
-        return f(*args, **kwargs)
-    return decorated_function
 
 @login_manager.request_loader
 def load_user_from_request(request):

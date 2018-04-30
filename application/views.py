@@ -1,6 +1,6 @@
 from flask import jsonify
 from application import app
-import application.session
+import application.auth.session
 import application.alveo.auth
 import application.alveo.segmenter
 from application.segmentation.view import segmenter_api

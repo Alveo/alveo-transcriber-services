@@ -1,6 +1,6 @@
 from flask.views import MethodView
 
-from application.session import auth_required
+from application.auth.auth_handler import auth_required
 
 class AlveoAuthSegmentor(MethodView):
     @auth_required
