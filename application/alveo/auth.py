@@ -10,7 +10,7 @@ def auth_alveo(remote_user_id, remote_api_key):
     if not remote_api_key:
         abort(400, "Alveo API key was not provided")
 
-    client = pyalveo.OAuth2(api_url="https://app.alveo.edu.au/", api_key=remote_api_key)
+    client = pyalveo.OAuth2(api_url=app.config['ALVEO_API_URL'], api_key=remote_api_key)
     user_data = client.get_user_data()
 
     if user_data is None:
