@@ -6,7 +6,7 @@ import application.alveo.segmenter
 from application.segmentation.view import segmenter_api
 
 def url_error(error_code, description):
-    response = jsonify({'error': True, 'status': error_code, 'description': description})
+    response = jsonify({'error': True, 'description': description})
     response.status_code = error_code;
     return response
 
