@@ -8,9 +8,14 @@ ACCESS_CONTROL_ALLOW_ORIGIN = '*'
 
 SSAD_AGGRESSIVENESS = 2
 
-TOKEN_LENGTH = 16
-
 MAX_CONTENT_LENGTH = 40 * 1024 * 1024 # After 40mb, throw RequestEntityTooLarge exception
 
-ALVEO_API_URL = 'https://app.alveo.edu.au/'
 DOWNLOAD_CACHE_PATH = '/tmp/alveo-transcriber-services/'
+
+ALVEO_API_URL = "https://app.alveo.edu.au/"
+DOMAIN_HANDLERS = [
+  {
+    "domains": ["app.alveo.edu.au"],
+    "module": "alveo"
+  }
+]
