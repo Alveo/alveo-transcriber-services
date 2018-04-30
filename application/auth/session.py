@@ -1,4 +1,4 @@
-from flask import g, request
+from flask import g, request, abort
 
 from application import app, login_manager, auth_handlers
 
