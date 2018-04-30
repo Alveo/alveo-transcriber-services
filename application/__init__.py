@@ -8,6 +8,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 db = SQLAlchemy(app)
 
+auth_handlers = []
+
 @app.after_request
 def after_request(response):
     """ This section is to allow the Alveo Transcriber to access this web application when hosted on a different address/domain. You can configure which origins are allowed in the global config file. """

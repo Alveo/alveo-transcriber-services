@@ -8,7 +8,6 @@ from application.session import auth_required
 from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
 from application.segmentation.audio_segmentor import segment_audio_data
-from application.alveo.api_registrant import get_api_access
 
 def shorten_id(document_id):
     url = urlparse(document_id)
@@ -23,7 +22,7 @@ class AlveoAuthSegmentor(MethodView):
         if '/' not in str(urlparse(document_id).path):
             abort(400, 'Request did not receive an Alveo document identifier to segment.')
 
-        aas_key = get_api_access(g.user.api_key)
+        aas_key = g.user.remote_api_key
         if aas_key is None:
             abort(400, 'You\'re not authorised to access the Alveo API, register your API key at /authorize first.')
 
