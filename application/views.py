@@ -4,6 +4,7 @@ import application.auth.session
 import application.alveo.auth
 import application.alveo.segmenter
 from application.segmentation.view import segmenter_api
+from application.datastore.view import datastore_api
 
 def url_error(error_code, description):
     response = jsonify({'error': True, 'description': description})
@@ -32,3 +33,4 @@ app.register_error_handler(404, not_found)
 app.register_error_handler(500, server_error)
 
 app.add_url_rule('/segment', view_func=segmenter_api, methods=['GET', 'POST'])
+app.add_url_rule('/storage', view_func=datastore_api, methods=['GET', 'POST'])

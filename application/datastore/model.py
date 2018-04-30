@@ -9,7 +9,9 @@ class Datastore(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User')
 
-    def __init__(self, key, value, revision):
+    def __init__(self, key, value, revision, user):
         self.key = key
         self.value = value
         self.revision = revision
+
+        self.user = user
