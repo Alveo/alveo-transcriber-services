@@ -9,6 +9,9 @@ def load_user_from_request(request):
     api_type = request.headers.get('X-Api-Type')
     api_user_id = request.headers.get('X-Api-UserId')
 
+    if api_type is None:
+        abort(400, "X-Api-Type not provided. No idea who to try authenticate with!")
+
     for handler in auth_handlers:
         if handler.auth_name == api_type:
             return handler.authenticate(api_user_id, api_key), api_key
@@ -20,4 +23,6 @@ def load_user_from_request(request):
 def before_request():
     """ Attempt to authenticate the user on each request """
     g.user, remote_api_key = load_user_from_request(request)
-    g.user.remote_api_key = remote_api_key
+
+    if g.user is not None:
+        g.user.remote_api_key = remote_api_key
