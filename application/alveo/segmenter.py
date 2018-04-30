@@ -3,15 +3,13 @@ from urllib.parse import urlparse
 from pyalveo import *
 from flask import abort, g
 
-from application.session import auth_required
+from application.auth.auth_handler import auth_required
 from application.segmentation.segment_handlers import register_segmenter
 from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
 
 def shorten_path(path):
-    url = urlparse(path)
-    url = url.path.split('/catalog/')[1]
-    return url
+    return urlparse(path).path.split('/catalog/')[1]
 
 @auth_required
 @register_segmenter("alveo")
@@ -29,6 +27,6 @@ def alveo_segmenter(path, user_ref):
         if result is None:
             abort(400, 'Could not access requested document.')
         else:
-            cache_result(shorten_id(path), result)
+            cache_result(shorten_path(path), result)
 
     return result

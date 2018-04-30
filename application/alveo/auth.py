@@ -1,7 +1,7 @@
 from pyalveo import *
 from flask import abort
 
-from application import db
+from application import app, db
 from application.users.model import User
 from application.auth.auth_handler import register_auth_handler
 
