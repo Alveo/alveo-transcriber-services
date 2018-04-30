@@ -25,7 +25,9 @@ class SegmenterAPI(MethodView):
 
         for handler_ref in segment_handlers:
             if handler_ref.name == handler:
-                return jsonify(handler_ref.segment(remote_url, g.user))
+                return jsonify({
+                        "results": handler_ref.segment(remote_url, g.user)
+                    })
 
         abort(400, "There are no modules available matching the requested handler for this URL. This is likely a missing optional dependency.")
 
