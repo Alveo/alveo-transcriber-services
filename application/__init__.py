@@ -9,6 +9,7 @@ login_manager.init_app(app)
 db = SQLAlchemy(app)
 
 auth_handlers = []
+segment_handlers = []
 
 @app.after_request
 def after_request(response):

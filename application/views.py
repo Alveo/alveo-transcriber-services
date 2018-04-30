@@ -2,7 +2,8 @@ from flask import jsonify
 from application import app
 import application.session
 import application.alveo.auth
-from application.alveo.segmentation_view import alveo_auth_segmentor_api
+import application.alveo.segmenter
+from application.segmentation.view import segmenter_api
 
 def url_error(error_code, description):
     response = jsonify({'error': True, 'status': error_code, 'description': description})
@@ -30,4 +31,4 @@ app.register_error_handler(403, not_allowed)
 app.register_error_handler(404, not_found)
 app.register_error_handler(500, server_error)
 
-app.add_url_rule('/segment', view_func=alveo_auth_segmentor_api, methods=['GET', 'POST'])
+app.add_url_rule('/segment', view_func=segmenter_api, methods=['GET', 'POST'])
