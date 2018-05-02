@@ -10,7 +10,7 @@ def load_user_from_request(request):
     api_key = request.headers.get('X-Api-Key')
     api_user_id = request.headers.get('X-Api-UserId')
 
-    if api_domain, api_key is None:
+    if api_domain is None or api_key is None:
         return None
 
     auth = get_handler_for(api_domain, "auth")
