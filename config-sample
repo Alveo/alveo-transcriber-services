@@ -12,6 +12,8 @@ ALLOW_POST_SEGMENTATION = True
 
 MAX_CONTENT_LENGTH = 40 * 1024 * 1024 # After 40mb, throw RequestEntityTooLarge exception. You should shrink this down if ALLOW_POST_SEGMENTATION is False
 
+DOWNLOAD_CACHE_PATH = '/tmp/alveo-transcriber-services/alveo/' # Used for downloaded audio files including POST requests
+
 DOMAIN_HANDLERS = [
   {
     'domains': ['app.alveo.edu.au'],
