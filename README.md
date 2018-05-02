@@ -91,3 +91,7 @@ on the dokku host:
 ```bash
 $ dokku letsencrypt segmenter
 ```
+Finally, build the database if it hasn't been built already.
+```bash
+$ dokku run segmenter python utility.py init_db
+```
