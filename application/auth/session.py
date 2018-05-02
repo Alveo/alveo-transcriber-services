@@ -10,22 +10,20 @@ def load_user_from_request(request):
     api_key = request.headers.get('X-Api-Key')
     api_user_id = request.headers.get('X-Api-UserId')
 
-    if api_domain is None:
-        abort(401, "X-Api-Domain not provided. No idea who to try authenticate with!")
+    if api_domain, api_key is None:
+        return None
 
     auth = get_handler_for(api_domain, "auth")
     if auth is None:
-        abort(403, "There isn't an registered authentication handler for this domain");
+        return None
 
-    return auth.handle(api_user_id, api_key), api_key
+    user = auth.handle(api_user_id, api_key)
+    if user is not None:
+        user.remote_api_key = api_key
 
-    # User couldn't be authenticated
-    return None, None
+    return user
 
 @app.before_request
 def before_request():
     """ Attempt to authenticate the user on each request """
-    g.user, remote_api_key = load_user_from_request(request)
-
-    if g.user is not None:
-        g.user.remote_api_key = remote_api_key
+    g.user = load_user_from_request(request)
