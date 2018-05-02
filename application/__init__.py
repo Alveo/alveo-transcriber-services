@@ -1,9 +1,15 @@
+import os
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
+config_file = os.environ.get("ATS_CONFIG_PATH", None)
+if config_file is None:
+    config_file == '../config'
+
 app = Flask(__name__)
-app.config.from_pyfile('../config')
+app.config.from_pyfile(config_file)
 login_manager = LoginManager()
 login_manager.init_app(app)
 db = SQLAlchemy(app)
