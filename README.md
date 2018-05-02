@@ -66,6 +66,9 @@ curl \
   https://localhost:5000/storage?storage_key=example
 ```
 
+## Writing a module
+The transcriber-services is intended to be as modular as possible. To achieve that, handlers are written for the service of your choosing. The Alveo module is included which demonstrates how to register the authentication, storage and segmentation handlers. Module integration can be set up and disabled by editing the entry in `DOMAIN_HANDLERS` in the config file. 
+
 ## Deployment with Dokku
 The application is deployed using dokku, the following configuration is required on the dokku host:
 
