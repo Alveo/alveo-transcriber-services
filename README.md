@@ -2,7 +2,7 @@
 Repository to provide additional services to the alveo-transcriber web application. Provides transcription storage and automatic audio segmentation.
 
 ## Config
-1. Copy `config-sample` to `config` and edit it accordingly
+1. Edit `config` file accordingly
 2. If deploying this outside of a local address, you will need to generate an SSL certificate to avoid mixed content browser errors
 3. Build the transcriber with an `environment.ts` that points towards this as the `ALVEO_SERVICES_URL` 
 
@@ -74,7 +74,7 @@ The application is deployed using dokku, the following configuration is required
 
 ```bash
 $ dokku apps:create segmenter
-$ dokku config:set segmenter ATS_CONFIG_PATH=../config-sample
+$ dokku config:set segmenter ATS_DB_URI=sqlite://test
 ```
 Now you can push the repository to the dokku host using git:
 ```bash

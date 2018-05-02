@@ -1,0 +1,26 @@
+import os
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SESSION_TYPE = 'filesystem'
+CSRF_ENABLED = True
+
+SQLALCHEMY_DATABASE_URI = os.environ.get('ATS_DB_URI', 'sqlite:////tmp/test.db')
+
+# Set to allow transcriber to access if hosted on a different domain
+ACCESS_CONTROL_ALLOW_ORIGIN = os.environ.get('ATS_ACAO', '*')
+
+SSAD_AGGRESSIVENESS = os.environ.get('ATS_SSAD_AGGRESSIVENSES', 2)
+
+ALLOW_POST_SEGMENTATION = os.environ.get('ATS_ALLOW_POST_SEGMENTATION', True)
+
+MAX_CONTENT_LENGTH = os.environ.get('ATS_MAX_CONTENT_LENGTH', 40 * 1024 * 1024) # After 40mb, throw RequestEntityTooLarge exception. You should shrink this down if ALLOW_POST_SEGMENTATION is False
+
+DOWNLOAD_CACHE_PATH = os.environ.get('ATS_DOWNLOAD_CACHE_PATH', '/tmp/alveo-transcriber-services/alveo/') # Used for downloaded audio files including POST requests
+
+DOMAIN_HANDLERS = os.environ.get('ATS_DOMAIN_HANDLERS', [
+  {
+    'domains': ['app.alveo.edu.au'],
+    'module': 'alveo', # Comment out this line if you wish to disable the Alveo API
+    'api_url': 'https://app.alveo.edu.au/'
+  }
+]
