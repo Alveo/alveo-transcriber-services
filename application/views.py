@@ -18,7 +18,7 @@ def not_authorised(error):
     return url_error(401, "Not authorised")
 
 def not_allowed(error):
-    return url_error(403, "Forbidden")
+    return url_error(403, error.description)
 
 def not_found(error):
     return url_error(404, "Resource not found")
