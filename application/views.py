@@ -27,7 +27,7 @@ def not_found(error):
     return url_error(404, error.description)
 
 def server_error(error):
-    return url_error(500, error.description)
+    return url_error(500, "Internal server error")
 
 app.register_error_handler(400, bad_request)
 app.register_error_handler(401, not_authorised)
