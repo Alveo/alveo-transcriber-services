@@ -4,15 +4,15 @@ from pyalveo import *
 from flask import abort, g
 
 from application.auth.auth_handler import auth_required
-from application.segmentation.segment_handlers import register_segmenter
 from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
+from application.misc.register import handle_api_event
 
 def shorten_path(path):
     return urlparse(path).path.split('/catalog/')[1]
 
 @auth_required
-@register_segmenter("alveo")
+@handle_api_event("alveo", "segmenter")
 def alveo_segmenter(path, user_ref):
     api_path = str(urlparse(path).path)
     if '/' not in api_path or api_path == "/":

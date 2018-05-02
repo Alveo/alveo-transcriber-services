@@ -7,9 +7,13 @@ app.config.from_pyfile('../config')
 login_manager = LoginManager()
 login_manager.init_app(app)
 db = SQLAlchemy(app)
-
-auth_handlers = []
-segment_handlers = []
+events = {}
+event_types = {
+        'auth': None,
+        'segmentation': None,
+        'store': None,
+        'retrieve': None
+    }
 
 @app.after_request
 def after_request(response):
