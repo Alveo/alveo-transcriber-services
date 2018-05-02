@@ -65,7 +65,7 @@ if __name__ == '__main__':
         ALVEO_API_KEY = os.environ['ALVEO_API_KEY']
         DEFAULT_HEADERS = {
                     'X-Api-Key': ALVEO_API_KEY,
-                    'X-Api-Type': 'alveo'
+                    'X-Api-Domain': 'app.alveo.edu.au'
                 }
     except:
         print('Error: ALVEO_API_KEY environment variable is not set. Cannot proceed.')
