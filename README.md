@@ -20,21 +20,21 @@ Repository to provide additional services to the alveo-transcriber web applicati
 ## Example usage
 ### Segment a remote URL
 ```bash
-curl https://localhost:5000/segment?remote_url=https://<URI to file> \
+$ curl https://localhost:5000/segment?remote_url=https://<URI to file> \
   --header "X-Api-Domain: <handler to use e.g alveo >" \
   --header "X-Api-Key: <api key for remote auth>"
 ```
 
 ### Transcribe via a POST
 ```bash
-curl -F "file=@test.wav" https://localhost:5000/segment \
+$ curl -F "file=@test.wav" https://localhost:5000/segment \
   --header "X-Api-Domain: <handler to use e.g alveo >" \
   --header "X-Api-Key: <api key for remote auth, remote auth required even for POST>"
 ```
 
 ### Store data
 ```bash
-curl \
+$ curl \
   --header "X-Api-Domain: domain" \
   --header "X-Api-Key: apikey" \
   -d '
@@ -60,7 +60,7 @@ curl \
 
 ### Retrieve data
 ``` bash
-curl \
+$ curl \
   --header "X-Api-Domain: domain" \
   --header "X-Api-Key: apikey" \
   https://localhost:5000/storage?storage_key=example
@@ -74,11 +74,17 @@ The application is deployed using dokku, the following configuration is required
 
 ```bash
 $ dokku apps:create segmenter
+$ dokku config:set segmenter ATS_CONFIG_PATH=../config-sample
 ```
 Now you can push the repository to the dokku host using git:
 ```bash
 $ git remote add dokku dokku@apps.alveo.edu.au:segmenter
 $ git push dokku master
+```
+You could then add and set a domain if you wanted to. You should do this before creating an SSL certificate. Here is an example:
+```bash
+$ dokku domains:add segmenter segmenter.apps.alveo.edu.au
+$ dokku domains:set segmenter segmenter.apps.alveo.edu.au
 ```
 This should build the environment and start the application. We then need to set up an SSL certificate
 on the dokku host:
