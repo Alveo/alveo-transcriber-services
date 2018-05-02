@@ -1,10 +1,13 @@
 from flask import jsonify
 from application import app
-import application.auth.session
-import application.alveo.auth
-import application.alveo.segmenter
 from application.segmentation.view import segmenter_api
 from application.datastore.view import datastore_api
+import application.auth.session
+
+# Module specific
+import application.alveo.auth
+import application.alveo.segmenter
+import application.alveo.datastore
 
 def url_error(error_code, description):
     response = jsonify({'error': True, 'description': description})
@@ -15,16 +18,16 @@ def bad_request(error):
     return url_error(400, error.description)
 
 def not_authorised(error):
-    return url_error(401, "Not authorised")
+    return url_error(401, error.description)
 
 def not_allowed(error):
     return url_error(403, error.description)
 
 def not_found(error):
-    return url_error(404, "Resource not found")
+    return url_error(404, error.description)
 
 def server_error(error):
-    return url_error(500, "Server error")
+    return url_error(500, error.description)
 
 app.register_error_handler(400, bad_request)
 app.register_error_handler(401, not_authorised)
