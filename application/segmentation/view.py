@@ -31,6 +31,9 @@ class SegmenterAPI(MethodView):
 
     @auth_required
     def post(self):
+        if not app.config['ALLOW_POST_SEGMENTATION']:
+            abort(405)
+
         if 'file' not in request.files:
             abort(400, 'No file attached to query')
 
