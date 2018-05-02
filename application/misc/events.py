@@ -21,7 +21,10 @@ def get_domain_handler(domain):
             return handler['module']
 
 def get_module_metadata(module):
-    return next((handler for handler in app.config['DOMAIN_HANDLERS'] if handler["module"] == module), None)
+    try:
+        return next((handler for handler in app.config['DOMAIN_HANDLERS'] if handler["module"] == module), None)
+    except:
+        return None
 
 def get_handler_for(domain, event):
     module = get_domain_handler(domain)
