@@ -4,7 +4,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SESSION_TYPE = 'filesystem'
 CSRF_ENABLED = True
 
-SQLALCHEMY_DATABASE_URI = os.environ.get('ATS_DB_URI', 'sqlite:////tmp/test.db')
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:////tmp/test.db')
 
 # Set to allow transcriber to access if hosted on a different domain
 ACCESS_CONTROL_ALLOW_ORIGIN = os.environ.get('ATS_ACAO', '*')
