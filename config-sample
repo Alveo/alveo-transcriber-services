@@ -8,14 +8,14 @@ ACCESS_CONTROL_ALLOW_ORIGIN = '*'
 
 SSAD_AGGRESSIVENESS = 2
 
-MAX_CONTENT_LENGTH = 40 * 1024 * 1024 # After 40mb, throw RequestEntityTooLarge exception
+ALLOW_POST_SEGMENTATION = True
 
-DOWNLOAD_CACHE_PATH = '/tmp/alveo-transcriber-services/'
+MAX_CONTENT_LENGTH = 40 * 1024 * 1024 # After 40mb, throw RequestEntityTooLarge exception. You should shrink this down if ALLOW_POST_SEGMENTATION is False
 
-ALVEO_API_URL = "https://app.alveo.edu.au/"
 DOMAIN_HANDLERS = [
   {
-    "domains": ["app.alveo.edu.au"],
-    "module": "alveo"
+    'domains': ['app.alveo.edu.au'],
+    'module': 'alveo', # Comment out this line if you wish to disable the Alveo API
+    'api_url': 'https://app.alveo.edu.au/'
   }
 ]

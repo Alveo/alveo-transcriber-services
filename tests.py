@@ -3,9 +3,12 @@ import unittest
 import json
 
 from application import app, db
+from application.misc.events import get_module_metadata
 
 ALVEO_API_KEY = None
 DEFAULT_HEADERS = None
+
+ALVEO_API_URL = None
 
 class TestCase(unittest.TestCase):
     def get_json_response(self, path, headers={}):
@@ -31,12 +34,9 @@ class TestCase(unittest.TestCase):
         self.assertEqual(401, status, 'Expected unauthorised status when attempting to segment without logging in.')
 
     def testSegmentationAuthNoDoc(self):
-        response, status = self.get_json_response('/segment?remote_url='+app.config['ALVEO_API_URL'], DEFAULT_HEADERS)
+        response, status = self.get_json_response('/segment?remote_url='+ALVEO_API_URL, DEFAULT_HEADERS)
         self.assertTrue('Alveo document identifier' in response['description'], 'Expected error to be about the missing Alveo document identifier when authorised, attempting to segment without a document identifier.')
         self.assertEqual(400, status, 'Expected bad request status when attempting to segment without a document (via header).')
-
-    def testSegmentationAuthExpiredAlveoKey(self):
-        pass # TODO not implemented: no way to unauthorise at this time, without restarting server using persistent database
 
     def testSegmentationInvalidDocument(self):
         invalid_remote_url = 'https://app.alveo.edu.au/catalog/doesnot/exist.wav'
@@ -61,14 +61,22 @@ class TestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    try:
-        ALVEO_API_KEY = os.environ['ALVEO_API_KEY']
-        DEFAULT_HEADERS = {
-                    'X-Api-Key': ALVEO_API_KEY,
-                    'X-Api-Domain': 'app.alveo.edu.au'
-                }
-    except:
-        print('Error: ALVEO_API_KEY environment variable is not set. Cannot proceed.')
+    alveo_metadata = get_module_metadata('alveo')
 
-    if ALVEO_API_KEY is not None:
+    if alveo_metadata is None:
+        print('Skipping Alveo tests. Module not loaded in config.')
+    else:
+        ALVEO_API_URL = alveo_metadata['api_url']
+
+        try:
+            ALVEO_API_KEY = os.environ['ALVEO_API_KEY']
+            DEFAULT_HEADERS = {
+                        'X-Api-Key': ALVEO_API_KEY,
+                        'X-Api-Domain': 'app.alveo.edu.au'
+                    }
+        except:
+            print('Error: ALVEO_API_KEY environment variable is not set. Cannot proceed.')
+
+
+    if ALVEO_API_KEY is not None and ALVEO_API_URL is not None:
         unittest.main()
