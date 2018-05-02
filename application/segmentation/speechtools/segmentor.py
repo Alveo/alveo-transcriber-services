@@ -2,24 +2,45 @@
 
 import collections
 import contextlib
-import sys
 import wave
-
+import audioop
 import webrtcvad
 
 def read_wave(path):
     """Reads a .wav file.
 
     Takes the path, and returns (PCM audio data, sample rate).
+
+    Will convert the sample width, rate and number of channels
+    if necessary to give one channel, 2 byte width and 8k, 16k or 32k sample rate.
+
     """
     with contextlib.closing(wave.open(path, 'rb')) as wf:
-        num_channels = wf.getnchannels()
-        assert num_channels == 1
-        sample_width = wf.getsampwidth()
-        assert sample_width == 2
-        sample_rate = wf.getframerate()
-        assert sample_rate in (8000, 16000, 32000)
+
         pcm_data = wf.readframes(wf.getnframes())
+
+        num_channels = wf.getnchannels()
+        sample_width = wf.getsampwidth()
+        sample_rate = wf.getframerate()
+
+        if num_channels != 1:
+            pcm_data = audioop.tomono(pcm_data, sample_width, 1, 1)
+
+        if sample_width != 2:
+            pcm_data = audioop.lin2lin(pcm_data, sample_width, 2)
+
+        if sample_rate not in (8000, 16000, 32000):
+            # resample to the closest lower rate
+            if sample_rate > 32000:
+                newrate = 32000
+            elif sample_rate > 16000:
+                newrate = 16000
+            else:
+                newrate = 8000
+
+            pcm_data, newstate = audioop.ratecv(pcm_data, 2, 1, sample_rate, newrate, None)
+            sample_rate = newrate
+
         return pcm_data, sample_rate
 
 
@@ -137,3 +158,14 @@ def sad(audiofile, aggressiveness=1):
         result.append({'start': seg[0], 'end': seg[1]})
 
     return result
+
+
+
+if __name__=='__main__':
+
+    import sys
+    import pprint
+
+    filename = sys.argv[1]
+    result = sad(filename)
+    pprint.pprint(result)
