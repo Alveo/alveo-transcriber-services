@@ -17,12 +17,14 @@ def alveo_retrieve(storage_key, revision):
 @handle_api_event("alveo", "store")
 def alveo_store(storage_key, storage_value):
     revision = "latest"
-    match = Datastore.query.filter(Datastore.key == storage_key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
+    model = Datastore.query.filter(Datastore.key == storage_key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
 
-    if match is None:
-        storage_model = Datastore(storage_key, storage_value, revision, g.user)
-        db.session.add(storage_model)
+    if model is None:
+        model = Datastore(storage_key, storage_value, revision, g.user)
+        db.session.add(model)
     else:
-        match.value = storage_value
+        model.value = storage_value
 
     db.session.commit()
+
+    return model 
