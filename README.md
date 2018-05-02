@@ -73,11 +73,11 @@ The transcriber-services is intended to be as modular as possible. To achieve th
 The application is deployed using dokku, the following configuration is required on the dokku host:
 
 ```bash
-$ dokku app:create segmenter
+$ dokku apps:create segmenter
 ```
 Now you can push the repository to the dokku host using git:
 ```bash
-$ git add remote dokku dokku@apps.alveo.edu.au:segmenter
+$ git remote add dokku dokku@apps.alveo.edu.au:segmenter
 $ git push dokku master
 ```
 This should build the environment and start the application. We then need to set up an SSL certificate
