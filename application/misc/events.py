@@ -17,8 +17,11 @@ class handle_api_event(object):
 
 def get_domain_handler(domain):
     for handler in app.config['DOMAIN_HANDLERS']:
-        if domain in handler['domains']:
-            return handler['module']
+        try:
+            if domain in handler['domains']:
+                return handler['module']
+        except:
+            pass
 
 def get_module_metadata(module):
     try:
