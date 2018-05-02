@@ -3,7 +3,7 @@ from flask import abort
 
 from application import app, db
 from application.users.model import User
-from application.misc.register import handle_api_event
+from application.misc.events import handle_api_event
 
 @handle_api_event("alveo", "auth")
 def auth_alveo(remote_user_id, remote_api_key):

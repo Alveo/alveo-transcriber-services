@@ -3,10 +3,10 @@ from urllib.parse import urlparse
 from pyalveo import *
 from flask import abort, g
 
-from application.auth.auth_handler import auth_required
+from application.auth.required import auth_required
 from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
-from application.misc.register import handle_api_event
+from application.misc.events import handle_api_event
 
 def shorten_path(path):
     return urlparse(path).path.split('/catalog/')[1]

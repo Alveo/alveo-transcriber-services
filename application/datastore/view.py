@@ -1,7 +1,7 @@
 from flask import abort, request, jsonify
 from flask.views import MethodView
 
-from application.auth.auth_handler import auth_required
+from application.auth.required import auth_required
 
 class DatastoreAPI(MethodView):
     @auth_required

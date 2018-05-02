@@ -1,7 +1,7 @@
 from flask import g, request, abort
 
 from application import app, login_manager
-from application.misc.register import get_handler_for
+from application.misc.events import get_handler_for
 
 @login_manager.request_loader
 def load_user_from_request(request):
