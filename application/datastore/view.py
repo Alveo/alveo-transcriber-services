@@ -5,7 +5,6 @@ from application.auth.required import auth_required
 from application.misc.events import get_handler_for
 
 class DatastoreAPI(MethodView):
-    @auth_required
     def get(self):
         storage_key = request.args.get('storage_key')
         revision = request.args.get('revision')
@@ -35,7 +34,6 @@ class DatastoreAPI(MethodView):
                     }
                 )
 
-    @auth_required
     def post(self):
         data = request.get_json()
         storage_key = None
@@ -68,4 +66,4 @@ class DatastoreAPI(MethodView):
                     }
                 )
 
-datastore_api = DatastoreAPI.as_view('datastore_api')
+datastore_api = auth_required(DatastoreAPI.as_view('datastore_api'))

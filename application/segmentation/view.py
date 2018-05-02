@@ -9,7 +9,6 @@ from application.misc.events import get_handler_for
 from application.segmentation.audio_segmentor import segment_audio_data
 
 class SegmenterAPI(MethodView):
-    @auth_required
     def get(self):
         remote_url = request.args.get('remote_url')
 
@@ -28,8 +27,6 @@ class SegmenterAPI(MethodView):
                 "results": segmenter.handle(remote_url, g.user)
             })
 
-
-    @auth_required
     def post(self):
         if not app.config['ALLOW_POST_SEGMENTATION']:
             abort(405)
@@ -47,4 +44,4 @@ class SegmenterAPI(MethodView):
 
         return jsonify(result)
 
-segmenter_api = SegmenterAPI.as_view('segmenter_api')
+segmenter_api = auth_required(SegmenterAPI.as_view('segmentor_api'))
