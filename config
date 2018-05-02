@@ -23,4 +23,4 @@ DOMAIN_HANDLERS = os.environ.get('ATS_DOMAIN_HANDLERS', [
     'module': 'alveo', # Comment out this line if you wish to disable the Alveo API
     'api_url': 'https://app.alveo.edu.au/'
   }
-]
+])

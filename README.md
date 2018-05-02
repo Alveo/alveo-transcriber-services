@@ -74,7 +74,7 @@ The application is deployed using dokku, the following configuration is required
 
 ```bash
 $ dokku apps:create segmenter
-$ dokku config:set segmenter ATS_DB_URI=sqlite://test
+$ dokku config:set segmenter ATS_DB_URI=sqlite:///../test.db
 ```
 Now you can push the repository to the dokku host using git:
 ```bash
