@@ -17,54 +17,8 @@ When ready, run the unit tests with `python tests.py`
 - Alveo:
   `export ALVEO_API_KEY=<YOUR ALVEO API KEY>`
 
-## Example usage
-### Segment a remote URL
-```bash
-$ curl https://localhost:5000/segment?remote_url=https://<URI to file> \
-  --header "X-Api-Domain: <handler to use e.g alveo >" \
-  --header "X-Api-Key: <api key for remote auth>"
-```
-
-### Transcribe via a POST
-```bash
-$ curl -F "file=@test.wav" https://localhost:5000/segment \
-  --header "X-Api-Domain: <handler to use e.g alveo >" \
-  --header "X-Api-Key: <api key for remote auth, remote auth required even for POST>"
-```
-
-### Store data
-```bash
-$ curl \
-  --header "X-Api-Domain: domain" \
-  --header "X-Api-Key: apikey" \
-  -d '
-  {
-    "storage_key": "example",
-    "storage_value": [
-      {
-        "start": "0",
-        "end": "3.22",
-        "text": "This is an example"
-      },
-      {
-        "start": "5.3",
-        "end": "11.71",
-        "text": "Of how to store some data"
-      },
-    ]
-  }
-  ' \
-  -H "Content-Type: application/json" \
-  -X POST https://localhost:5000/storage
-```
-
-### Retrieve data
-``` bash
-$ curl \
-  --header "X-Api-Domain: domain" \
-  --header "X-Api-Key: apikey" \
-  https://localhost:5000/storage?storage_key=example
-```
+## Examples
+See the [a relative link](docs/examples/) directory.
 
 ## Writing a module
 The transcriber-services is intended to be as modular as possible. To achieve that, handlers are written for the service of your choosing. The Alveo module is included which demonstrates how to register the authentication, storage and segmentation handlers. Module integration can be set up and disabled by editing the entry in `DOMAIN_HANDLERS` in the config file. 
