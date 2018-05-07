@@ -8,7 +8,7 @@ from application.misc.events import handle_api_event
 from application.datastore.model import Datastore
 
 @handle_api_event("alveo", "userstore_archive")
-def alveo_retrieve():
+def alveo_userstore_archive():
     docs = Datastore.query.filter(Datastore.user_id == g.user.id).all()
 
     if docs is None or len(docs) == 0:

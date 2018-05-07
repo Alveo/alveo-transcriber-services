@@ -13,12 +13,12 @@ Repository to provide additional services to the alveo-transcriber web applicati
 
 ## Unit tests
 Set up environment variables for relevant modules (unconfigured ones will be skipped!)
+   
 When ready, run the unit tests with `python tests.py`
-- Alveo:
-  `export ALVEO_API_KEY=<YOUR ALVEO API KEY>`
+- Alveo: `export ALVEO_API_KEY=<YOUR ALVEO API KEY>`
 
 ## Examples
-See the [a relative link](docs/examples/) directory.
+See [examples](docs/examples/).
 
 ## Writing a module
 The transcriber-services is intended to be as modular as possible. To achieve that, handlers are written for the service of your choosing. The Alveo module is included which demonstrates how to register the authentication, storage and segmentation handlers. Module integration can be set up and disabled by editing the entry in `DOMAIN_HANDLERS` in the config file. 

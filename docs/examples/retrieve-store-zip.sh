@@ -4,7 +4,7 @@
 #  ATS_API_KEY, e.g a valid Alveo API key
 #  ATS_URL, e.g https://segmenter.apps.alveo.edu.au
 
-# Attempts to authenticate and retrieve all stored data with the associated user
+# Attempts to authenticate and download (as a zip) all stored data with the associated user
 # Example usage:
 #   sh retrieve-store-zip.sh
 
