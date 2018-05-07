@@ -1,30 +1,23 @@
 from urllib.parse import urlparse
 
 from flask import jsonify, abort, g, request
-from flask.views import MethodView
 
 from application import app
+from application.misc.event_router import EventRouter
 from application.auth.required import auth_required
-from application.misc.events import get_handler_for
 from application.segmentation.audio_segmentor import segment_audio_data
 
-class SegmenterAPI(MethodView):
+class SegmenterAPI(EventRouter):
     def get(self):
         remote_url = request.args.get('remote_url')
 
-        domain = str(urlparse(remote_url).netloc)
-        #handler = get_domain_handler(domain)
+        if remote_url is None:
+            abort(400, "Request did not include a document to segment");
 
-        #if handler is None:
-        #    abort(400, "There are no handlers available for the requested URL.")
-
-        # TODO compare remote_url and X-Api-Domain
-        segmenter = get_handler_for(domain, "segmenter")
-        if segmenter is None:
-            abort(403, "There are no modules available matching the requested segmentation handler for this URL. This is likely a missing optional dependency.")
+        results = self.event("segmenter").handle(remote_url)
 
         return jsonify({
-                "results": segmenter.handle(remote_url, g.user)
+                "results": results
             })
 
     def post(self):

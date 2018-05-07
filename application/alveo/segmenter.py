@@ -11,12 +11,11 @@ from application.misc.events import handle_api_event
 def shorten_path(path):
     return urlparse(path).path.split('/catalog/')[1]
 
-@auth_required
 @handle_api_event("alveo", "segmenter")
-def alveo_segmenter(path, user_ref):
+def alveo_segmenter(path):
     api_path = str(urlparse(path).path)
     if '/' not in api_path or api_path == "/":
-        abort(400, 'Request did not receive an Alveo document identifier to segment.')
+        abort(400, 'Request did not include an Alveo document identifier to segment')
 
     api_key = g.user.remote_api_key
 
@@ -26,7 +25,7 @@ def alveo_segmenter(path, user_ref):
     if result is None:
         result = segment_document(path, api_key) 
         if result is None:
-            abort(400, 'Could not access requested document.')
+            abort(400, 'Could not access requested document')
         else:
             cache_result(shorten_path(path), result)
 
