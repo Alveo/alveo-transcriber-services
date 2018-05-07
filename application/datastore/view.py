@@ -51,7 +51,7 @@ class DatastoreAPI(EventRouter):
 
         return jsonify(
                     {
-                        "key": storage_key,
+                        "key": result.key,
                         "revision": result.revision,
                     }
                 )

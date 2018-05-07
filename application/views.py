@@ -5,6 +5,7 @@ from application.segmentation.view import segmenter_api
 from application.datastore.view import datastore_api
 from application.datastore.userstore import userstore_api 
 from application.datastore.userstore_list import userstore_list_api
+from application.datastore.userstore_all_list import userstore_all_list_api
 import application.auth.session
 
 import application.alveo.module
@@ -37,5 +38,6 @@ app.register_error_handler(500, server_error)
 
 app.add_url_rule('/userstore/archive', view_func=userstore_api, methods=['GET'])
 app.add_url_rule('/userstore', view_func=userstore_list_api, methods=['GET'])
+app.add_url_rule('/userstore/all', view_func=userstore_all_list_api, methods=['GET'])
 app.add_url_rule('/segment', view_func=segmenter_api, methods=['GET', 'POST'])
 app.add_url_rule('/storage', view_func=datastore_api, methods=['GET', 'POST'])
