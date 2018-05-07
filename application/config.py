@@ -1,8 +1,14 @@
 import os
+import json
+
+def eval_bool(boolean):
+  return str(boolean).lower() in ("true", "1")
 
 class Environment(object):
     # Will be disabled by default in future releases
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    TESTING = False
 
 class ProductionEnvironment(Environment):
     """
@@ -34,24 +40,24 @@ class ProductionEnvironment(Environment):
 
         See https://github.com/wiseman/py-webrtcvad for more information.
     """
-    SSAD_AGGRESSIVENESS = os.environ.get('SSAD_AGGRESSIVENSES', 2)
+    SSAD_AGGRESSIVENESS = int(os.environ.get('SSAD_AGGRESSIVENSES', "2"))
 
     """
         Enable or disable POST-based segmentation.
 
         POSTs should be authenticated by a module, so disabling this is usually unnecessary.
     """
-    ALLOW_POST_SEGMENTATION = os.environ.get('ALLOW_POST_SEGMENTATION', True)
+    ALLOW_POST_SEGMENTATION = eval_bool(os.environ.get('ALLOW_POST_SEGMENTATION', True))
 
     """
         Set RequestEntityTooLarge threshold.
 
-        Set in bytes.
+        Set in bytes. Default is 40MB.
 
         This should be large enough to accept files, assuming POST based segmentation is allowed.
         Where POST based segmentation is disabled, this should typically be set to about 1 megabyte.
     """
-    MAX_CONTENT_LENGTH = os.environ.get('MAX_CONTENT_LENGTH', 40 * 1024 * 1024) # 40 MB
+    MAX_CONTENT_LENGTH = int(os.environ.get('MAX_CONTENT_LENGTH', 40 * 1024 * 1024))
 
     """
         Set the cache path.
@@ -62,17 +68,24 @@ class ProductionEnvironment(Environment):
 
         Recommended to use the /tmp/ directory
     """
-    DOWNLOAD_CACHE_PATH = os.environ.get('DOWNLOAD_CACHE_PATH', '/tmp/alveo-transcriber-services/alveo/') # Used for downloaded audio files including POST requests
+    DOWNLOAD_CACHE_PATH = os.environ.get('DOWNLOAD_CACHE_PATH', '/tmp/alveo-transcriber-services/alveo/')
 
     """
         Set the modules for domain handling
 
         You shouldn't touch this unless you know what you're doing
+
+        Modules can be disabled by removing their entry from the list.
     """
-    DOMAIN_HANDLERS = os.environ.get('DOMAIN_HANDLERS', [
-      {
-        'domains': ['app.alveo.edu.au'],
-        'module': 'alveo', # Comment out this line if you wish to disable the Alveo API
-        'api_url': 'https://app.alveo.edu.au/'
-      }
-    ])
+    DOMAIN_HANDLERS = json.loads(
+            os.environ.get('DOMAIN_HANDLERS', '[ \
+                { \
+                    "domains": ["app.alveo.edu.au"], \
+                    "module": "alveo", \
+                    "api_url": "https://app.alveo.edu.au/" \
+                } \
+            ]')
+        )
+
+class TestEnvironment(ProductionEnvironment):
+    TESTING = True
