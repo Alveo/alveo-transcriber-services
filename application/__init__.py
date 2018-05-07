@@ -11,7 +11,7 @@ app.config.from_object(environment)
 if app.config['SQLALCHEMY_DATABASE_URI'] is None:
     if not app.debug:
         raise Exception("SQLALCHEMY_DATABASE_URI is not specified. Cannot continue.")
-    else:
+    elif not app.config['TESTING']:
         path = '/tmp/alveots-test.db'
         print("WARNING: Because debug is enabled, using `%s` as no database has been specified as SQLALCHEMY_DATABASE_URI env variable has not been set." % path)
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + path

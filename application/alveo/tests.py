@@ -6,11 +6,27 @@ from application import app, db
 from application.misc.events import get_module_metadata
 
 ALVEO_API_KEY = None
+ALVEO_API_URL = os.environ.get
 DEFAULT_HEADERS = None
 
-ALVEO_API_URL = None
+alveo_metadata = get_module_metadata('alveo')
 
-class TestCase(unittest.TestCase):
+if alveo_metadata is None:
+    raise Exception('Module not loaded in app configuration.')
+
+ALVEO_API_URL = alveo_metadata['api_url']
+ALVEO_API_KEY = os.environ.get('ALVEO_API_KEY', None)
+
+if ALVEO_API_KEY is None:
+    raise Exception('ALVEO_API_KEY environment variable is not set. Cannot proceed.')
+
+DEFAULT_HEADERS = {
+            'X-Api-Key': ALVEO_API_KEY,
+            'X-Api-Domain': 'app.alveo.edu.au'
+        }
+
+
+class AlveoTests(unittest.TestCase):
     def get_json_response(self, path, headers={}):
         response = self.app.get(path, headers=headers)
         data = response.data.decode('utf8').replace('\'', '"')
@@ -60,23 +76,3 @@ class TestCase(unittest.TestCase):
         self.assertTrue(len(results) is len(cached_results), 'Expected the original segmentation results to match the number of cached segmentation results when segmenting twice.')
 
 
-if __name__ == '__main__':
-    alveo_metadata = get_module_metadata('alveo')
-
-    if alveo_metadata is None:
-        print('Skipping Alveo tests. Module not loaded in config.')
-    else:
-        ALVEO_API_URL = alveo_metadata['api_url']
-
-        try:
-            ALVEO_API_KEY = os.environ['ALVEO_API_KEY']
-            DEFAULT_HEADERS = {
-                        'X-Api-Key': ALVEO_API_KEY,
-                        'X-Api-Domain': 'app.alveo.edu.au'
-                    }
-        except:
-            print('Error: ALVEO_API_KEY environment variable is not set. Cannot proceed.')
-
-
-    if ALVEO_API_KEY is not None and ALVEO_API_URL is not None:
-        unittest.main()
