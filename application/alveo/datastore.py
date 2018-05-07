@@ -1,5 +1,3 @@
-import json
-
 from pyalveo import *
 from flask import g
 

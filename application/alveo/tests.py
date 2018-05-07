@@ -1,6 +1,5 @@
 import os
 import unittest
-import json
 
 from application import app, db
 from application.misc.events import get_module_metadata
@@ -28,8 +27,7 @@ DEFAULT_HEADERS = {
 class AlveoTests(unittest.TestCase):
     def get_json_response(self, path, headers={}):
         response = self.app.get(path, headers=headers)
-        data = response.data;
-        return json.loads(data), response.status_code
+        return response.json, response.status_code
 
     def setUp(self):
         # Set this after the app is intiialised, or the environment will override it
