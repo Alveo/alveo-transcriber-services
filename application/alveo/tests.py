@@ -25,15 +25,16 @@ DEFAULT_HEADERS = {
             'X-Api-Domain': 'app.alveo.edu.au'
         }
 
-
 class AlveoTests(unittest.TestCase):
     def get_json_response(self, path, headers={}):
         response = self.app.get(path, headers=headers)
-        data = response.data.decode('utf8').replace('\'', '"')
+        data = response.data;
         return json.loads(data), response.status_code
 
     def setUp(self):
+        # Set this after the app is intiialised, or the environment will override it
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+
         self.app = app.test_client()
         self.longMessage = True
 
@@ -74,5 +75,3 @@ class AlveoTests(unittest.TestCase):
         cached_results = response['results']
 
         self.assertTrue(len(results) is len(cached_results), 'Expected the original segmentation results to match the number of cached segmentation results when segmenting twice.')
-
-
