@@ -7,12 +7,7 @@ from application.datastore.userstore import userstore_api
 from application.datastore.userstore_list import userstore_list_api
 import application.auth.session
 
-# Module specific
-import application.alveo.auth
-import application.alveo.segmenter
-import application.alveo.datastore
-import application.alveo.userstore
-import application.alveo.userstore_list
+import application.alveo.module
 
 def url_error(error_code, description):
     response = jsonify({'error': True, 'description': description})
