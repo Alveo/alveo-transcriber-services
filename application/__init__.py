@@ -21,13 +21,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 db = SQLAlchemy(app)
 events = {}
-event_types = {
-        'auth': None,
-        'segmentation': None,
-        'store': None,
-        'retrieve': None,
-        'userstore_archive': None
-    }
 
 @app.after_request
 def after_request(response):

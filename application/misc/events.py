@@ -1,6 +1,6 @@
 from flask import g
 
-from application import app, events, event_types
+from application import app, events
 
 class handle_api_event(object):
     def __init__(self, module_id, event_name):
@@ -8,7 +8,7 @@ class handle_api_event(object):
 
     def register(self, module_id, event_name):
         if not module_id in events:
-            events.update({module_id: event_types})
+            events.update({module_id: {}})
 
         events[module_id][event_name] = self
 
