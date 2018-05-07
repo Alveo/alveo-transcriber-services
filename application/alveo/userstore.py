@@ -22,7 +22,7 @@ def alveo_retrieve():
                     "revision": doc.revision,
                     "transcription": doc.value.decode()
                     }
-            zf.writestr(doc.key, json.dumps(data))
+            zf.writestr('%s.json' % doc.key, json.dumps(data))
     archive.seek(0)
 
     user_id = str(g.user.remote_user_id).split(':')[1]
