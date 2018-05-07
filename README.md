@@ -2,20 +2,20 @@
 Repository to provide additional services to the alveo-transcriber web application. Provides transcription storage and automatic audio segmentation.
 
 ## Config
-1. Edit `config` file accordingly
-2. If deploying this outside of a local address, you will need to generate an SSL certificate to avoid mixed content browser errors
-3. Build the transcriber with an `environment.ts` that points towards this as the `ALVEO_SERVICES_URL` 
+1. If deploying this outside of a local address, you will need to generate an SSL certificate to avoid mixed content browser errors
+2. Build the transcriber with an `environment.ts` that points towards this as the `ALVEO_SERVICES_URL` 
 
 ## Running
 1. Install requirements with pip, recommended you use a python virtual environment
-2. Optionally enable debug `export FLASK_DEBUG=1`
-3. If not done so already, build database `python utility.py init_db`
+2. Optionally enable debug `export FLASK_DEBUG=1`, else you will have to set a `DATABASE_URI` environment variable (see `application/config.py`)
+3. If it hasn't be generated yet, initialise the database and tables `python utility.py init_db`
 4. `export FLASK_APP=application && python -m flask run`
 
 ## Unit tests
-1. The unit tests are currently done through the Alveo API. Make sure requirements installed and config file set (see above)
-2. `export ALVEO_API_KEY=<YOUR ALVEO API KEY>` must be valid to test authentication
-3. `python tests.py`
+Set up environment variables for relevant modules (unconfigured ones will be skipped!)
+When ready, run the unit tests with `python tests.py`
+- Alveo:
+  `export ALVEO_API_KEY=<YOUR ALVEO API KEY>`
 
 ## Example usage
 ### Segment a remote URL
@@ -74,8 +74,8 @@ The application is deployed using dokku, the following configuration is required
 
 ```bash
 $ dokku apps:create segmenter
-$ dokku config:set segmenter ATS_DB_URI=sqlite:///../test.db
 ```
+Be sure to set up a database so that Dokku provides the `DATABASE_URL` environment variable. Supported type are sqlite3, Postgres, MariaDB and MySQL.    
 Now you can push the repository to the dokku host using git:
 ```bash
 $ git remote add dokku dokku@apps.alveo.edu.au:segmenter
