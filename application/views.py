@@ -2,12 +2,14 @@ from flask import jsonify
 from application import app
 from application.segmentation.view import segmenter_api
 from application.datastore.view import datastore_api
+from application.datastore.userstore import userstore_api 
 import application.auth.session
 
 # Module specific
 import application.alveo.auth
 import application.alveo.segmenter
 import application.alveo.datastore
+import application.alveo.userstore
 
 def url_error(error_code, description):
     response = jsonify({'error': True, 'description': description})
@@ -35,5 +37,6 @@ app.register_error_handler(403, not_allowed)
 app.register_error_handler(404, not_found)
 app.register_error_handler(500, server_error)
 
+app.add_url_rule('/userstore/archive', view_func=userstore_api, methods=['GET'])
 app.add_url_rule('/segment', view_func=segmenter_api, methods=['GET', 'POST'])
 app.add_url_rule('/storage', view_func=datastore_api, methods=['GET', 'POST'])

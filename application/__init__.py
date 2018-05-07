@@ -25,7 +25,8 @@ event_types = {
         'auth': None,
         'segmentation': None,
         'store': None,
-        'retrieve': None
+        'retrieve': None,
+        'userstore_archive': None
     }
 
 @app.after_request
