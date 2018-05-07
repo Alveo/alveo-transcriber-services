@@ -2,19 +2,17 @@ import json
 
 from application import db
 
-# See: https://bitbucket.org/zzzeek/sqlalchemy/issues/3850/request-sqlite-json1-ext-support
-# Support for JSON storage in sqlite (used in unit testing) coming, will double over for postgresql too
-#from sqlalchemy import JSON
-
 class CachedSegmentation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     storage_id = db.Column(db.String(512), nullable=False, unique=True)
-    #data = db.Column(JSON)
-    data = db.Column(db.String)
+    data = db.Column(db.LargeBinary)
 
     def __init__(self, storage_id, data):
         self.storage_id = storage_id
-        self.data = data
+        self.data = data.encode()
+
+    def get_json(self):
+        return json.loads(self.data.decode())
 
     def __repr__(self):
         return str(self.storage_id)
@@ -33,4 +31,4 @@ def get_cached_result(document_id):
     if result is None:
         return None
 
-    return json.loads(result.data)
+    return result.get_json()
