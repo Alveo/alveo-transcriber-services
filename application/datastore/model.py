@@ -11,7 +11,13 @@ class Datastore(db.Model):
 
     def __init__(self, key, value, revision, user):
         self.key = key
-        self.value = value
+        self.set_data(value)
         self.revision = revision
 
         self.user = user
+
+    def set_data(self, value):
+        self.value = value.encode()
+
+    def get_data(self):
+        return self.value.decode()

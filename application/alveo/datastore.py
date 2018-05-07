@@ -20,7 +20,7 @@ def alveo_retrieve(storage_key, revision):
     if ref is None:
         return None
 
-    return json.loads(ref.value.decode())
+    return json.loads(ref.get_data())
 
 @auth_required
 @handle_api_event("alveo", "store")
@@ -28,12 +28,12 @@ def alveo_store(storage_key, storage_value):
     revision = "latest"
     model = Datastore.query.filter(Datastore.key == storage_key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
     
-    data = json.dumps(storage_value).encode()
+    data = json.dumps(storage_value)
     if model is None:
         model = Datastore(storage_key, data, revision, g.user)
         db.session.add(model)
     else:
-        model.value = data
+        model.set_data(data)
 
     db.session.commit()
 
