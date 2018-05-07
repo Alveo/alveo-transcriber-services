@@ -3,7 +3,7 @@ from application import db
 class Datastore(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     key = db.Column(db.String(256), nullable=False)
-    value = db.Column(db.String, nullable=False)
+    value = db.Column(db.LargeBinary, nullable=False)
     revision = db.Column(db.String(64), nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

@@ -29,8 +29,8 @@ class DatastoreAPI(MethodView):
 
         return jsonify(
                     {
-                        "revision": results.revision,
-                        "data": results.value
+                        "revision": revision,
+                        "data": results 
                     }
                 )
 
