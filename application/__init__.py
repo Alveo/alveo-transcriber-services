@@ -9,12 +9,13 @@ environment = os.environ.get('ATS_ENVIRONMENT', 'application.config.ProductionEn
 app.config.from_object(environment)
 
 if app.config['SQLALCHEMY_DATABASE_URI'] is None:
-    if not app.debug:
-        raise Exception("DATABASE_URL environment variable has not specified. Cannot continue.")
-    elif not app.config['TESTING']:
-        path = '/tmp/alveots-test.db'
-        print("WARNING: Because debug is enabled, using `%s` as no database has been specified as DATABASE_URL environment variable has not been set." % path)
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + path
+    if not app.config['TESTING']:
+        if not app.debug:
+            raise Exception("DATABASE_URL environment variable has not specified. Cannot continue.")
+        if app.debug:
+            path = '/tmp/alveots-test.db'
+            print("WARNING: Because debug is enabled, using `%s` as no database has been specified as DATABASE_URL environment variable has not been set." % path)
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + path
 
 login_manager = LoginManager()
 login_manager.init_app(app)
