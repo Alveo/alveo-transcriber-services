@@ -1,5 +1,6 @@
 import os
 import unittest
+import json
 
 from application import app, db
 from application.misc.events import get_module_metadata
@@ -55,6 +56,16 @@ class AlveoTests(unittest.TestCase):
     def get_json_response(self, path, headers={}):
         response = self.app.get(path, headers=headers)
         return response.json, response.status_code
+    def post_json_request(self, path, data, headers={}):
+        # Don't set follow_redirects to true, flask will not resend headers
+        response = self.app.post(
+                path,
+                data=data,
+                headers=headers,
+                follow_redirects=False,
+                content_type='application/json'
+            )
+        return response.json, response.status_code
 
     def setUp(self):
         # Set this after the app is intiialised, or the environment will override it
@@ -73,7 +84,48 @@ class AlveoTests(unittest.TestCase):
 
     def testDataGeneration(self):
         create_sample_data();
-        User.query.all
+        users = User.query.all();
+        self.assertEqual(8, len(users))
+
+    def samplePostData(self):
+        data = {
+            "storage_key": "test-transcription",
+            "storage_value": [
+              {
+                "start": 1.00,
+                "end": 3.71,
+                "speaker": "A",
+                "annotation": "Example"
+              },
+              {
+                "start": 5.21,
+                "end": 8.33,
+                "speaker": "B",
+                "annotation": "Example 2"
+              }
+            ]
+          }
+        return self.post_json_request('/datastore/', json.dumps(data), DEFAULT_HEADERS)
+
+    def testPostData(self):
+        response, status = self.samplePostData()
+        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+
+    def testGetData(self):
+        response, status = self.samplePostData()
+        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+
+        storage_id = response['id']
+        storage_rev = response['revision']
+        
+        response, status = self.get_json_response('/datastore/?storage_id='+str(storage_id), DEFAULT_HEADERS)
+
+        self.assertTrue( (
+                storage_id == response['id']
+                and storage_rev == response['revision']
+                and isinstance(response['data'], list)
+                and response['data'][0]['annotation'] == "Example"
+            ), 'Expected matching data on a get response, using the id returned of a previous post request');
 
     def testSegmentationNoAuth(self):
         response, status = self.get_json_response('/segment')
