@@ -1,7 +1,7 @@
 import json
 
 from pyalveo import *
-from flask import g, abort, jsonify
+from flask import g, abort
 
 from application import db
 from application.users.model import User
@@ -12,8 +12,8 @@ from application.datastore.model import Datastore
 from . import DOMAIN
 
 @handle_api_event('alveo', 'datastore:get')
-def alveo_retrieve(storage_id, user_id):
-    query = Datastore.query.filter(Datastore.id == storage_id).first()
+def alveo_retrieve(store_id, user_id):
+    query = Datastore.query.filter(Datastore.id == store_id).first()
 
     if query is None:
         abort(404, "No match for the provided id")
@@ -31,21 +31,26 @@ def alveo_retrieve(storage_id, user_id):
         }
 
 @handle_api_event('alveo', 'datastore:post')
-def alveo_store(storage_key, storage_value):
-    revision = 'latest'
+def alveo_store(key, value, revision=None):
+    if revision is None:
+        revision = 'latest' # TODO generate
     
-    if storage_key is None or len(storage_key) < 2:
+    if key is None or len(key) < 2:
         abort(400, 'Key is invalid or too short')
 
-    storage_key = '%s:%s' % (DOMAIN, storage_key)
+    key = '%s:%s' % (DOMAIN, key)
 
-    model = Datastore.query.filter(Datastore.key == storage_key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
+    model = Datastore.query.filter(Datastore.key == key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
     
-    data = json.dumps(storage_value)
+    data = json.dumps(value)
     if model is None:
-        model = Datastore(storage_key, data, revision, g.user)
+        model = Datastore(key, data, revision, g.user)
         db.session.add(model)
     else:
+        # We could abort because a PUT request should be used, but should we?
+        # TODO Maybe this should be explored after proper revisioning is in, as
+        #  we in theory shouldn't be editing existing revisions anyway.
+        #  abort(400, "A match for this key and revision already exists")
         model.set_data(data)
 
     db.session.commit()
