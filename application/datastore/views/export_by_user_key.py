@@ -1,0 +1,17 @@
+from flask import abort, jsonify
+
+from application.misc.event_router import EventRouter
+
+class APIExportByUserKey(EventRouter):
+    def get(self, user_id=None, key=None, revision=None):
+        if user_id is None:
+            abort(400, "User not specified")
+
+        if key is None:
+            abort(400, "Key not specified")
+
+        return self.event("datastore:export_by_user_key").handle(
+                storage_key=key,
+                user_id=user_id,
+                revision=revision
+            )
