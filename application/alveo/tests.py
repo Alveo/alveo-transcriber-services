@@ -1,6 +1,9 @@
 import os
 import unittest
 import json
+import random
+
+import uuid
 
 from application import app, db
 from application.misc.events import get_module_metadata
@@ -87,32 +90,39 @@ class AlveoTests(unittest.TestCase):
         users = User.query.all();
         self.assertEqual(8, len(users))
 
-    def samplePostData(self):
+    def generateSamplePostData(self, key=None, fields=None):
+        if key is None:
+            key = str(uuid.uuid4())
+        if fields is None:
+            fields = random.randint(5, 15)
+
         data = {
-            "storage_key": "test-transcription",
-            "storage_value": [
-              {
-                "start": 1.00,
-                "end": 3.71,
-                "speaker": "A",
-                "annotation": "Example"
-              },
-              {
-                "start": 5.21,
-                "end": 8.33,
-                "speaker": "B",
-                "annotation": "Example 2"
+            "storage_key": "key",
+            "storage_value": []
+        }
+        start = 0
+        end = 0
+        for i in range(fields):
+            start = end + random.uniform(0.3, 5)
+            end = start + random.uniform(3, 7)
+            annotation = {
+                "start": start,
+                "end": end,
+                "speaker": str(random.randint(1, 1000)),
+                "annotation": str(uuid.uuid4())
               }
-            ]
-          }
-        return self.post_json_request('/datastore/', json.dumps(data), DEFAULT_HEADERS)
+            data["storage_value"].append(annotation)
+
+        return data
 
     def testPostData(self):
-        response, status = self.samplePostData()
+        data = self.generateSamplePostData()
+        response, status = self.post_json_request('/datastore/', json.dumps(data), DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
     def testGetData(self):
-        response, status = self.samplePostData()
+        data = self.generateSamplePostData()
+        response, status = self.post_json_request('/datastore/', json.dumps(data), DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
         storage_id = response['id']
@@ -124,7 +134,7 @@ class AlveoTests(unittest.TestCase):
                 storage_id == response['id']
                 and storage_rev == response['revision']
                 and isinstance(response['data'], list)
-                and response['data'][0]['annotation'] == "Example"
+                and response['data'][0]['annotation'] == data['storage_value'][0]['annotation']
             ), 'Expected matching data on a get response, using the id returned of a previous post request');
 
     def testSegmentationNoAuth(self):
