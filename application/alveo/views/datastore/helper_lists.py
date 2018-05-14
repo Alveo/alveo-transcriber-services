@@ -8,12 +8,13 @@ def datastore_list(user_id=None, key=None, revision=None):
     list_data = []
     for data in query_data:
         list_data.append({
-                'key': data.key.split(':')[1],
+                'id': data.id,
             })
 
     data = {
                 'revision': revision,
                 'user_id': user_id,
+                'key': data.key.split(':')[1],
                 'list': list_data
         }
 

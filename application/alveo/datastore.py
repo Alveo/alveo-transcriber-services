@@ -25,6 +25,7 @@ def alveo_retrieve(store_id, user_id):
 
     return {
             'id': query.id,
+            'key': query.key.split(':')[1],
             'revision': query.revision,
             'data': json.loads(query.get_data()),
             'creator': query.user_id
