@@ -1,3 +1,5 @@
-import application.alveo.auth
-import application.alveo.segmenter
-import application.alveo.datastore
+import .auth
+import .segmenter
+import .datastore
+
+import .views
