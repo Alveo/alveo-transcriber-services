@@ -24,7 +24,7 @@ def alveo_retrieve(storage_id, user_id):
     return {
             'id': query.id,
             'revision': query.revision,
-            'data': json.loads(query.get_data())
+            'data': json.loads(query.get_data()),
             'creator': query.user_id
         }
 

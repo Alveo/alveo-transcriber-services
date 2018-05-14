@@ -1,11 +1,11 @@
-from application.datastore.views.export_by_user_key import APIExportByUserKey
-from application.datastore.views.export_by_user import APIExportByUser
-from application.datastore.views.export_key import APIExportKey
-from application.datastore.views.list_by_user_key import APIListByUserKey
-from application.datastore.views.list_by_user import APIListByUser
-from application.datastore.views.list_key import APIListKey
-from application.datastore.views.list import APIList
-from application.datastore.views.manage import APIList
+from .export_by_user_key import APIExportByUserKey
+from .export_by_user import APIExportByUser
+from .export_key import APIExportKey
+from .list_by_user_key import APIListByUserKey
+from .list_by_user import APIListByUser
+from .list_key import APIListKey
+from .list import APIList
+from .manage import APIManage
 
 # General
 manage = APIManage.as_view('ds_manage')

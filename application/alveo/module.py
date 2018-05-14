@@ -1,5 +1,4 @@
-import .auth
-import .segmenter
-import .datastore
-
-import .views
+from . import auth
+from . import segmenter
+from . import datastore
+from . import views

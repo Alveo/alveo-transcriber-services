@@ -1,7 +1,7 @@
 from flask import abort, jsonify, request
 from application.misc.event_router import EventRouter
 
-class DatastoreAPI(EventRouter):
+class APIManage(EventRouter):
     def get(self):
         storage_id = request.args.get('storage_id')
 
