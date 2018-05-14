@@ -90,7 +90,7 @@ class AlveoTests(unittest.TestCase):
         users = User.query.all();
         self.assertEqual(8, len(users))
 
-    def generateSamplePostData(self, key=None, fields=None):
+    def generateSamplePostData(self, key=None, fields=None, revision=None):
         if key is None:
             key = str(uuid.uuid4())
         if fields is None:
@@ -100,6 +100,10 @@ class AlveoTests(unittest.TestCase):
             "key": key,
             "value": []
         }
+
+        if revision is not None:
+            data['revision'] = revision
+
         start = 0
         end = 0
         for i in range(fields):
@@ -182,9 +186,39 @@ class AlveoTests(unittest.TestCase):
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
         self.assertEqual(response['key'], key_2, 'Expected the newly added keys to match.')
 
+    def testGetListByRevision(self):
+        DATA_AMOUNT = 6
+        REVISION_NAME = "test_revision"
+        REVISION_NAME_2 = REVISION_NAME+"_backup"
+        KEY = str(uuid.uuid4())
 
+        for i in range(int(DATA_AMOUNT / 2)):
+            self.postRandomData()
 
-    """
+        dataset_1 = self.generateSamplePostData(key=KEY, revision=REVISION_NAME)
+        response_1, status = self.post_json_request('/datastore/', json.dumps(dataset_1), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+
+        for i in range(int(DATA_AMOUNT / 2)):
+            self.postRandomData()
+
+        dataset_2 = self.generateSamplePostData(key=KEY, revision=REVISION_NAME_2)
+        response, status = self.post_json_request('/datastore/', json.dumps(dataset_2), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+
+        response_1, status = self.get_json_response('/datastore/list/%s/%s'%(KEY, REVISION_NAME), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
+
+        response_2, status = self.get_json_response('/datastore/list/%s/%s'%(KEY, REVISION_NAME_2), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
+
+        self.assertTrue( (
+                response_1['key'] == response_2['key']
+                and response_1['revision'] == REVISION_NAME
+                and response_2['revision'] == REVISION_NAME_2
+                and response_1['list'][0]['id'] != response_2['list'][0]['id']
+            ), 'Expected two separate storage objects that have the same key but differing revisions and values.')
+
     def testSegmentationNoAuth(self):
         response, status = self.get_json_response('/segment')
         self.assertEqual(401, status, 'Expected unauthorised status when attempting to segment without logging in.')
@@ -214,4 +248,3 @@ class AlveoTests(unittest.TestCase):
         cached_results = response['results']
 
         self.assertTrue(len(results) is len(cached_results), 'Expected the original segmentation results to match the number of cached segmentation results when segmenting twice.')
-    """

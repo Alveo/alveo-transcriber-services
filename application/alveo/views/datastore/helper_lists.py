@@ -14,7 +14,7 @@ def datastore_list(user_id=None, key=None, revision=None):
     data = {
                 'revision': revision,
                 'user_id': user_id,
-                'key': data.key.split(':')[1],
+                'key': key,
                 'list': list_data
         }
 
