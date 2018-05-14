@@ -32,7 +32,7 @@ def alveo_retrieve(store_id, user_id):
 
 @handle_api_event('alveo', 'datastore:post')
 def alveo_store(key, value, revision=None):
-    if revision is None:
+    if revision == None:
         revision = 'latest' # TODO generate
     
     if key is None or len(key) < 2:

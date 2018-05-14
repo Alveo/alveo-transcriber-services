@@ -8,9 +8,6 @@ from application.alveo import DOMAIN
 def datastore_query(user_id=None, key=None, revision=None):
     query = None
 
-    if revision is None:
-        revision = "latest"
-
     if key is None:
         query = Datastore.query;
     else:
@@ -25,7 +22,7 @@ def datastore_query(user_id=None, key=None, revision=None):
             abort(403, "You don't have permission to view external users")
         query = query.filter(Datastore.user_id == user_id)
 
-    if revision != "any":
+    if revision not in ("any", None):
         query = query.filter(Datastore.revision == revision)
 
     return query.all()

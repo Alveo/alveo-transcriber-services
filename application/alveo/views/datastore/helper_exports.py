@@ -6,6 +6,7 @@ from flask import send_file
 
 def datastore_export(user_id=None, key=None, revision=None):
     transcriptions = datastore_query(user_id=user_id, key=key, revision=revision)
+    transcriptions = transcriptions['list']
 
     if transcriptions is None or len(transcriptions) == 0:
         abort(404, 'No documents available to export');
@@ -16,6 +17,7 @@ def datastore_export(user_id=None, key=None, revision=None):
         for doc in docs:
             data = {
                     'revision': doc.revision,
+                    'key': doc.key,
                     'transcription': doc.get_data()
                     }
             zf.writestr('%s.json' % doc.key, json.dumps(data))
