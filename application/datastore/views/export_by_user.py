@@ -1,4 +1,4 @@
-from flask import abort, jsonify
+from flask import abort, send_file
 
 from application.misc.event_router import EventRouter
 
@@ -12,4 +12,9 @@ class APIExportByUser(EventRouter):
                 revision=revision
             )
 
-        return jsonify(response)
+        return send_file(
+            response.data,
+            response.mimetype,
+            as_attachment=True,
+            attachment_filename=response.filename
+        )
