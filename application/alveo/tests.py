@@ -168,9 +168,23 @@ class AlveoTests(unittest.TestCase):
         response_2, status = self.post_json_request('/datastore/', json.dumps(dataset_2), DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
-        response, status = self.get_json_response('/datastore/list/'+key_2, DEFAULT_HEADERS)
-        self.assertEqual(response['list'][0]['key'], key_2)
+        response, status = self.get_json_response('/datastore/list/'+key_1, DEFAULT_HEADERS)
+        self.assertEqual(response['list'][0]['id'], response_1['id'], 'Expected response to contain the storage object that was just posted.')
 
+        response, status = self.get_json_response('/datastore/list/'+key_2, DEFAULT_HEADERS)
+        self.assertEqual(response['list'][0]['id'], response_2['id'], 'Expected response to contain the storage object that was just posted.')
+
+        response, status = self.get_json_response('/datastore/?store_id='+str(response_1['id']), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
+        self.assertEqual(response['key'], key_1, 'Expected the newly added keys to match.')
+
+        response, status = self.get_json_response('/datastore/?store_id='+str(response_2['id']), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
+        self.assertEqual(response['key'], key_2, 'Expected the newly added keys to match.')
+
+
+
+    """
     def testSegmentationNoAuth(self):
         response, status = self.get_json_response('/segment')
         self.assertEqual(401, status, 'Expected unauthorised status when attempting to segment without logging in.')
@@ -200,3 +214,4 @@ class AlveoTests(unittest.TestCase):
         cached_results = response['results']
 
         self.assertTrue(len(results) is len(cached_results), 'Expected the original segmentation results to match the number of cached segmentation results when segmenting twice.')
+    """
