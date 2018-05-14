@@ -1,15 +1,14 @@
-from flask import abort, request
+from flask import abort, jsonify, request
 from application.misc.event_router import EventRouter
-
-from application.auth.required import auth_required
 
 class DatastoreAPI(EventRouter):
     def get(self):
         storage_id = request.args.get('storage_id')
 
-        return self.event("datastore:get").handle(
+        response = self.event("datastore:get").handle(
                 storage_id=storage_id
             )
+        return jsonify(response)
 
     def post(self):
         data = request.get_json()
@@ -21,11 +20,13 @@ class DatastoreAPI(EventRouter):
             storage_value = data['storage_value']
         except:
             if storage_key is None:
-                abort(400, "storage_key not provided")
+                abort(400, "storage_key not provided or invalid")
 
             if storage_value is None:
-                abort(400, "storage_value not provided")
+                abort(400, "storage_value not provided or invalid")
 
-        return self.event("datastore:post").handle(storage_key, storage_value)
-
-datastore_api = auth_required(DatastoreAPI.as_view('datastore_api'))
+        response = self.event("datastore:post").handle(
+                storage_key=storage_key,
+                storage_value=storage_value
+            )
+        return jsonify(response)

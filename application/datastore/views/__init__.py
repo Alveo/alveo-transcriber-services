@@ -5,6 +5,10 @@ from application.datastore.views.list_by_user_key import APIListByUserKey
 from application.datastore.views.list_by_user import APIListByUser
 from application.datastore.views.list_key import APIListKey
 from application.datastore.views.list import APIList
+from application.datastore.views.manage import APIList
+
+# General
+manage = APIManage.as_view('ds_manage')
 
 # Export API
 export_by_user_key = APIExportByUserKey.as_view('ds_api_export_by_user_key')

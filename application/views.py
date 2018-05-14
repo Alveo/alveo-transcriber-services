@@ -2,7 +2,6 @@ from flask import jsonify
 
 from application import app
 from application.segmentation.view import segmenter_api
-from application.datastore.api import datastore_api
 from application.auth.required import auth_required
 import application.datastore.views as datastore
 import application.auth.session
@@ -38,7 +37,11 @@ app.register_error_handler(500, server_error)
 app.add_url_rule('/segment', view_func=segmenter_api, methods=['GET', 'POST'])
 
 # User's datastore control
-app.add_url_rule('/datastore/', view_func=datastore_api, methods=['GET', 'POST'])
+app.add_url_rule(
+        '/datastore/',
+        view_func=auth_required(datastore.manage),
+        methods=['GET', 'POST']
+    )
 
 # User's own datastore
 app.add_url_rule(
