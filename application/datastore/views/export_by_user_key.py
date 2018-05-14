@@ -11,7 +11,7 @@ class APIExportByUserKey(EventRouter):
             abort(400, "Key not specified")
 
         response = self.event("datastore:export_by_user_key").handle(
-                storage_key=key,
+                key=key,
                 user_id=user_id,
                 revision=revision
             )

@@ -8,7 +8,7 @@ class APIListKey(EventRouter):
             abort(400, "Key not specified")
 
         response = self.event("datastore:list_key").handle(
-                storage_key=key,
+                key=key,
                 user_id=g.user.id,
                 revision=revision
             )

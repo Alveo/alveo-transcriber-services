@@ -17,7 +17,7 @@ def datastore_export(user_id=None, key=None, revision=None):
         for doc in docs:
             data = {
                     'revision': doc.revision,
-                    'key': doc.key,
+                    'key': doc.key.split(':')[1],
                     'transcription': doc.get_data()
                     }
             zf.writestr('%s.json' % doc.key, json.dumps(data))

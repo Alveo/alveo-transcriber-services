@@ -8,7 +8,7 @@ class APIListByUser(EventRouter):
             abort(400, "User not specified")
 
         response = self.event("datastore:list_by_user").handle(
-                storage_key=key,
+                key=key,
                 user_id=user_id,
                 revision=revision
             )

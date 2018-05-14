@@ -8,7 +8,7 @@ class APIExportKey(EventRouter):
             abort(400, "Key not specified")
 
         response = self.event("datastore:export_key").handle(
-                storage_key=key,
+                key=key,
                 user_id=g.user.id,
                 revision=revision
             )

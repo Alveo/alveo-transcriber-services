@@ -41,6 +41,7 @@ def alveo_store(key, value, revision=None):
     key = '%s:%s' % (DOMAIN, key)
 
     model = Datastore.query.filter(Datastore.key == key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
+
     
     data = json.dumps(value)
     if model is None:
