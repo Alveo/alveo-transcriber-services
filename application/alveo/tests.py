@@ -97,8 +97,8 @@ class AlveoTests(unittest.TestCase):
             fields = random.randint(5, 15)
 
         data = {
-            "storage_key": "key",
-            "storage_value": []
+            "key": key,
+            "value": []
         }
         start = 0
         end = 0
@@ -111,9 +111,13 @@ class AlveoTests(unittest.TestCase):
                 "speaker": str(random.randint(1, 1000)),
                 "annotation": str(uuid.uuid4())
               }
-            data["storage_value"].append(annotation)
+            data["value"].append(annotation)
 
         return data
+
+    def postRandomData(self):
+        data = self.generateSamplePostData()
+        return self.post_json_request('/datastore/', json.dumps(data), DEFAULT_HEADERS)
 
     def testPostData(self):
         data = self.generateSamplePostData()
@@ -128,14 +132,44 @@ class AlveoTests(unittest.TestCase):
         storage_id = response['id']
         storage_rev = response['revision']
         
-        response, status = self.get_json_response('/datastore/?storage_id='+str(storage_id), DEFAULT_HEADERS)
+        response, status = self.get_json_response('/datastore/?store_id='+str(storage_id), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
 
         self.assertTrue( (
                 storage_id == response['id']
                 and storage_rev == response['revision']
                 and isinstance(response['data'], list)
-                and response['data'][0]['annotation'] == data['storage_value'][0]['annotation']
+                and response['data'][0]['annotation'] == data['value'][0]['annotation']
             ), 'Expected matching data on a get response, using the id returned of a previous post request');
+
+    def testGetList(self):
+        DATA_AMOUNT = 12
+        for i in range(DATA_AMOUNT):
+            self.postRandomData()
+
+        response, status = self.get_json_response('/datastore/list/', DEFAULT_HEADERS)
+        self.assertEqual(len(response['list']), DATA_AMOUNT, 'Expected to get a list matching the amount of items that were just posted.')
+
+    def testGetListByKey(self):
+        DATA_AMOUNT = 6
+        for i in range(int(DATA_AMOUNT / 2)):
+            self.postRandomData()
+
+        key_1 = str(uuid.uuid4())
+        dataset_1 = self.generateSamplePostData(key_1)
+        response_1, status = self.post_json_request('/datastore/', json.dumps(dataset_1), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+
+        for i in range(int(DATA_AMOUNT / 2)):
+            self.postRandomData()
+
+        key_2 = str(uuid.uuid4())
+        dataset_2 = self.generateSamplePostData(key_2)
+        response_2, status = self.post_json_request('/datastore/', json.dumps(dataset_2), DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+
+        response, status = self.get_json_response('/datastore/list/'+key_2, DEFAULT_HEADERS)
+        self.assertEqual(response['list'][0]['key'], key_2)
 
     def testSegmentationNoAuth(self):
         response, status = self.get_json_response('/segment')
