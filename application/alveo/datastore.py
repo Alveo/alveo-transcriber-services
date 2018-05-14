@@ -9,6 +9,8 @@ from application.misc.events import handle_api_event
 
 from application.datastore.model import Datastore
 
+from . import DOMAIN
+
 @handle_api_event('alveo', 'datastore:get')
 def alveo_retrieve(storage_id, user_id):
     query = Datastore.query.filter(Datastore.id == storage_id).first()
@@ -18,7 +20,7 @@ def alveo_retrieve(storage_id, user_id):
 
     user = User.query.filter(User.id == query.user_id).first()
 
-    if not user.remote_user_id.startswith("alveo"):
+    if not user.domain == DOMAIN:
         abort(403, "You don't have permission to read the storage of an external user")
 
     return {
@@ -35,7 +37,7 @@ def alveo_store(storage_key, storage_value):
     if storage_key is None or len(storage_key) < 2:
         abort(400, 'Key is invalid or too short')
 
-    storage_key = 'alveo:' + storage_key
+    storage_key = '%s:%s' % (DOMAIN, storage_key)
 
     model = Datastore.query.filter(Datastore.key == storage_key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
     

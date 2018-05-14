@@ -5,12 +5,14 @@ from application import app, db
 from application.users.model import User
 from application.misc.events import handle_api_event, get_module_metadata
 
+from . import DOMAIN
+
 @handle_api_event("alveo", "auth")
 def auth_alveo(remote_user_id, remote_api_key):
     if not remote_api_key:
         abort(400, "Alveo API key was not provided")
 
-    alveo_metadata = get_module_metadata("alveo")
+    alveo_metadata = get_module_metadata(DOMAIN)
     if alveo_metadata is None:
         abort(404, "'alveo' module not found.")
 
@@ -27,9 +29,9 @@ def auth_alveo(remote_user_id, remote_api_key):
     if user_id is None:
         abort(400, "Malformed or unexpected data was received from the Alveo application server. Request could not be completed.")
 
-    user_ref = User.query.filter(User.remote_user_id == "alveo:" + user_id).first()
+    user_ref = User.query.filter(User.remote_id == user_id).filter(User.domain == DOMAIN).first()
     if user_ref is None:
-        user_ref = User("alveo:" + user_id)
+        user_ref = User(user_id, DOMAIN)
         db.session.add(user_ref)
         db.session.commit()
     

@@ -4,6 +4,9 @@ import unittest
 from application import app, db
 from application.misc.events import get_module_metadata
 
+from application.users.model import User 
+from application.datastore.model import Datastore
+
 ALVEO_API_KEY = None
 ALVEO_API_URL = os.environ.get
 DEFAULT_HEADERS = None
@@ -24,6 +27,30 @@ DEFAULT_HEADERS = {
             'X-Api-Domain': 'app.alveo.edu.au'
         }
 
+def create_sample_data():
+    domain = "alveo"
+    alveo_10 = User("10", domain)
+    alveo_150 = User("150", domain)
+    alveo_475 = User("475", domain)
+    db.session.add(alveo_10)
+    db.session.add(alveo_150)
+    db.session.add(alveo_475)
+
+    domain = "generic"
+    generic_10 = User("10", domain)
+    generic_91042 = User("91042", domain)
+    db.session.add(generic_10)
+    db.session.add(generic_91042)
+
+    domain = "testdomain"
+    testdomain_12084013 = User("12084013", domain)
+    testdomain_0 = User("0", domain)
+    testdomain_50 = User("50", domain)
+    db.session.add(testdomain_12084013)
+    db.session.add(testdomain_0)
+    db.session.add(testdomain_50)
+    
+
 class AlveoTests(unittest.TestCase):
     def get_json_response(self, path, headers={}):
         response = self.app.get(path, headers=headers)
@@ -43,6 +70,10 @@ class AlveoTests(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def testDataGeneration(self):
+        create_sample_data();
+        User.query.all
 
     def testSegmentationNoAuth(self):
         response, status = self.get_json_response('/segment')
