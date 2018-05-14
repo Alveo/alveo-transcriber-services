@@ -1,4 +1,4 @@
-from flask import abort, jsonify, request
+from flask import abort, g, jsonify, request
 from application.misc.event_router import EventRouter
 
 class APIManage(EventRouter):
@@ -6,7 +6,8 @@ class APIManage(EventRouter):
         storage_id = request.args.get('storage_id')
 
         response = self.event("datastore:get").handle(
-                storage_id=storage_id
+                storage_id=storage_id,
+                user_id=g.user.id
             )
         return jsonify(response)
 
