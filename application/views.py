@@ -38,7 +38,7 @@ app.register_error_handler(500, server_error)
 app.add_url_rule('/segment', view_func=segmenter_api, methods=['GET', 'POST'])
 
 # User's datastore control
-app.add_url_rule('/datastore', view_func=datastore_api, methods=['GET', 'POST'])
+app.add_url_rule('/datastore/', view_func=datastore_api, methods=['GET', 'POST'])
 
 # User's own datastore
 app.add_url_rule(

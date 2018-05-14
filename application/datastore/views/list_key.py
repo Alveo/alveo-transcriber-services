@@ -7,8 +7,10 @@ class APIListKey(EventRouter):
         if key is None:
             abort(400, "Key not specified")
 
-        return self.event("datastore:list_key").handle(
+        response = self.event("datastore:list_key").handle(
                 storage_key=key,
-                user_id=g.user.remote_user_id,
+                user_id=g.user.id,
                 revision=revision
             )
+
+        return jsonify(response)

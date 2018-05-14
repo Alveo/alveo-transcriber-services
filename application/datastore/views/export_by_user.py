@@ -7,7 +7,9 @@ class APIExportByUser(EventRouter):
         if user_id is None:
             abort(400, "User not specified")
 
-        return self.event("datastore:export_by_user").handle(
+        response = self.event("datastore:export_by_user").handle(
                 user_id=user_id,
                 revision=revision
             )
+
+        return jsonify(response)

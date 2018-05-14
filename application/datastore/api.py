@@ -5,19 +5,10 @@ from application.auth.required import auth_required
 
 class DatastoreAPI(EventRouter):
     def get(self):
-        storage_key = request.args.get('storage_key')
-        revision = request.args.get('revision')
-        user_id = request.args.get('user_id')
-        download_type = request.args.get('download_type')
-
-        if download_type is None:
-            download_type = "json"
+        storage_id = request.args.get('storage_id')
 
         return self.event("datastore:get").handle(
-                storage_key=storage_key,
-                revision=revision,
-                user_id=user_id,
-                download_type=download_type
+                storage_id=storage_id
             )
 
     def post(self):
