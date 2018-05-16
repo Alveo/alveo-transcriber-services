@@ -85,7 +85,7 @@ class AlveoTests(ATSTests):
 
             for i in range(random.randint(3, 25)):
                 datastore = Datastore(
-                        str(uuid.uuid4()), 
+                        '%s:%s' % (DOMAIN, uuid.uuid4()), 
                         json.dumps(self.generateTranscription()),
                         "latest",
                         user
