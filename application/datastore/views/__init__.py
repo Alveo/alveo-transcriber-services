@@ -1,6 +1,7 @@
 from .export_by_user_key import APIExportByUserKey
 from .export_by_user import APIExportByUser
 from .export_key import APIExportKey
+from .export import APIExport
 from .list_by_user_key import APIListByUserKey
 from .list_by_user import APIListByUser
 from .list_key import APIListKey
@@ -14,7 +15,7 @@ manage = APIManage.as_view('ds_manage')
 export_by_user_key = APIExportByUserKey.as_view('ds_api_export_by_user_key')
 export_by_user = APIExportByUser.as_view('ds_api_export_by_user')
 export_key = APIExportKey.as_view('ds_api_export_key')
-export = APIList.as_view('ds_api_export')
+export = APIExport.as_view('ds_api_export')
 
 # List API
 list_by_user_key = APIListByUserKey.as_view('ds_api_list_by_user_key')
