@@ -1,6 +1,13 @@
 import os
+import json
 import random
 import uuid
+import secrets
+
+from application import db
+from application.alveo.module import DOMAIN
+from application.datastore.model import Datastore
+from application.users.model import User
 
 from application.misc.events import get_module_metadata
 from tests import ATSTests
@@ -31,6 +38,26 @@ class AlveoTests(ATSTests):
         self.ALVEO_API_URL = ALVEO_API_URL
         self.DEFAULT_HEADERS = DEFAULT_HEADERS
 
+    def generateTranscription(self, amount=None):
+        if amount is None:
+            amount = random.randint(3, 100)
+
+        start = 0
+        end = 0
+        transcription = []
+        for i in range(amount):
+            start = end + random.uniform(0.3, 5)
+            end = start + random.uniform(3, 7)
+            annotation = {
+                "start": start,
+                "end": end,
+                "speaker": str(random.randint(1, 1000)),
+                "annotation": str(uuid.uuid4())
+              }
+            transcription.append(annotation)
+
+        return transcription
+
     def generateSamplePostData(self, key=None, fields=None, revision=None):
         if key is None:
             key = str(uuid.uuid4())
@@ -45,17 +72,24 @@ class AlveoTests(ATSTests):
         if revision is not None:
             data['revision'] = revision
 
-        start = 0
-        end = 0
-        for i in range(fields):
-            start = end + random.uniform(0.3, 5)
-            end = start + random.uniform(3, 7)
-            annotation = {
-                "start": start,
-                "end": end,
-                "speaker": str(random.randint(1, 1000)),
-                "annotation": str(uuid.uuid4())
-              }
-            data["value"].append(annotation)
+        data['value'] = self.generateTranscription(fields);
 
         return data
+
+    def generateSampleAlveoData(self):
+        self.createSampleData();
+
+        for i in range(random.randint(7, 15)):
+            username = secrets.token_hex(8);
+            user = User(username, DOMAIN)
+
+            for i in range(random.randint(3, 25)):
+                datastore = Datastore(
+                        str(uuid.uuid4()), 
+                        json.dumps(self.generateTranscription()),
+                        "latest",
+                        user
+                    )
+                db.session.add(datastore)
+            db.session.add(user)
+        db.session.commit()

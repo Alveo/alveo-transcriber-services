@@ -51,8 +51,8 @@ class ATSTests(unittest.TestCase):
             )
         return response.json, response.status_code
 
-    def create_sample_data(self):
-        domain = "alveo"
+    def createSampleData(self):
+        domain = "mountains"
         alveo_10 = User("10", domain)
         alveo_150 = User("150", domain)
         alveo_475 = User("475", domain)
@@ -75,7 +75,7 @@ class ATSTests(unittest.TestCase):
         db.session.add(testdomain_50)
 
     def testDataGeneration(self):
-        self.create_sample_data();
+        self.createSampleData();
         users = User.query.all();
         self.assertEqual(8, len(users))
 
