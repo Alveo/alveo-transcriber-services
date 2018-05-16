@@ -6,7 +6,7 @@ os.environ['ATS_ENVIRONMENT'] = 'application.config.TestEnvironment'
 from application import app, db
 
 try:
-    from application.alveo.tests import AlveoTests
+    from application.alveo.tests import *
 except Exception as e:
     print("Skipping Alveo tests. Reason: ", e)
 
