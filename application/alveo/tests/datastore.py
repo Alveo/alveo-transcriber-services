@@ -8,6 +8,28 @@ class AlveoDatastoreTests(AlveoTests):
         response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
+    def testInvalidPostData(self):
+        data = self.generateSamplePostData()
+        data['value'][3]['thisshouldntwork'] = ''
+        response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+        self.assertEqual(400, status, 'Expected invalid argument status when attempting to post invalid data while logged in.')
+        self.assertTrue(response['description'].startswith("Invalid/unsupported key"), 'Expected message to be about an invalid/unsupported key.')
+
+    def testMissingPostData(self):
+        data = self.generateSamplePostData()
+        data['value'][2].pop('start', None)
+        response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+        self.assertEqual(400, status, 'Expected invalid argument status when attempting to post invalid data while logged in.')
+        self.assertTrue(response['description'].startswith("Required keys are missing"), 'Expected message to be about missing keys.')
+
+    def testBadReplacedPostData(self):
+        data = self.generateSamplePostData()
+        data['value'][2].pop('start', None)
+        data['value'][2]['starte'] = 0.3
+        response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+        self.assertEqual(400, status, 'Expected invalid argument status when attempting to post invalid data while logged in.')
+        self.assertTrue(response['description'].startswith("Invalid/unsupported key"), 'Expected message to be about an invalid/unsupported key.')
+
     def testGetData(self):
         data = self.generateSamplePostData()
         response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
