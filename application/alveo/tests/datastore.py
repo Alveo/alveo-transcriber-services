@@ -20,7 +20,7 @@ class AlveoDatastoreTests(AlveoTests):
         data['value'][2].pop('start', None)
         response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(400, status, 'Expected invalid argument status when attempting to post invalid data while logged in.')
-        self.assertTrue(response['description'].startswith("Required keys are missing"), 'Expected message to be about missing keys.')
+        self.assertTrue(response['description'].startswith("Required key is missing"), 'Expected message to be about missing keys.')
 
     def testBadReplacedPostData(self):
         data = self.generateSamplePostData()
@@ -29,6 +29,21 @@ class AlveoDatastoreTests(AlveoTests):
         response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(400, status, 'Expected invalid argument status when attempting to post invalid data while logged in.')
         self.assertTrue(response['description'].startswith("Invalid/unsupported key"), 'Expected message to be about an invalid/unsupported key.')
+
+    def testBadTypePostData(self):
+        data = self.generateSamplePostData()
+        data['value'][3].pop('speaker', None)
+        data['value'][3]['speaker'] = 1
+        response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+        self.assertEqual(400, status, 'Expected invalid argument status when attempting to post invalid data while logged in.')
+        self.assertTrue(response['description'].startswith("Invalid type for key"), 'Expected message to be about an invalid type for a key.')
+
+        data = self.generateSamplePostData()
+        data['value'][3].pop('start', None)
+        data['value'][3]['start'] = "test"
+        response, status = self.post_json_request('/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+        self.assertEqual(400, status, 'Expected invalid argument status when attempting to post invalid data while logged in.')
+        self.assertTrue(response['description'].startswith("Invalid type for key"), 'Expected message to be about an invalid type for a key.')
 
     def testGetData(self):
         data = self.generateSamplePostData()
