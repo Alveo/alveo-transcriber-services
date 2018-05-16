@@ -74,5 +74,6 @@ def validate_data(data):
             if key not in SUPPORTED_STORAGE_KEYS:
                 abort(400, 'Invalid/unsupported key \'%s\'' % key)
 
-        if keys not in REQUIRED_STORAGE_KEYS:
-            abort(400, 'Required keys are missing: ' + str(REQUIRED_STORAGE_KEYS - keys))
+        missing_keys = list(sorted(set(REQUIRED_STORAGE_KEYS) - set(keys)))
+        if len(missing_keys) > 0:
+            abort(400, 'Required keys are missing: ' + str(missing_keys))
