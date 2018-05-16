@@ -3,7 +3,7 @@ from flask import abort
 from application.datastore.model import Datastore
 from application.users.model import User 
 
-from application.alveo import DOMAIN
+from application.alveo.module import DOMAIN
 
 def datastore_query(user_id=None, key=None, revision=None):
     query = None

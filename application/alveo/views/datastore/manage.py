@@ -9,7 +9,7 @@ from application.misc.events import handle_api_event
 
 from application.datastore.model import Datastore
 
-from . import DOMAIN, SUPPORTED_STORAGE_KEYS, REQUIRED_STORAGE_KEYS
+from application.alveo.module import DOMAIN, SUPPORTED_STORAGE_KEYS, REQUIRED_STORAGE_KEYS
 
 @handle_api_event('alveo', 'datastore:get')
 def alveo_retrieve(store_id, user_id):

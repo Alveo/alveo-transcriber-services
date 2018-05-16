@@ -6,7 +6,8 @@ from application.auth.required import auth_required
 import application.datastore.views as datastore
 import application.auth.session
 
-import application.alveo.module
+# Modules
+import application.alveo
 
 def url_error(error_code, description):
     response = jsonify({'error': True, 'description': description})

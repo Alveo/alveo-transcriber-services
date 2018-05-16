@@ -46,7 +46,7 @@ class ATSTests(unittest.TestCase):
                 path,
                 data=data,
                 headers=headers,
-                follow_redirects=False, # Do not set to true as Flask will not resend headers
+                follow_redirects=False,
                 content_type='application/json'
             )
         return response.json, response.status_code

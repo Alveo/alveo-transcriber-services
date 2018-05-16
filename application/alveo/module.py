@@ -1,4 +1,5 @@
-from . import auth
-from . import segmenter
-from . import datastore
-from . import views
+DOMAIN = "alveo"
+
+SUPPORTED_STORAGE_KEYS = ['start', 'end', 'speaker', 'annotation']
+REQUIRED_STORAGE_KEYS = ['start', 'end', 'speaker', 'annotation']
+

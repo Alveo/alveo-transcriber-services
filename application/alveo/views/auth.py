@@ -5,7 +5,7 @@ from application import app, db
 from application.users.model import User
 from application.misc.events import handle_api_event, get_module_metadata
 
-from . import DOMAIN
+from application.alveo.module import DOMAIN
 
 @handle_api_event("alveo", "auth")
 def auth_alveo(remote_user_id, remote_api_key):
@@ -15,7 +15,6 @@ def auth_alveo(remote_user_id, remote_api_key):
     alveo_metadata = get_module_metadata(DOMAIN)
     if alveo_metadata is None:
         abort(404, "'alveo' module not found.")
-
     api_url = alveo_metadata['api_url']
 
     client = pyalveo.OAuth2(api_url=api_url, api_key=remote_api_key)
