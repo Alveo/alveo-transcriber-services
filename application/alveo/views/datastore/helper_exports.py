@@ -19,9 +19,10 @@ def datastore_export(user_id=None, key=None, revision=None):
             data = {
                     'revision': transcription.revision,
                     'key': transcription.key.split(':')[1],
+                    'domain': transcription.key.split(':')[0],
                     'transcription': transcription.get_data()
                 }
-            zf.writestr('%s.json' % transcription.key, json.dumps(data))
+            zf.writestr('%s_%s.json' % (transcription.id, transcription.revision), json.dumps(data))
     archive.seek(0)
 
     return { 
