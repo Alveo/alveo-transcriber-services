@@ -81,7 +81,21 @@ class AlveoListRoutesTests(AlveoTests):
             ), 'Expected two separate storage objects that have the same key but differing revisions and values.')
 
     def testOtherModuleFail(self):
-        pass
+        self.generateSampleAlveoData()
+
+        user = User.query.filter(User.domain == DOMAIN).first()
+        self.assertTrue(user != None, "Expected sample users to exist from generated sample data.")
+
+        # Change the user's domain
+        user.domain = "notalveo"
+        db.session.commit()
+
+        transcription = Datastore.query.filter(Datastore.user_id == user.id).first()
+        self.assertTrue(transcription != None, "Expected sample transcription to exist from generated sample data.")
+
+        response, status = self.get_json_response('/datastore/?store_id=%s'%transcription.id, self.DEFAULT_HEADERS)
+        self.assertEqual(403, status, 'Expected forbidden status when attempting to get valid data from a different user on another domain, while logged in.')
+
 
     def testOtherUserList(self):
         self.generateSampleAlveoData()
@@ -122,4 +136,4 @@ class AlveoListRoutesTests(AlveoTests):
         response, status = self.get_json_response('/datastore/?store_id=%s'%query_key, self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
 
-        self.assertEqual(len(str(response['data'])), len(transcription_2.get_data()), 'Expected the queried data to match the other user's data.')
+        self.assertEqual(len(str(response['data'])), len(transcription_2.get_data()), 'Expected the queried data to match the other user\'s data.')
