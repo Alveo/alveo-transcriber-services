@@ -9,7 +9,7 @@ from application.misc.events import handle_api_event
 
 from application.datastore.model import Datastore
 
-from application.alveo.module import DOMAIN, SUPPORTED_STORAGE_KEYS, REQUIRED_STORAGE_KEYS
+from application.alveo.module import DOMAIN, SUPPORTED_STORAGE_KEYS
 
 @handle_api_event('alveo', 'datastore:get')
 def alveo_retrieve(store_id, user_id):
@@ -68,12 +68,19 @@ def validate_data(data):
     if not isinstance(data, list):
         abort(400, 'Expected a list of JSON objects as the data type')
 
+    supported_keys = SUPPORTED_STORAGE_KEYS.keys()
+
     for entry in data:
         keys = entry.keys()
         for key in keys:
-            if key not in SUPPORTED_STORAGE_KEYS:
+            if key not in supported_keys:
                 abort(400, 'Invalid/unsupported key \'%s\'' % key)
 
-        missing_keys = list(sorted(set(REQUIRED_STORAGE_KEYS) - set(keys)))
-        if len(missing_keys) > 0:
-            abort(400, 'Required keys are missing: ' + str(missing_keys))
+            expected_type = SUPPORTED_STORAGE_KEYS[key]['type']
+            if not isinstance(entry[key], expected_type):
+                abort(400, 'Invalid type for key \'%s\', expected %s got %s' % (key, expected_type.__name__, type(entry[key]).__name__))
+
+        for key in supported_keys:
+            if SUPPORTED_STORAGE_KEYS[key]['required']:
+                if key not in keys:
+                    abort(400, 'Required key is missing: %s' % key)

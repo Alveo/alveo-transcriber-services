@@ -18,6 +18,7 @@ curl \
       {
         "start": 1.00,
         "end": 3.71,
+        "speaker": "A",
         "annotation": "Example"
       },
       {
