@@ -4,9 +4,17 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
 app = Flask(__name__)
 environment = os.environ.get('ATS_ENVIRONMENT', 'application.config.ProductionEnvironment')
 app.config.from_object(environment)
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["100 per minute"]
+)
 
 if app.config['SQLALCHEMY_DATABASE_URI'] is None:
     if not app.config['TESTING']:
