@@ -1,5 +1,6 @@
 import io
-import urllib.request
+import requests
+import os
 import zipfile
 import json
 
@@ -53,10 +54,13 @@ def dump_storage(path):
 @click.argument('url')
 def push_storage(url):
     archive = export_storage()
+    headers = os.environ.get("ATS_PUSH_HEADERS", None)
+    if headers is not None:
+        headers = json.loads(headers)
 
-    request = urllib.request.Request(url, data=archive)
-    response = urllib.request.urlopen(request)
-    print(response)
+    request = requests.post(url, files={'file': archive}, headers=headers)
+
+    print(request)
 
 cli.add_command(init_db)
 cli.add_command(dump_storage)
