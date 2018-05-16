@@ -10,7 +10,7 @@ class AlveoListRoutesTests(AlveoTests):
             self.postRandomData()
 
         response, status = self.get_json_response('/datastore/list/', self.DEFAULT_HEADERS)
-        self.assertEqual(len(response['list']), DATA_AMOUNT, 'Expected to get a list matching the amount of items that were just posted.')
+        self.assertEqual(len(response['storage_objects']), DATA_AMOUNT, 'Expected to get a list matching the amount of items that were just posted.')
 
     def testGetListByKey(self):
         DATA_AMOUNT = 6
@@ -29,10 +29,10 @@ class AlveoListRoutesTests(AlveoTests):
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
         response, status = self.get_json_response('/datastore/list/'+dataset_1['key'], self.DEFAULT_HEADERS)
-        self.assertEqual(response['list'][0]['id'], response_1['id'], 'Expected response to contain the storage object that was just posted.')
+        self.assertEqual(response['storage_objects'][0]['id'], response_1['id'], 'Expected response to contain the storage object that was just posted.')
 
         response, status = self.get_json_response('/datastore/list/'+dataset_2['key'], self.DEFAULT_HEADERS)
-        self.assertEqual(response['list'][0]['id'], response_2['id'], 'Expected response to contain the storage object that was just posted.')
+        self.assertEqual(response['storage_objects'][0]['id'], response_2['id'], 'Expected response to contain the storage object that was just posted.')
 
         response, status = self.get_json_response('/datastore/?store_id='+str(response_1['id']), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
@@ -69,8 +69,8 @@ class AlveoListRoutesTests(AlveoTests):
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
 
         self.assertTrue( (
-                response_1['key'] == response_2['key']
-                and response_1['revision'] == REVISION_NAME
-                and response_2['revision'] == REVISION_NAME_2
-                and response_1['list'][0]['id'] != response_2['list'][0]['id']
+                response_1['query_key'] == response_2['query_key']
+                and response_1['query_revision'] == REVISION_NAME
+                and response_2['query_revision'] == REVISION_NAME_2
+                and response_1['storage_objects'][0]['id'] != response_2['storage_objects'][0]['id']
             ), 'Expected two separate storage objects that have the same key but differing revisions and values.')

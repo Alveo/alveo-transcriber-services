@@ -12,10 +12,10 @@ def datastore_list(user_id=None, key=None, revision=None):
             })
 
     data = {
-                'revision': revision,
-                'user_id': user_id,
-                'key': key,
-                'list': list_data
+                'query_revision': revision,
+                'query_user_id': user_id,
+                'query_key': key,
+                'storage_objects': list_data
         }
 
     return data
