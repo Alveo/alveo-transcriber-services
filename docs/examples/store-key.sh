@@ -13,12 +13,11 @@ curl \
   --header "X-Api-Key: $ATS_API_KEY" \
   -d '
   {
-    "storage_key": "test-transcription",
-    "storage_value": [
+    "key": "test-transcription2",
+    "value": [
       {
         "start": 1.00,
         "end": 3.71,
-        "speaker": "A",
         "annotation": "Example"
       },
       {
@@ -32,4 +31,4 @@ curl \
   ' \
   -H "Content-Type: application/json" \
   -X POST \
-  $ATS_URL/storage
+  $ATS_URL/datastore/
