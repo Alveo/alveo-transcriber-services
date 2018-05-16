@@ -1,7 +1,9 @@
+import io
 import os
 import unittest
 import json
 import random
+import zipfile
 
 import uuid
 
@@ -56,27 +58,32 @@ def create_sample_data():
     
 
 class AlveoTests(unittest.TestCase):
-    def get_json_response(self, path, headers={}):
+    def get_json_response(self, path, headers=None):
         response = self.app.get(path, headers=headers)
         return response.json, response.status_code
-    def post_json_request(self, path, data, headers={}):
-        # Don't set follow_redirects to true, flask will not resend headers
+
+    def get_file_response(self, path, headers=None):
+        response = self.app.get(path, headers=headers)
+        return response.get_data(), response.is_json, response.status_code
+
+    def post_json_request(self, path, data, headers=None):
         response = self.app.post(
                 path,
                 data=data,
                 headers=headers,
-                follow_redirects=False,
+                follow_redirects=False, # Do not set to true as Flask will not resend headers
                 content_type='application/json'
             )
         return response.json, response.status_code
 
     def setUp(self):
-        # Set this after the app is intiialised, or the environment will override it
+        # Override default URI
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 
         self.app = app.test_client()
         self.longMessage = True
 
+        # Recreate session
         with app.app_context():
             db.session.close()
             db.drop_all()
@@ -218,6 +225,19 @@ class AlveoTests(unittest.TestCase):
                 and response_2['revision'] == REVISION_NAME_2
                 and response_1['list'][0]['id'] != response_2['list'][0]['id']
             ), 'Expected two separate storage objects that have the same key but differing revisions and values.')
+
+    def testGetListByRevision(self):
+        DATA_AMOUNT = 12
+        for i in range(DATA_AMOUNT):
+            self.postRandomData()
+
+        data, is_json, status = self.get_file_response('/datastore/export/', DEFAULT_HEADERS)
+        self.assertEqual(200, status, 'Expected OK status when attempting to export valid data while logged in.')
+        self.assertFalse(is_json, 'Expected streamed file data, not actual JSON response.')
+
+        zip_archive = zipfile.ZipFile(io.BytesIO(data), "a", zipfile.ZIP_DEFLATED, False)
+        archive_names = zip_archive.namelist()
+        self.assertTrue(len(archive_names) == DATA_AMOUNT, 'Expected same amount of exported as amount posted.')
 
     def testSegmentationNoAuth(self):
         response, status = self.get_json_response('/segment')
