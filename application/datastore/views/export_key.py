@@ -14,8 +14,8 @@ class APIExportKey(EventRouter):
             )
 
         return send_file(
-            response.data,
-            response.mimetype,
+            response['data'],
+            response['mimetype'],
             as_attachment=True,
-            attachment_filename=response.filename
+            attachment_filename=response['filename']
         )
