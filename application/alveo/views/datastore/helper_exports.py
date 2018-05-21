@@ -17,6 +17,11 @@ def datastore_export(user_id=None, key=None, revision=None):
     with zipfile.ZipFile(archive, mode='w') as zf:
         for transcription in transcriptions:
             data = {
+                    'timestamp': str(transcription.timestamp),
+                    'author': {
+                        'original': str(transcription.versions[0].user),
+                        'editor': str(transcription.user)
+                    },
                     'revision': transcription.revision,
                     'key': transcription.key.split(':')[1],
                     'domain': transcription.key.split(':')[0],

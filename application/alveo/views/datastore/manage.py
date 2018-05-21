@@ -28,8 +28,12 @@ def alveo_retrieve(store_id, user_id):
             'id': query.id,
             'key': query.key.split(':')[1],
             'revision': query.revision,
-            'data': json.loads(query.get_value()),
-            'creator': query.user_id
+            'transcription': json.loads(query.get_value()),
+            'timestamp': str(query.timestamp),
+            'author': {
+                'original': str(query.versions[0].user),
+                'editor': str(query.user)
+            },
         }
 
 @handle_api_event('alveo', 'datastore:post')

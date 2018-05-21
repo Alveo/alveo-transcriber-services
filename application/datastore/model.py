@@ -1,3 +1,4 @@
+import datetime
 import sqlalchemy as sa
 from sqlalchemy_continuum import make_versioned
 
@@ -9,9 +10,12 @@ class Datastore(db.Model):
     __versioned__ = {}
 
     id = db.Column(db.Integer(), primary_key=True)
+
     key = db.Column(db.String(256), nullable=False)
     value = db.Column(db.LargeBinary, nullable=False)
+
     revision = db.Column(db.String(64), nullable=False)
+    timestamp = db.Column(db.Date, default=datetime.datetime.now)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User')
