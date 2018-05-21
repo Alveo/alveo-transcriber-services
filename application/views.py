@@ -1,7 +1,6 @@
 from flask import jsonify
 
 from application import app
-from application.auth.rate_limiter import rate_limit #TMP
 from application.segmentation.view import segmenter_api
 from application.auth.required import auth_required
 import application.datastore.views as datastore
@@ -49,10 +48,7 @@ app.add_url_rule(
 app.add_url_rule(
         '/datastore/list/',
         endpoint='ds.list',
-        view_func=rate_limit(
-            auth_required(datastore.list),
-            limit_value="3 per minute",
-        ),
+        view_func=auth_required(datastore.list),
         methods=['GET']
     )
 

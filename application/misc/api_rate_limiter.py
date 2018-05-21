@@ -1,8 +1,9 @@
 from application import limiter
 
-def rate_limit(f, limit_value):
+def api_rate_limiter(f, f_args):
     """ Provides a wrapper for views to enforce login requirements """
-    @limiter.limit(limit_value)
+    print(f_args)
+    @limiter.limit(**f_args)
     def decorated_function(*args, **kwargs):
         return f(*args, **kwargs)
     return decorated_function

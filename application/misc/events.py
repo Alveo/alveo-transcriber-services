@@ -1,4 +1,5 @@
 from flask import g
+from .api_rate_limiter import api_rate_limiter
 
 from application import app, events
 
@@ -24,8 +25,12 @@ MODULE_PATHS = {
 }
 
 class handle_api_event(object):
-    def __init__(self, module_id, event_name):
+    def __init__(self, module_id, event_name, rate_limit=None):
+        self.set_limiter(rate_limit)
         self.register(module_id, event_name);
+
+    def set_limiter(self, limit_args):
+        self.rate_limit = limit_args
 
     def register(self, module_id, event_name):
         if not module_id in events:
@@ -34,7 +39,10 @@ class handle_api_event(object):
         events[module_id][event_name] = self
 
     def __call__(self, function):
-        self.handle = function
+        if self.rate_limit is None:
+            self.handle = function
+        else:
+            self.handle = api_rate_limiter(function, f_args=self.rate_limit) 
 
 def get_domain_handler(domain):
     for handler in app.config['DOMAIN_HANDLERS']:
