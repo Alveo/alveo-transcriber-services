@@ -6,13 +6,13 @@ from flask import g, abort
 
 from application import db
 from application.users.model import User
-from application.misc.events import handle_api_event
+from application.misc.events import handle_api_event, MODULE_PATHS
 
 from application.datastore.model import Datastore
 
 from application.alveo.module import DOMAIN, SUPPORTED_STORAGE_KEYS
 
-@handle_api_event('alveo', 'datastore:get')
+@handle_api_event(DOMAIN, MODULE_PATHS['DATASTORE']['GET'])
 def alveo_retrieve(store_id, user_id):
     query = Datastore.query.filter(Datastore.id == store_id).first()
 
@@ -36,7 +36,7 @@ def alveo_retrieve(store_id, user_id):
             },
         }
 
-@handle_api_event('alveo', 'datastore:post')
+@handle_api_event(DOMAIN, MODULE_PATHS['DATASTORE']['POST'])
 def alveo_store(key, value, revision=None):
     # We're not interested in letting the user
     #  have their own revision names in the Alveo

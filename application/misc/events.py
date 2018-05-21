@@ -2,6 +2,27 @@ from flask import g
 
 from application import app, events
 
+MODULE_PATHS = {
+    'AUTH': 'auth',
+    'SEGMENTATION': 'segmenter',
+    'DATASTORE': {
+        'EXPORT': {
+            'SELF': 'datastore:export',
+            'USER': 'datastore:export_by_user',
+            'KEY': 'datastore:export_by_key',
+            'USER+KEY': 'datastore:export_by_user_key',
+        },
+        'LIST': {
+            'SELF': 'datastore:list',
+            'USER': 'datastore:list_by_user',
+            'KEY': 'datastore:list_by_key',
+            'USER+KEY': 'datastore:list_by_user_key',
+        },
+        'GET': 'datastore:get',
+        'POST': 'datastore:post'
+    }
+}
+
 class handle_api_event(object):
     def __init__(self, module_id, event_name):
         self.register(module_id, event_name);

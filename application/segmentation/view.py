@@ -4,6 +4,7 @@ from flask import jsonify, abort, g, request
 
 from application import app
 from application.misc.event_router import EventRouter
+from application.misc.events import MODULE_PATHS
 from application.auth.required import auth_required
 from application.segmentation.audio_segmentor import segment_audio_data
 
@@ -14,7 +15,7 @@ class SegmenterAPI(EventRouter):
         if remote_url is None:
             abort(400, "Request did not include a document to segment");
 
-        results = self.event("segmenter").handle(remote_url)
+        results = self.event(MODULE_PATHS['SEGMENTATION']).handle(remote_url)
 
         return jsonify({
                 "results": results

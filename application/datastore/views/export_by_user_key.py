@@ -1,5 +1,6 @@
 from flask import abort, send_file
 
+from application.misc.events import MODULE_PATHS
 from application.misc.event_router import EventRouter
 
 class APIExportByUserKey(EventRouter):
@@ -10,7 +11,7 @@ class APIExportByUserKey(EventRouter):
         if key is None:
             abort(400, "Key not specified")
 
-        response = self.event("datastore:export_by_user_key").handle(
+        response = self.event(MODULE_PATHS['DATASTORE']['EXPORT']['USER+KEY']).handle(
                 key=key,
                 user_id=user_id,
                 revision=revision
