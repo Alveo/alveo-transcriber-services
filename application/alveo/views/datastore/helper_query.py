@@ -22,7 +22,7 @@ def datastore_query(user_id=None, key=None, revision=None):
             abort(403, "You don't have permission to view external users")
         query = query.filter(Datastore.user_id == user_id)
 
-    if revision not in ("any", None):
+    if revision != None:
         query = query.filter(Datastore.revision == revision)
 
     return query.all()

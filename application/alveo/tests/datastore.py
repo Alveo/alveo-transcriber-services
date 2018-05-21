@@ -64,8 +64,8 @@ class AlveoDatastoreTests(AlveoTests):
         self.assertTrue( (
                 storage_id == response['id']
                 and storage_rev == response['revision']
-                and isinstance(response['data'], list)
-                and response['data'][0]['annotation'] == data['value'][0]['annotation']
+                and isinstance(response['transcription'], list)
+                and response['transcription'][0]['annotation'] == data['value'][0]['annotation']
             ), 'Expected matching data on a get response, using the id returned of a previous post request');
 
     def testOtherModuleFail(self):
