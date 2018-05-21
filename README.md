@@ -8,14 +8,14 @@ Repository to provide additional services to the alveo-transcriber web applicati
 ## Running
 1. Install requirements with pip, recommended you use a python virtual environment
 2. Optionally enable debug `export FLASK_DEBUG=1`, else you will have to set a `DATABASE_URI` environment variable (see `application/config.py`)
-3. If it hasn't be generated yet, initialise the database and tables `python utility.py init_db`
+3. If it hasn't been initialised yet, initialise the database with `python utility.py init_db`
 4. `export FLASK_APP=application && python -m flask run`
 
 ## Unit tests
 Set up environment variables for relevant modules (unconfigured ones will be skipped!)
+- Alveo: `export ALVEO_API_KEY=<YOUR ALVEO API KEY>`
    
 When ready, run the unit tests with `python tests.py`
-- Alveo: `export ALVEO_API_KEY=<YOUR ALVEO API KEY>`
 
 ## Examples
 See [examples](docs/examples/).
