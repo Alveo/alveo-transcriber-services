@@ -120,7 +120,7 @@ class AlveoListRoutesTests(AlveoTests):
         response, status = self.get_json_response('/datastore/?store_id=%s'%query_key, self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
 
-        self.assertEqual(len(str(response['data'])), len(transcription_2.get_data()), 'Expected the queried data to match the other user\'s data.')
+        self.assertEqual(len(str(response['data'])), len(transcription_2.get_value()), 'Expected the queried data to match the other user\'s data.')
 
     def testOtherDomainListFail(self):
         self.generateSampleAlveoData()

@@ -18,15 +18,14 @@ class Datastore(db.Model):
 
     def __init__(self, key, value, revision, user):
         self.key = key
-        self.set_data(value)
+        self.set_value(value)
         self.revision = revision
-
         self.user = user
 
-    def set_data(self, value):
+    def set_value(self, value):
         self.value = value.encode()
 
-    def get_data(self):
+    def get_value(self):
         return self.value.decode()
 
 sa.orm.configure_mappers()

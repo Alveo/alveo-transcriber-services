@@ -27,7 +27,7 @@ def alveo_retrieve(store_id, user_id):
             'id': query.id,
             'key': query.key.split(':')[1],
             'revision': query.revision,
-            'data': json.loads(query.get_data()),
+            'data': json.loads(query.get_value()),
             'creator': query.user_id
         }
 
@@ -55,7 +55,7 @@ def alveo_store(key, value, revision=None):
         # TODO Maybe this should be explored after proper revisioning is in, as
         #  we in theory shouldn't be editing existing revisions anyway.
         #  abort(400, 'A match for this key and revision already exists')
-        model.set_data(data)
+        model.set_value(data)
 
     db.session.commit()
 
