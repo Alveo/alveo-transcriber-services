@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from pyalveo import *
 from flask import g, abort
@@ -33,8 +34,10 @@ def alveo_retrieve(store_id, user_id):
 
 @handle_api_event('alveo', 'datastore:post')
 def alveo_store(key, value, revision=None):
-    if revision == None:
-        revision = 'latest' # TODO generate
+    # We're not interested in letting the user
+    #  have their own revision names in the Alveo
+    #  module right now.
+    revision = str(uuid.uuid4())
     
     if key is None or len(key) < 2:
         abort(400, 'Key is invalid or too short')
@@ -49,14 +52,11 @@ def alveo_store(key, value, revision=None):
 
     if model is None:
         model = Datastore(key, data, revision, g.user)
-        db.session.add(model)
     else:
-        # We could abort because a PUT request should be used, but should we?
-        # TODO Maybe this should be explored after proper revisioning is in, as
-        #  we in theory shouldn't be editing existing revisions anyway.
-        #  abort(400, 'A match for this key and revision already exists')
         model.set_value(data)
+        model.revision = revision
 
+    db.session.add(model)
     db.session.commit()
 
     return {
