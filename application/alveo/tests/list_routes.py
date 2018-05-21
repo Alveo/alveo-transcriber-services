@@ -1,5 +1,6 @@
 import uuid
 import json
+import random
 
 from application import db
 from application.users.model import User
@@ -19,70 +20,84 @@ class AlveoListRoutesTests(AlveoTests):
 
     def testGetListByKey(self):
         DATA_AMOUNT = 6
-        for i in range(int(DATA_AMOUNT / 2)):
-            self.postRandomData()
+        DATASET_AMOUNT = 2
 
-        response_query, dataset_1 = self.postRandomData(True)
-        response_1, status = response_query;
-        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+        posts = []
+        responses = []
 
-        for i in range(int(DATA_AMOUNT / 2)):
-            self.postRandomData()
+        for i in range(DATASET_AMOUNT):
+            posts.append((self.postRandomData, {'return_sample': True}))
 
-        response_query, dataset_2 = self.postRandomData(True)
-        response_2, status = response_query;
-        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+        for i in range(DATA_AMOUNT):
+            posts.append((self.postRandomData, {'return_sample': False}))
 
-        response, status = self.get_json_response('/datastore/list/'+dataset_1['key'], self.DEFAULT_HEADERS)
-        self.assertEqual(response['storage_objects'][0]['id'], response_1['id'], 'Expected response to contain the storage object that was just posted.')
+        random.shuffle(posts)
 
-        response, status = self.get_json_response('/datastore/list/'+dataset_2['key'], self.DEFAULT_HEADERS)
-        self.assertEqual(response['storage_objects'][0]['id'], response_2['id'], 'Expected response to contain the storage object that was just posted.')
+        for post in posts:
+            function, args = post
+            response_query, dataset = function(*args)
+            response, status = response_query;
+            self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
-        response, status = self.get_json_response('/datastore/?store_id='+str(response_1['id']), self.DEFAULT_HEADERS)
+            if args['return_sample'] == True:
+                responses.append((dataset, response))
+
+        response, status = self.get_json_response('/datastore/list/'+responses[0][0]['key'], self.DEFAULT_HEADERS)
+        self.assertEqual(response['storage_objects'][0]['id'], responses[0][1]['id'], 'Expected response to contain the storage object that was just posted.')
+
+        response, status = self.get_json_response('/datastore/list/'+responses[0][0]['key'], self.DEFAULT_HEADERS)
+        self.assertEqual(response['storage_objects'][0]['id'], responses[0][1]['id'], 'Expected response to contain the storage object that was just posted.')
+
+        response, status = self.get_json_response('/datastore/?store_id='+str(responses[0][1]['id']), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
-        self.assertEqual(response['key'], dataset_1['key'], 'Expected the newly added keys to match.')
+        self.assertEqual(response['key'], responses[0][0]['key'], 'Expected the newly added keys to match.')
 
-        response, status = self.get_json_response('/datastore/?store_id='+str(response_2['id']), self.DEFAULT_HEADERS)
+        response, status = self.get_json_response('/datastore/?store_id='+str(responses[0][1]['id']), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
-        self.assertEqual(response['key'], dataset_2['key'], 'Expected the newly added keys to match.')
+        self.assertEqual(response['key'], responses[0][0]['key'], 'Expected the newly added keys to match.')
 
     def testGetListByRevision(self):
         DATA_AMOUNT = 6
+        DATASET_AMOUNT = 3
         KEY = str(uuid.uuid4())
 
-        for i in range(int(DATA_AMOUNT / 2)):
-            self.postRandomData()
+        posts = []
+        revisions = []
 
-        dataset = self.generateSamplePostData(key=KEY)
-        response, status = self.post_json_request('/datastore/', json.dumps(dataset), self.DEFAULT_HEADERS)
-        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
-        rev_1 = response['revision']
+        for i in range(DATASET_AMOUNT):
+            params = (
+                    '/datastore/',
+                    json.dumps(
+                        self.generateSamplePostData(key=KEY)
+                    ),
+                    self.DEFAULT_HEADERS
+                )
+            posts.append((self.post_json_request, params))
 
-        for i in range(int(DATA_AMOUNT / 2)):
-            self.postRandomData()
+        for i in range(DATA_AMOUNT):
+            posts.append((self.postRandomData, ()))
 
-        dataset = self.generateSamplePostData(key=KEY)
-        response, status = self.post_json_request('/datastore/', json.dumps(dataset), self.DEFAULT_HEADERS)
-        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
-        rev_2 = response['revision']
+        random.shuffle(posts)
 
-        dataset = self.generateSamplePostData(key=KEY)
-        response, status = self.post_json_request('/datastore/', json.dumps(dataset), self.DEFAULT_HEADERS)
-        self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
-        rev_3 = response['revision']
+        for post in posts:
+            function, args = post
+            response, status = function(*args)
+            self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
-        response_1, status = self.get_json_response('/datastore/list/%s/%s'%(KEY, rev_1), self.DEFAULT_HEADERS)
+            if function == self.post_json_request:
+                revisions.append(response['revision'])
+
+        response_1, status = self.get_json_response('/datastore/list/%s/%s'%(KEY, revisions[0]), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
 
-        response_2, status = self.get_json_response('/datastore/list/%s/%s'%(KEY, rev_2), self.DEFAULT_HEADERS)
+        response_2, status = self.get_json_response('/datastore/list/%s/%s'%(KEY, revisions[1]), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to get valid data while logged in.')
 
         self.assertTrue( (
                 response_1['query_key'] == response_2['query_key']
-                and response_1['query_revision'] == rev_1
-                and response_2['query_revision'] == rev_2
-                and rev_3 not in [response_1['query_revision'], response_2['query_revision']]
+                and response_1['query_revision'] == revisions[0]
+                and response_2['query_revision'] == revisions[1]
+                and revisions[2] not in [response_1['query_revision'], response_2['query_revision']]
                 and response_1['storage_objects'][0]['id'] != response_2['storage_objects'][0]['id']
             ), 'Expected two separate storage objects that have the same key but differing revisions and values.')
 
