@@ -13,7 +13,7 @@ class AlveoSegmentationTests(AlveoTests):
     def testSegmentationInvalidDocument(self):
         invalid_remote_url = 'https://app.alveo.edu.au/catalog/doesnot/exist.wav'
         response, status = self.get_json_response('/segment?remote_url='+invalid_remote_url, self.DEFAULT_HEADERS)
-        self.assertTrue('Could not access requested doc' in response['description'], 'Expected error to be about an inaccessible Alveo document identifier when attempting to segment with an invalid document identifier.')
+        self.assertTrue('not-found' in response['description'], 'Expected error to be about an inaccessible Alveo document identifier when attempting to segment with an invalid document identifier.')
         self.assertEqual(400, status, 'Expected bad request status when attempting to segment an invalid document.')
 
     def testSegmentationValidDocument(self):

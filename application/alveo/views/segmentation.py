@@ -6,7 +6,7 @@ from flask import abort, g
 from application.auth.required import auth_required
 from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
-from application.misc.events import handle_api_event, MODULE_PATHS
+from application.misc.events import handle_api_event, MODULE_PATHS, get_module_metadata
 
 from application.alveo.module import DOMAIN
 
@@ -21,8 +21,19 @@ def alveo_segmenter(path):
 
     api_key = g.user.remote_api_key
 
-    # TODO check Alveo permissions before accessing cache
-    #   Note: request submitted to PyAlveo repository for permission checking
+    alveo_metadata = get_module_metadata("alveo")
+    api_url = alveo_metadata['api_url']
+    client = pyalveo.Client(api_url=api_url, api_key=api_key, use_cache=False, update_cache=False, cache_dir=None)
+
+    # Check if we can access the list first.
+    # Would be good if we could just check Alveo permissions instead of retrieving the item directly. 
+    # https://github.com/Alveo/pyalveo/issues/11
+    try:
+        itemlist_path = path.split('/document/')[0]
+        itemlist = client.get_item(itemlist_path)
+    except APIError as e:
+        abort(400, "Response from remote host: \n"+str(e))
+
     result = get_cached_result(shorten_path(path))
     if result is None:
         result = segment_document(path, api_key) 
