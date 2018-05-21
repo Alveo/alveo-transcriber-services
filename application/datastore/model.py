@@ -1,6 +1,13 @@
+import sqlalchemy as sa
+from sqlalchemy_continuum import make_versioned
+
 from application import db
 
+make_versioned()
+
 class Datastore(db.Model):
+    __versioned__ = {}
+
     id = db.Column(db.Integer(), primary_key=True)
     key = db.Column(db.String(256), nullable=False)
     value = db.Column(db.LargeBinary, nullable=False)
@@ -21,3 +28,5 @@ class Datastore(db.Model):
 
     def get_data(self):
         return self.value.decode()
+
+sa.orm.configure_mappers()
