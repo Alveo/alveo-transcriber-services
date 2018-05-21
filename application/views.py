@@ -40,7 +40,7 @@ app.add_url_rule('/segment', view_func=segmenter_api, methods=['GET', 'POST'])
 # User's datastore control
 app.add_url_rule(
         '/datastore/',
-        view_func=auth_required(datastore.manage),
+        view_func=datastore.manage,
         methods=['GET', 'POST']
     )
 
@@ -48,41 +48,41 @@ app.add_url_rule(
 app.add_url_rule(
         '/datastore/list/',
         endpoint='ds.list',
-        view_func=auth_required(datastore.list),
+        view_func=datastore.list,
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/list/<key>',
         endpoint='ds.list.key',
-        view_func=auth_required(datastore.list_key),
+        view_func=datastore.list_key,
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/list/<key>/<revision>',
         endpoint='ds.list.key.rev',
-        view_func=auth_required(datastore.list_key),
+        view_func=datastore.list_key,
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/export/',
-        view_func=auth_required(datastore.export),
+        view_func=datastore.export,
         endpoint='ds.export',
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/export/<key>',
-        view_func=auth_required(datastore.export_key),
+        view_func=datastore.export_key,
         endpoint='ds.export.key',
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/export/<key>/<revision>',
-        view_func=auth_required(datastore.export_key),
+        view_func=datastore.export_key,
         endpoint='ds.export.key.rev',
         methods=['GET']
     )
@@ -91,21 +91,21 @@ app.add_url_rule(
 app.add_url_rule(
         '/datastore/user/<user_id>/list/',
         endpoint='ds.user.list',
-        view_func=auth_required(datastore.list_by_user),
+        view_func=datastore.list_by_user,
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/user/<user_id>/list/<key>',
         endpoint='ds.user.list.key',
-        view_func=auth_required(datastore.list_by_user_key),
+        view_func=datastore.list_by_user_key,
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/user/<user_id>/list/<key>/<revision>',
         endpoint='ds.user.list.key.rev',
-        view_func=auth_required(datastore.list_by_user_key),
+        view_func=datastore.list_by_user_key,
         methods=['GET']
     )
 
@@ -113,20 +113,20 @@ app.add_url_rule(
 app.add_url_rule(
         '/datastore/user/<user_id>/export/',
         endpoint='ds.user.export',
-        view_func=auth_required(datastore.export_by_user),
+        view_func=datastore.export_by_user,
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/user/<user_id>/export/<key>',
         endpoint='ds.user.export.key',
-        view_func=auth_required(datastore.export_by_user_key),
+        view_func=datastore.export_by_user_key,
         methods=['GET']
     )
 
 app.add_url_rule(
         '/datastore/user/<user_id>/export/<key>/<revision>',
         endpoint='ds.user.export.key.rev',
-        view_func=auth_required(datastore.export_by_user_key),
+        view_func=datastore.export_by_user_key,
         methods=['GET']
     )

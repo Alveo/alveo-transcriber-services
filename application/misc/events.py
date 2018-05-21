@@ -1,4 +1,5 @@
 from flask import g
+from application.auth.required import auth_required
 from .api_rate_limiter import api_rate_limiter
 
 from application import app, events
@@ -25,8 +26,9 @@ MODULE_PATHS = {
 }
 
 class handle_api_event(object):
-    def __init__(self, module_id, event_name, rate_limit=None):
+    def __init__(self, module_id, event_name, rate_limit=None, auth_required=False):
         self.set_limiter(rate_limit)
+        self.auth_required = auth_required
         self.register(module_id, event_name);
 
     def set_limiter(self, limit_args):
@@ -39,10 +41,15 @@ class handle_api_event(object):
         events[module_id][event_name] = self
 
     def __call__(self, function):
-        if self.rate_limit is None:
-            self.handle = function
-        else:
-            self.handle = api_rate_limiter(function, f_args=self.rate_limit) 
+        if self.auth_required is True:
+            function = auth_required(function)
+
+        if self.rate_limit != None:
+            print("limited")
+            from application import limiter
+            function = limiter.limit(self.rate_limit)(function)
+
+        self.handle = function
 
 def get_domain_handler(domain):
     for handler in app.config['DOMAIN_HANDLERS']:
