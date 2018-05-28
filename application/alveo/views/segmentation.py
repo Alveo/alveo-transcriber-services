@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 from pyalveo import *
 from flask import abort, g
 
+from application import limiter
 from application.alveo.module import DOMAIN
 from application.auth.required import auth_required
 from application.segmentation.cache.model import cache_result, get_cached_result
@@ -15,7 +16,11 @@ def shorten_path(path):
     return urlparse(path).path.split('/catalog/')[1]
 
 class AlveoSegmentationRoute(SegmenterWrapper):
-    decorators = [auth_required]
+    decorators = [
+            auth_required,
+            limiter.limit("15 per minute"),
+            limiter.limit("150 per day")
+        ]
 
     def _processor_get(self, user_id, remote_path):
         api_path = str(urlparse(remote_path).path)

@@ -44,6 +44,19 @@ class AlveoExportRoutesTests(AlveoTests):
             zip_json = json.loads(myfile.read())
             self.assertEqual(len(zip_json['transcription']), len(json.dumps(dataset_2['value'])))
 
+    def testExportRateLimit(self):
+        # Post some random data so we don't get a 404 on our export request
+        self.postRandomData(domain=DOMAIN)
+
+        rate_limit = 5
+
+        for i in range(rate_limit - 1):
+            data, is_json, status = self.get_file_response(DOMAIN+'/datastore/export/', self.DEFAULT_HEADERS)
+            self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
+
+        data, is_json, status = self.get_file_response(DOMAIN+'/datastore/export/', self.DEFAULT_HEADERS)
+        self.assertEqual(429, status, 'Expected to be rate limited after exceeding threshold')
+
     def testExportByKeyRevision(self):
         DATA_AMOUNT = 6
         REVISION_NAME = 'test_revision'

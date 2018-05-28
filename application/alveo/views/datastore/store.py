@@ -14,8 +14,16 @@ from application.alveo.module import DOMAIN, SUPPORTED_STORAGE_KEYS
 from application.auth.required import auth_required
 from application.datastore.view_wrappers.store import StoreWrapper
 
+from application import limiter
+
 class AlveoStoreRoute(StoreWrapper):
-    decorators = [auth_required]
+    decorators = [
+            auth_required,
+            limiter.limit("250 per minute"),
+            limiter.limit("10000 per hour"),
+            limiter.limit("60000 per day")
+        ]
+
     def _processor_get(self, store_id, user_id):
         query = Datastore.query.filter(Datastore.id == store_id).first()
 
