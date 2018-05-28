@@ -16,6 +16,7 @@ class Environment(object):
 class ProductionEnvironment(Environment):
     """
         Set up a production environment.
+
     """
 
     """
@@ -96,4 +97,8 @@ class ProductionEnvironment(Environment):
 
 
 class TestEnvironment(ProductionEnvironment):
+    """
+        Set up modified testing environment.
+
+    """
     TESTING = True
