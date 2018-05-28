@@ -1,6 +1,7 @@
 from flask import g
 
-from application import app, events
+from application import events
+from .modules import get_domain_handler
 
 EVENTS = {
     'AUTH': 'auth'
@@ -19,19 +20,6 @@ class handle_api_event(object):
     def __call__(self, function):
         self.handle = function
 
-def get_domain_handler(domain):
-    for handler in app.config['DOMAIN_HANDLERS']:
-        try:
-            if domain in handler['domains']:
-                return handler['module']
-        except:
-            pass
-
-def get_module_metadata(module):
-    try:
-        return next((handler for handler in app.config['DOMAIN_HANDLERS'] if handler["module"] == module), None)
-    except:
-        return None
 
 def get_handler_for(domain, event):
     module = get_domain_handler(domain)

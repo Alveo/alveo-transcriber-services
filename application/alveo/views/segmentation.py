@@ -3,19 +3,17 @@ from urllib.parse import urlparse
 from pyalveo import *
 from flask import abort, g
 
+from application.alveo.module import DOMAIN
 from application.auth.required import auth_required
 from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
 from application.misc.events import get_module_metadata
-from application.misc.query_wrapper import QueryWrapper
-from application.segmentation.view import UniformSegmenterWrapper
-
-from application.alveo.module import DOMAIN
+from application.segmentation.view import SegmenterWrapper
 
 def shorten_path(path):
     return urlparse(path).path.split('/catalog/')[1]
 
-class AlveoSegmentationRoute(UniformSegmenterWrapper):
+class AlveoSegmentationRoute(SegmenterWrapper):
     decorators = [auth_required]
 
     def _processor_get(self, path):
