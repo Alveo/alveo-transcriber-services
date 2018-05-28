@@ -12,7 +12,7 @@ from application.datastore.model import Datastore
 from application.alveo.module import DOMAIN, SUPPORTED_STORAGE_KEYS
 
 from application.auth.required import auth_required
-from application.datastore.views.manage import StoreWrapper
+from application.datastore.view_wrappers.store import StoreWrapper
 
 class AlveoStoreRoute(StoreWrapper):
     decorators = [auth_required]

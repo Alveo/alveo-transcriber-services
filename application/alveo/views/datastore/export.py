@@ -1,7 +1,7 @@
 from .helper_exports import datastore_export
 
 from application.auth.required import auth_required
-from application.datastore.views.export import ExportWrapper
+from application.datastore.view_wrappers.export import ExportWrapper
 
 class AlveoExportRoute(ExportWrapper):
     decorators = [auth_required]

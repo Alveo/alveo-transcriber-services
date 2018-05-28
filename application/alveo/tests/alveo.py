@@ -8,12 +8,12 @@ from application import db
 from application.alveo.module import DOMAIN
 from application.datastore.model import Datastore
 from application.users.model import User
+from application.misc.modules import get_module_metadata
 
-from application.misc.events import get_module_metadata
 from tests import ATSTests
 
 ALVEO_API_KEY = None
-ALVEO_API_URL = os.environ.get
+ALVEO_API_URL = None
 DEFAULT_HEADERS = None
 
 alveo_metadata = get_module_metadata('alveo')

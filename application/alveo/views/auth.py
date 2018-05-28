@@ -3,7 +3,8 @@ from flask import abort
 
 from application import app, db
 from application.users.model import User
-from application.misc.events import handle_api_event, get_module_metadata, EVENTS
+from application.misc.events import handle_api_event, EVENTS
+from application.misc.modules import get_module_metadata
 
 from application.alveo.module import DOMAIN
 

@@ -7,8 +7,8 @@ from application.alveo.module import DOMAIN
 from application.auth.required import auth_required
 from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
-from application.misc.events import get_module_metadata
-from application.segmentation.view import SegmenterWrapper
+from application.misc.modules import get_module_metadata
+from application.segmentation.view_wrapper import SegmenterWrapper
 
 def shorten_path(path):
     return urlparse(path).path.split('/catalog/')[1]

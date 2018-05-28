@@ -1,7 +1,7 @@
 from .helper_lists import datastore_list
 
 from application.auth.required import auth_required
-from application.datastore.views.list_by_user_key import ListByUserKeyWrapper
+from application.datastore.view_wrappers.list_by_user_key import ListByUserKeyWrapper
 
 class AlveoListByUserKeyRoute(ListByUserKeyWrapper):
     decorators = [auth_required]

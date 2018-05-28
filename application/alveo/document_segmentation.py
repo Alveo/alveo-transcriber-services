@@ -3,7 +3,7 @@ import uuid
 
 from application import app
 from application.segmentation.audio_segmentor import segment_audio_data
-from application.misc.events import get_module_metadata
+from application.misc.modules import get_module_metadata
 
 def segment_document(document_id, api_key):
     alveo_metadata = get_module_metadata("alveo")

@@ -4,7 +4,7 @@ from application import app
 from application.misc.query_wrapper import QueryWrapper
 from application.segmentation.audio_segmentor import segment_audio_data
 
-class UniformSegmenterWrapper(QueryWrapper):
+class SegmenterWrapper(QueryWrapper):
     def get(self):
         remote_url = request.args.get('remote_url')
 

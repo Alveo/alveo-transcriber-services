@@ -3,7 +3,7 @@ from application.alveo.module import DOMAIN
 
 from . import auth
 from .segmentation import segmentation_route
-from .datastore.manage import store_route
+from .datastore.store import store_route
 from .datastore.export import export_route
 from .datastore.export_by_key import export_by_key_route
 from .datastore.export_by_user import export_by_user_route
