@@ -1,15 +1,14 @@
 from flask import abort, g, jsonify, request
 
-from application.misc.events import MODULE_PATHS
-from application.misc.event_router import EventRouter
+from application.misc.query_wrapper import QueryWrapper
 
-class APIManage(EventRouter):
+class StoreWrapper(QueryWrapper):
     def get(self):
         store_id = request.args.get('store_id')
         if store_id is None:
             abort(400, "store_id not provided or invalid")
 
-        response = self.event(MODULE_PATHS['DATASTORE']['GET']).handle(
+        response = self._processor_get(
                 store_id=store_id,
                 user_id=g.user.id
             )
@@ -35,7 +34,7 @@ class APIManage(EventRouter):
         except:
             pass
 
-        response = self.event(MODULE_PATHS['DATASTORE']['POST']).handle(
+        response = self._processor_post(
                 key=key,
                 value=value,
                 revision=revision

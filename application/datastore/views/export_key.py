@@ -1,14 +1,13 @@
 from flask import abort, send_file, g
 
-from application.misc.events import MODULE_PATHS
-from application.misc.event_router import EventRouter
+from application.misc.query_wrapper import QueryWrapper
 
-class APIExportKey(EventRouter):
+class ExportByKeyWrapper(QueryWrapper):
     def get(self, key=None, revision=None):
         if key is None:
             abort(400, "Key not specified")
 
-        response = self.event(MODULE_PATHS['DATASTORE']['EXPORT']['KEY']).handle(
+        response = self._process_get(
                 key=key,
                 user_id=g.user.id,
                 revision=revision

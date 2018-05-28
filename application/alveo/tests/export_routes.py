@@ -27,7 +27,7 @@ class AlveoExportRoutesTests(AlveoTests):
         response_2, status = response_query;
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
-        data, is_json, status = self.get_file_response('/datastore/export/', self.DEFAULT_HEADERS)
+        data, is_json, status = self.get_file_response(DOMAIN+'/datastore/export/', self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to export valid data while logged in.')
         self.assertFalse(is_json, 'Expected streamed file data, not actual JSON response.')
 
@@ -54,17 +54,17 @@ class AlveoExportRoutesTests(AlveoTests):
             self.postRandomData()
 
         dataset_1 = self.generateSamplePostData(key=KEY, revision=REVISION_NAME)
-        response_1, status = self.post_json_request('/datastore/', json.dumps(dataset_1), self.DEFAULT_HEADERS)
+        response_1, status = self.post_json_request(DOMAIN+'/datastore/', json.dumps(dataset_1), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
         for i in range(int(DATA_AMOUNT / 2)):
             self.postRandomData()
 
         dataset_2 = self.generateSamplePostData(key=KEY, revision=REVISION_NAME_2)
-        response_2, status = self.post_json_request('/datastore/', json.dumps(dataset_2), self.DEFAULT_HEADERS)
+        response_2, status = self.post_json_request(DOMAIN+'/datastore/', json.dumps(dataset_2), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
-        data, is_json, status = self.get_file_response('/datastore/export/%s'%(KEY), self.DEFAULT_HEADERS)
+        data, is_json, status = self.get_file_response(DOMAIN+'/datastore/export/%s'%(KEY), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to export valid data while logged in.')
         self.assertFalse(is_json, 'Expected streamed file data, not actual JSON response.')
 
@@ -91,7 +91,7 @@ class AlveoExportRoutesTests(AlveoTests):
         user.domain = 'notalveo'
         db.session.commit()
 
-        data, is_json, status = self.get_file_response('/datastore/user/%s/export/'%user.id, self.DEFAULT_HEADERS)
+        data, is_json, status = self.get_file_response(DOMAIN+'/datastore/user/%s/export/'%user.id, self.DEFAULT_HEADERS)
         self.assertEqual(403, status, 'Expected forbidden status when attempting to list store from a different user on another domain, while logged in.')
         self.assertTrue(is_json, 'Expected JSON error message about not being accessible')
 
@@ -101,7 +101,7 @@ class AlveoExportRoutesTests(AlveoTests):
 
         self.assertTrue(user != None, 'Expected sample users to exist from generated sample data.')
 
-        data, is_json, status = self.get_file_response('/datastore/user/%s/export/'%user.id, self.DEFAULT_HEADERS)
+        data, is_json, status = self.get_file_response(DOMAIN+'/datastore/user/%s/export/'%user.id, self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to export valid data from another user of the same module while logged in.')
         self.assertFalse(is_json, 'Expected streamed file data, not actual JSON response.')
 

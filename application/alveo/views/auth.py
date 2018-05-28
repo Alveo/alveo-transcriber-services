@@ -3,11 +3,11 @@ from flask import abort
 
 from application import app, db
 from application.users.model import User
-from application.misc.events import handle_api_event, get_module_metadata, MODULE_PATHS
+from application.misc.events import handle_api_event, get_module_metadata, EVENTS
 
 from application.alveo.module import DOMAIN
 
-@handle_api_event(DOMAIN, MODULE_PATHS['AUTH'])
+@handle_api_event(DOMAIN, EVENTS['AUTH'])
 def auth_alveo(remote_user_id, remote_api_key):
     if not remote_api_key:
         abort(400, "Alveo API key was not provided")

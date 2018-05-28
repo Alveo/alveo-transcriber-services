@@ -1,8 +1,11 @@
-from application.misc.events import handle_api_event, MODULE_PATHS
 from .helper_exports import datastore_export
 
-from application.alveo.module import DOMAIN
+from application.auth.required import auth_required
+from application.datastore.views.export_by_user import ExportByUserWrapper
 
-@handle_api_event(DOMAIN, MODULE_PATHS['DATASTORE']['EXPORT']['USER'])
-def alveo_datastore_export_by_user(user_id, revision):
-    return datastore_export(user_id=user_id, revision=revision)
+class AlveoExportByUserRoute(ExportByUserWrapper):
+    decorators = [auth_required]
+    def _process_get(user_id, revision):
+        return datastore_export(user_id=user_id, revision=revision)
+
+export_by_user_route = AlveoExportByUserRoute.as_view('/alveo/datastore/export/user')

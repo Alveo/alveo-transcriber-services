@@ -1,15 +1,14 @@
-from flask import abort, jsonify, g
+from flask import jsonify, g
 
-from application.misc.events import MODULE_PATHS
-from application.misc.event_router import EventRouter
+from application.misc.query_wrapper import QueryWrapper
 
-class APIList(EventRouter):
+class ListWrapper(QueryWrapper):
     def get(self, revision=None):
         user_id = None
         if g.user != None:
             user_id = g.user.id
 
-        response = self.event(MODULE_PATHS['DATASTORE']['LIST']['SELF']).handle(
+            response = self._processor_get(
                 user_id=user_id,
                 revision=revision
             )

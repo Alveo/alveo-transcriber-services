@@ -1,14 +1,10 @@
-from flask import abort, send_file, g
+from flask import send_file, g
 
-from application.misc.events import MODULE_PATHS
-from application.misc.event_router import EventRouter
+from application.misc.query_wrapper import QueryWrapper
 
-class APIExport(EventRouter):
+class ExportWrapper(QueryWrapper):
     def get(self, revision=None):
-        response = self.event(MODULE_PATHS['DATASTORE']['EXPORT']['SELF']).handle(
-                user_id=g.user.id,
-                revision=revision
-            )
+        response = self._processor_get(user_id=g.user.id, revision=revision)
 
         return send_file(
             response['data'],

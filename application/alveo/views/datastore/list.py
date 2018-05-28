@@ -1,9 +1,12 @@
-from application.misc.events import handle_api_event, MODULE_PATHS
 from .helper_lists import datastore_list
 
-from application.alveo.module import DOMAIN
+from application.auth.required import auth_required
+from application.datastore.views.list import ListWrapper
 
-@handle_api_event(DOMAIN, MODULE_PATHS['DATASTORE']['LIST']['SELF'], {'limit_value':'3 per minute'})
-def alveo_datastore_list(user_id, revision):
-    return datastore_list(user_id=user_id, revision=revision)
+class AlveoListRoute(ListWrapper):
+    decorators = [auth_required]
 
+    def _process_get(user_id, key, revision):
+        return datastore_list(user_id=user_id, revision=revision)
+
+list_route = AlveoListRoute.as_view('/alveo/datastore/list')

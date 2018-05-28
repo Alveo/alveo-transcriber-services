@@ -4,7 +4,7 @@ import json
 
 from .helper_query import datastore_query
 
-from flask import send_file
+from flask import abort
 
 def datastore_export(user_id=None, key=None, revision=None):
     transcriptions = datastore_query(user_id=user_id, key=key, revision=revision)

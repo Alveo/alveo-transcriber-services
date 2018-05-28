@@ -1,21 +1,17 @@
-from urllib.parse import urlparse
-
-from flask import jsonify, abort, g, request
+from flask import jsonify, abort, request
 
 from application import app
-from application.misc.event_router import EventRouter
-from application.misc.events import MODULE_PATHS
-from application.auth.required import auth_required
+from application.misc.query_wrapper import QueryWrapper
 from application.segmentation.audio_segmentor import segment_audio_data
 
-class SegmenterAPI(EventRouter):
+class UniformSegmenterWrapper(QueryWrapper):
     def get(self):
         remote_url = request.args.get('remote_url')
 
         if remote_url is None:
             abort(400, "Request did not include a document to segment");
 
-        results = self.event(MODULE_PATHS['SEGMENTATION']).handle(remote_url)
+        results = self._processor_get(remote_url)
 
         return jsonify({
                 "results": results
@@ -32,10 +28,10 @@ class SegmenterAPI(EventRouter):
         if audiofile.filename is '':
             abort(400, 'No file selected in query')
 
+        # TODO no self._processor_post?
+
         result = segment_audio_data(audiofile.read())
         if result is None:
             abort(400, "Uploaded file is not a valid .wav audio file.")
 
         return jsonify(result)
-
-segmenter_api = auth_required(SegmenterAPI.as_view('segmentor_api'))

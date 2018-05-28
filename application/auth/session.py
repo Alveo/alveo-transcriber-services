@@ -1,7 +1,7 @@
 from flask import g, request, abort
 
 from application import app, login_manager
-from application.misc.events import get_handler_for, MODULE_PATHS
+from application.misc.events import get_handler_for, EVENTS
 
 @login_manager.request_loader
 def load_user_from_request(request):
@@ -13,7 +13,7 @@ def load_user_from_request(request):
     if api_domain is None or api_key is None:
         return None
 
-    auth = get_handler_for(api_domain, MODULE_PATHS['AUTH'])
+    auth = get_handler_for(api_domain, EVENTS['AUTH'])
     if auth is None:
         return None
 

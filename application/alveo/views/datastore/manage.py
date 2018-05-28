@@ -6,67 +6,71 @@ from flask import g, abort
 
 from application import db
 from application.users.model import User
-from application.misc.events import handle_api_event, MODULE_PATHS
 
 from application.datastore.model import Datastore
 
 from application.alveo.module import DOMAIN, SUPPORTED_STORAGE_KEYS
 
-@handle_api_event(DOMAIN, MODULE_PATHS['DATASTORE']['GET'])
-def alveo_retrieve(store_id, user_id):
-    query = Datastore.query.filter(Datastore.id == store_id).first()
+from application.auth.required import auth_required
+from application.datastore.views.manage import StoreWrapper
 
-    if query is None:
-        abort(404, 'No match for the provided id')
+class AlveoStoreRoute(StoreWrapper):
+    decorators = [auth_required]
+    def _process_get(store_id, user_id):
+        query = Datastore.query.filter(Datastore.id == store_id).first()
 
-    user = User.query.filter(User.id == query.user_id).first()
+        if query is None:
+            abort(404, 'No match for the provided id')
 
-    if not user.domain == DOMAIN:
-        abort(403, 'You don\'t have permission to read the storage of an external user')
+        user = User.query.filter(User.id == query.user_id).first()
 
-    return {
-            'id': query.id,
-            'key': query.key.split(':')[1],
-            'revision': query.revision,
-            'transcription': json.loads(query.get_value()),
-            'timestamp': str(query.timestamp),
-            'author': {
-                'original': str(query.versions[0].user),
-                'editor': str(query.user)
-            },
-        }
+        if not user.domain == DOMAIN:
+            abort(403, 'You don\'t have permission to read the storage of an external user')
 
-@handle_api_event(DOMAIN, MODULE_PATHS['DATASTORE']['POST'])
-def alveo_store(key, value, revision=None):
-    # We're not interested in letting the user
-    #  have their own revision names in the Alveo
-    #  module right now.
-    revision = str(uuid.uuid4())
-    
-    if key is None or len(key) < 2:
-        abort(400, 'Key is invalid or too short')
+        return {
+                'id': query.id,
+                'key': query.key.split(':')[1],
+                'revision': query.revision,
+                'transcription': json.loads(query.get_value()),
+                'timestamp': str(query.timestamp),
+                'author': {
+                    'original': str(query.versions[0].user),
+                    'editor': str(query.user)
+                },
+            }
 
-    validate_data(value)
+    def _process_post(key, value, revision=None):
+        # We're not interested in letting the user
+        #  have their own revision names in the Alveo
+        #  module right now.
+        revision = str(uuid.uuid4())
+        
+        if key is None or len(key) < 2:
+            abort(400, 'Key is invalid or too short')
 
-    key = '%s:%s' % (DOMAIN, key)
+        validate_data(value)
 
-    model = Datastore.query.filter(Datastore.key == key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
-    
-    data = json.dumps(value)
+        key = '%s:%s' % (DOMAIN, key)
 
-    if model is None:
-        model = Datastore(key, data, revision, g.user)
-    else:
-        model.set_value(data)
-        model.revision = revision
+        model = Datastore.query.filter(Datastore.key == key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
+        
+        data = json.dumps(value)
 
-    db.session.add(model)
-    db.session.commit()
+        if model is None:
+            model = Datastore(key, data, revision, g.user)
+        else:
+            model.set_value(data)
+            model.revision = revision
 
-    return {
-            'id': model.id,
-            'revision': model.revision
-        }
+        db.session.add(model)
+        db.session.commit()
+
+        return {
+                'id': model.id,
+                'revision': model.revision
+            }
+
+store_route = AlveoStoreRoute.as_view('/alveo/datastore/')
 
 def validate_data(data):
     if not isinstance(data, list):

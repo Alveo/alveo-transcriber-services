@@ -1,9 +1,8 @@
 from flask import abort, jsonify
 
-from application.misc.events import MODULE_PATHS
-from application.misc.event_router import EventRouter
+from application.misc.query_wrapper import QueryWrapper
 
-class APIListByUserKey(EventRouter):
+class ListByUserKeyWrapper(QueryWrapper):
     def get(self, user_id=None, key=None, revision=None):
         if user_id is None:
             abort(400, "User not specified")
@@ -11,7 +10,7 @@ class APIListByUserKey(EventRouter):
         if key is None:
             abort(400, "Key not specified")
 
-        response = self.event(MODULE_PATHS['DATASTORE']['LIST']['USER+KEY']).handle(
+        response = self._processor_get(
                 key=key,
                 user_id=user_id,
                 revision=revision
