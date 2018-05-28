@@ -5,15 +5,17 @@ from application.datastore.view_wrappers.export import ExportWrapper
 
 from application import limiter
 
+
 class AlveoExportRoute(ExportWrapper):
     decorators = [
-            auth_required,
-            limiter.limit("5 per minute"),
-            limiter.limit("25 per hour"),
-            limiter.limit("50 per day")
-        ]
+        auth_required,
+        limiter.limit("5 per minute"),
+        limiter.limit("25 per hour"),
+        limiter.limit("50 per day")
+    ]
 
     def _processor_get(self, user_id, revision):
         return datastore_export(user_id=user_id, revision=revision)
+
 
 export_route = AlveoExportRoute.as_view('/alveo/datastore/export')

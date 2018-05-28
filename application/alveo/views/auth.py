@@ -8,6 +8,7 @@ from application.misc.modules import get_module_metadata
 
 from application.alveo.module import DOMAIN
 
+
 @handle_api_event(DOMAIN, EVENTS['AUTH'])
 def auth_alveo(remote_user_id, remote_api_key):
     if not remote_api_key:
@@ -29,10 +30,11 @@ def auth_alveo(remote_user_id, remote_api_key):
     if user_id is None:
         abort(400, "Malformed or unexpected data was received from the Alveo application server. Request could not be completed.")
 
-    user_ref = User.query.filter(User.remote_id == user_id).filter(User.domain == DOMAIN).first()
+    user_ref = User.query.filter(User.remote_id == user_id).filter(
+        User.domain == DOMAIN).first()
     if user_ref is None:
         user_ref = User(user_id, DOMAIN)
         db.session.add(user_ref)
         db.session.commit()
-    
+
     return user_ref

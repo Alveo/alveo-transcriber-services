@@ -3,18 +3,20 @@ from flask import jsonify, abort, request, g
 from application import app
 from application.misc.query_wrapper import QueryWrapper
 
+
 class SegmenterWrapper(QueryWrapper):
     def get(self):
         remote_url = request.args.get('remote_url')
 
         if remote_url is None:
-            abort(400, "Request did not include a document to segment");
+            abort(400, "Request did not include a document to segment")
 
-        results = self._processor_get(user_id=g.user.id, remote_path=remote_url)
+        results = self._processor_get(
+            user_id=g.user.id, remote_path=remote_url)
 
         return jsonify({
-                "results": results
-            })
+            "results": results
+        })
 
     def post(self):
         if not app.config['ALLOW_POST_SEGMENTATION']:
@@ -30,5 +32,5 @@ class SegmenterWrapper(QueryWrapper):
         results = self._processor_post(user_id=g.user.id, audiofile=audiofile)
 
         return jsonify({
-                "results": results
-            })
+            "results": results
+        })

@@ -6,6 +6,7 @@ import wave
 import audioop
 import webrtcvad
 
+
 def read_wave(path):
     """Reads a .wav file.
 
@@ -38,7 +39,8 @@ def read_wave(path):
             else:
                 newrate = 8000
 
-            pcm_data, newstate = audioop.ratecv(pcm_data, 2, 1, sample_rate, newrate, None)
+            pcm_data, newstate = audioop.ratecv(
+                pcm_data, 2, 1, sample_rate, newrate, None)
             sample_rate = newrate
 
         return pcm_data, sample_rate
@@ -46,6 +48,7 @@ def read_wave(path):
 
 class Frame(object):
     """Represents a "frame" of audio data."""
+
     def __init__(self, bytes, timestamp, duration):
         self.bytes = bytes
         self.timestamp = timestamp
@@ -154,14 +157,13 @@ def sad(audiofile, aggressiveness=1):
     vad = webrtcvad.Vad(int(aggressiveness))
     frames = frame_generator(30, audio, sample_rate)
     result = []
-    for seg in  vad_collector(sample_rate, 30, 300, vad, frames):
+    for seg in vad_collector(sample_rate, 30, 300, vad, frames):
         result.append({'start': seg[0], 'end': seg[1]})
 
     return result
 
 
-
-if __name__=='__main__':
+if __name__ == '__main__':
 
     import sys
     import pprint

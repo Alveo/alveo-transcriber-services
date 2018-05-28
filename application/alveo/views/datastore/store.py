@@ -16,13 +16,14 @@ from application.datastore.view_wrappers.store import StoreWrapper
 
 from application import limiter
 
+
 class AlveoStoreRoute(StoreWrapper):
     decorators = [
-            auth_required,
-            limiter.limit("250 per minute"),
-            limiter.limit("10000 per hour"),
-            limiter.limit("60000 per day")
-        ]
+        auth_required,
+        limiter.limit("250 per minute"),
+        limiter.limit("10000 per hour"),
+        limiter.limit("60000 per day")
+    ]
 
     def _processor_get(self, store_id, user_id):
         query = Datastore.query.filter(Datastore.id == store_id).first()
@@ -33,26 +34,28 @@ class AlveoStoreRoute(StoreWrapper):
         user = User.query.filter(User.id == query.user_id).first()
 
         if not user.domain == DOMAIN:
-            abort(403, 'You don\'t have permission to read the storage of an external user')
+            abort(
+                403,
+                'You don\'t have permission to read the storage of an external user')
 
         return {
-                'id': query.id,
-                'key': query.key.split(':')[1],
-                'revision': query.revision,
-                'transcription': json.loads(query.get_value()),
-                'timestamp': str(query.timestamp),
-                'author': {
-                    'original': str(query.versions[0].user),
-                    'editor': str(query.user)
-                },
-            }
+            'id': query.id,
+            'key': query.key.split(':')[1],
+            'revision': query.revision,
+            'transcription': json.loads(query.get_value()),
+            'timestamp': str(query.timestamp),
+            'author': {
+                'original': str(query.versions[0].user),
+                'editor': str(query.user)
+            },
+        }
 
     def _processor_post(self, key, value, revision=None):
         # We're not interested in letting the user
         #  have their own revision names in the Alveo
         #  module right now.
         revision = str(uuid.uuid4())
-        
+
         if key is None or len(key) < 2:
             abort(400, 'Key is invalid or too short')
 
@@ -60,8 +63,11 @@ class AlveoStoreRoute(StoreWrapper):
 
         key = '%s:%s' % (DOMAIN, key)
 
-        model = Datastore.query.filter(Datastore.key == key).filter(Datastore.revision == revision).filter(Datastore.user_id == g.user.id).first()
-        
+        model = Datastore.query.filter(
+            Datastore.key == key).filter(
+            Datastore.revision == revision).filter(
+            Datastore.user_id == g.user.id).first()
+
         data = json.dumps(value)
 
         if model is None:
@@ -74,11 +80,13 @@ class AlveoStoreRoute(StoreWrapper):
         db.session.commit()
 
         return {
-                'id': model.id,
-                'revision': model.revision
-            }
+            'id': model.id,
+            'revision': model.revision
+        }
+
 
 store_route = AlveoStoreRoute.as_view('/alveo/datastore/')
+
 
 def validate_data(data):
     if not isinstance(data, list):
@@ -94,7 +102,8 @@ def validate_data(data):
 
             expected_type = SUPPORTED_STORAGE_KEYS[key]['type']
             if not isinstance(entry[key], expected_type):
-                abort(400, 'Invalid type for key \'%s\', expected %s got %s' % (key, expected_type.__name__, type(entry[key]).__name__))
+                abort(400, 'Invalid type for key \'%s\', expected %s got %s' %
+                      (key, expected_type.__name__, type(entry[key]).__name__))
 
         for key in supported_keys:
             if SUPPORTED_STORAGE_KEYS[key]['required']:

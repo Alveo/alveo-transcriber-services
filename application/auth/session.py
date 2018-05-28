@@ -3,6 +3,7 @@ from flask import g, request, abort
 from application import app, login_manager
 from application.misc.events import get_handler_for, EVENTS
 
+
 @login_manager.request_loader
 def load_user_from_request(request):
     """ Authenticates users via API key from header """
@@ -22,6 +23,7 @@ def load_user_from_request(request):
         user.remote_api_key = api_key
 
     return user
+
 
 @app.before_request
 def before_request():

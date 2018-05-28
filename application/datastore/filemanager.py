@@ -2,6 +2,7 @@ import os
 
 from application import app
 
+
 class FileManager:
     def __init__(self, file_path, file_data):
         self.file_path = file_path
@@ -12,7 +13,7 @@ class FileManager:
             f.write(file_data)
 
         self.stored = True
-        
+
     def _validate_path(self):
         """ Validates whether the directory exists or not. Creates the directory if it does not exist. Should not be called from outside the class. """
         directory = os.path.dirname(os.path.realpath(self.file_path))
@@ -24,6 +25,6 @@ class FileManager:
         if self.stored:
             try:
                 os.remove(self.file_path)
-            except:
+            except BaseException:
                 pass
             self.stored = False

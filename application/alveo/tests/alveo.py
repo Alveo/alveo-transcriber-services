@@ -25,12 +25,14 @@ ALVEO_API_URL = alveo_metadata['api_url']
 ALVEO_API_KEY = os.environ.get('ALVEO_API_KEY', None)
 
 if ALVEO_API_KEY is None:
-    raise Exception('ALVEO_API_KEY environment variable is not set. Cannot proceed.')
+    raise Exception(
+        'ALVEO_API_KEY environment variable is not set. Cannot proceed.')
 
 DEFAULT_HEADERS = {
-            'X-Api-Key': ALVEO_API_KEY,
-            'X-Api-Domain': 'app.alveo.edu.au'
-        }
+    'X-Api-Key': ALVEO_API_KEY,
+    'X-Api-Domain': 'app.alveo.edu.au'
+}
+
 
 class AlveoTests(ATSTests):
     def setUp(self):
@@ -53,7 +55,7 @@ class AlveoTests(ATSTests):
                 "end": end,
                 "speaker": str(random.randint(1, 1000)),
                 "annotation": str(uuid.uuid4())
-              }
+            }
             transcription.append(annotation)
 
         return transcription
@@ -72,24 +74,24 @@ class AlveoTests(ATSTests):
         if revision is not None:
             data['revision'] = revision
 
-        data['value'] = self.generateTranscription(fields);
+        data['value'] = self.generateTranscription(fields)
 
         return data
 
     def generateSampleAlveoData(self):
-        self.createSampleData();
+        self.createSampleData()
 
         for i in range(random.randint(7, 15)):
-            username = secrets.token_hex(8);
+            username = secrets.token_hex(8)
             user = User(username, DOMAIN)
 
             for i in range(random.randint(3, 25)):
                 datastore = Datastore(
-                        '%s:%s' % (DOMAIN, uuid.uuid4()), 
-                        json.dumps(self.generateTranscription()),
-                        str(uuid.uuid4()),
-                        user
-                    )
+                    '%s:%s' % (DOMAIN, uuid.uuid4()),
+                    json.dumps(self.generateTranscription()),
+                    str(uuid.uuid4()),
+                    user
+                )
                 db.session.add(datastore)
             db.session.add(user)
         db.session.commit()

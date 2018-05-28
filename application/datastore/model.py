@@ -6,6 +6,7 @@ from application import db
 
 make_versioned()
 
+
 class Datastore(db.Model):
     __versioned__ = {}
 
@@ -31,5 +32,6 @@ class Datastore(db.Model):
 
     def get_value(self):
         return self.value.decode()
+
 
 sa.orm.configure_mappers()

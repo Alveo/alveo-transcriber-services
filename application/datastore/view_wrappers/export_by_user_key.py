@@ -2,6 +2,7 @@ from flask import abort, send_file
 
 from application.misc.query_wrapper import QueryWrapper
 
+
 class ExportByUserKeyWrapper(QueryWrapper):
     def get(self, user_id=None, key=None, revision=None):
         if user_id is None:
@@ -11,10 +12,10 @@ class ExportByUserKeyWrapper(QueryWrapper):
             abort(400, "Key not specified")
 
         response = self._process_get(
-                key=key,
-                user_id=user_id,
-                revision=revision
-            )
+            key=key,
+            user_id=user_id,
+            revision=revision
+        )
 
         return send_file(
             response['data'],

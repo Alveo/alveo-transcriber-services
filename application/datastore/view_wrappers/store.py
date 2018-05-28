@@ -2,6 +2,7 @@ from flask import abort, g, jsonify, request
 
 from application.misc.query_wrapper import QueryWrapper
 
+
 class StoreWrapper(QueryWrapper):
     def get(self):
         store_id = request.args.get('store_id')
@@ -9,9 +10,9 @@ class StoreWrapper(QueryWrapper):
             abort(400, "store_id not provided or invalid")
 
         response = self._processor_get(
-                store_id=store_id,
-                user_id=g.user.id
-            )
+            store_id=store_id,
+            user_id=g.user.id
+        )
         return jsonify(response)
 
     def post(self):
@@ -23,7 +24,7 @@ class StoreWrapper(QueryWrapper):
         try:
             key = data['key']
             value = data['value']
-        except:
+        except BaseException:
             if key is None:
                 abort(400, "key not provided or invalid")
 
@@ -31,12 +32,12 @@ class StoreWrapper(QueryWrapper):
                 abort(400, "value not provided or invalid")
         try:
             revision = data['revision']
-        except:
+        except BaseException:
             pass
 
         response = self._processor_post(
-                key=key,
-                value=value,
-                revision=revision
-            )
+            key=key,
+            value=value,
+            revision=revision
+        )
         return jsonify(response)

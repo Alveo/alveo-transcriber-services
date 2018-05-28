@@ -6,6 +6,7 @@ from application import app
 from application.segmentation.speechtools.segmentor import sad
 from application.datastore.filemanager import FileManager
 
+
 def segment_audio_data(audio_data):
     file_path = app.config['DOWNLOAD_CACHE_PATH'] + str(uuid.uuid4())
 
@@ -20,11 +21,13 @@ def segment_audio_data(audio_data):
 
     # Cleanup after segmenting
     downloader.cleanup()
-    
+
     return result
+
 
 class AudioSegmentor:
     """ AudioSegmentor is a class for validating and segmenting wave files. """
+
     def __init__(self, wave_file):
         self.wave_file = wave_file
 
@@ -33,7 +36,7 @@ class AudioSegmentor:
     def _validate(self):
         """ Determines whether the file is a valid wave file. Should not be called from outside the class. """
         self.valid = False
-        header = sndhdr.whathdr(self.wave_file);
+        header = sndhdr.whathdr(self.wave_file)
 
         if header is not None:
             if header.filetype is "wav":
