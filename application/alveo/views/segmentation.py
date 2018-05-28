@@ -9,6 +9,7 @@ from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
 from application.misc.modules import get_module_metadata
 from application.segmentation.view_wrapper import SegmenterWrapper
+from application.segmentation.audio_segmentor import segment_audio_data
 
 def shorten_path(path):
     return urlparse(path).path.split('/catalog/')[1]
@@ -16,11 +17,12 @@ def shorten_path(path):
 class AlveoSegmentationRoute(SegmenterWrapper):
     decorators = [auth_required]
 
-    def _processor_get(self, path):
-        api_path = str(urlparse(path).path)
+    def _processor_get(self, user_id, remote_path):
+        api_path = str(urlparse(remote_path).path)
         if '/' not in api_path or api_path == "/":
             abort(400, 'Request did not include an Alveo document identifier to segment')
 
+        # We care more about the user itself than the user_id, another option is to query the database for something that matches the key but that would be slower
         api_key = g.user.remote_api_key
 
         alveo_metadata = get_module_metadata("alveo")
@@ -31,19 +33,27 @@ class AlveoSegmentationRoute(SegmenterWrapper):
         # Would be good if we could just check Alveo permissions instead of retrieving the item directly. 
         # https://github.com/Alveo/pyalveo/issues/11
         try:
-            itemlist_path = path.split('/document/')[0]
+            itemlist_path = remote_path.split('/document/')[0]
             itemlist = client.get_item(itemlist_path)
         except APIError as e:
             abort(400, "Response from remote host: \n"+str(e))
 
-        result = get_cached_result(shorten_path(path))
+        result = get_cached_result(shorten_path(remote_path))
         if result is None:
-            result = segment_document(path, api_key) 
+            result = segment_document(remote_path, api_key) 
             if result is None:
                 abort(400, 'Could not access requested document')
             else:
-                cache_result(shorten_path(path), result)
+                cache_result(shorten_path(remote_path), result)
 
         return result
+
+    def _processor_post(self, user_id, audiofile):
+        result = segment_audio_data(audiofile.read())
+        if result is None:
+            abort(400, "Uploaded file is not a valid .wav audio file.")
+
+        return result
+
 
 segmentation_route = AlveoSegmentationRoute.as_view('/alveo/segment')

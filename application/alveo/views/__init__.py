@@ -86,6 +86,3 @@ blueprint.add_url_rule(
         '/datastore/user/<user_id>/list/<key>/<revision>',
         view_func=list_by_user_key_route,
     )
-
-#from application import app
-#app.register_blueprint(blueprint, url_prefix='/%s'%DOMAIN)

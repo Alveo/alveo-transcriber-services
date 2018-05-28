@@ -1,8 +1,7 @@
-from flask import jsonify, abort, request
+from flask import jsonify, abort, request, g
 
 from application import app
 from application.misc.query_wrapper import QueryWrapper
-from application.segmentation.audio_segmentor import segment_audio_data
 
 class SegmenterWrapper(QueryWrapper):
     def get(self):
@@ -11,7 +10,7 @@ class SegmenterWrapper(QueryWrapper):
         if remote_url is None:
             abort(400, "Request did not include a document to segment");
 
-        results = self._processor_get(remote_url)
+        results = self._processor_get(user_id=g.user.id, remote_path=remote_url)
 
         return jsonify({
                 "results": results
@@ -28,10 +27,8 @@ class SegmenterWrapper(QueryWrapper):
         if audiofile.filename is '':
             abort(400, 'No file selected in query')
 
-        # TODO no self._processor_post?
+        results = self._processor_post(user_id=g.user.id, audiofile=audiofile)
 
-        result = segment_audio_data(audiofile.read())
-        if result is None:
-            abort(400, "Uploaded file is not a valid .wav audio file.")
-
-        return jsonify(result)
+        return jsonify({
+                "results": results
+            })
