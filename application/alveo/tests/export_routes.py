@@ -14,16 +14,16 @@ class AlveoExportRoutesTests(AlveoTests):
     def testExport(self):
         DATA_AMOUNT = 10
         for i in range(int(DATA_AMOUNT / 2)):
-            self.postRandomData()
+            self.postRandomData(domain=DOMAIN)
 
-        response_query, dataset_1 = self.postRandomData(True)
+        response_query, dataset_1 = self.postRandomData(True, domain=DOMAIN)
         response_1, status = response_query;
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
         for i in range(int(DATA_AMOUNT / 2)):
-            self.postRandomData()
+            self.postRandomData(domain=DOMAIN)
 
-        response_query, dataset_2 = self.postRandomData(True)
+        response_query, dataset_2 = self.postRandomData(True, domain=DOMAIN)
         response_2, status = response_query;
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
@@ -51,14 +51,14 @@ class AlveoExportRoutesTests(AlveoTests):
         KEY = str(uuid.uuid4())
 
         for i in range(int(DATA_AMOUNT / 2)):
-            self.postRandomData()
+            self.postRandomData(domain=DOMAIN)
 
         dataset_1 = self.generateSamplePostData(key=KEY, revision=REVISION_NAME)
         response_1, status = self.post_json_request(DOMAIN+'/datastore/', json.dumps(dataset_1), self.DEFAULT_HEADERS)
         self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
         for i in range(int(DATA_AMOUNT / 2)):
-            self.postRandomData()
+            self.postRandomData(domain=DOMAIN)
 
         dataset_2 = self.generateSamplePostData(key=KEY, revision=REVISION_NAME_2)
         response_2, status = self.post_json_request(DOMAIN+'/datastore/', json.dumps(dataset_2), self.DEFAULT_HEADERS)

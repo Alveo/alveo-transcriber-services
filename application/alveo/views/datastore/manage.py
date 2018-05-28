@@ -16,7 +16,7 @@ from application.datastore.views.manage import StoreWrapper
 
 class AlveoStoreRoute(StoreWrapper):
     decorators = [auth_required]
-    def _process_get(store_id, user_id):
+    def _processor_get(self, store_id, user_id):
         query = Datastore.query.filter(Datastore.id == store_id).first()
 
         if query is None:
@@ -39,7 +39,7 @@ class AlveoStoreRoute(StoreWrapper):
                 },
             }
 
-    def _process_post(key, value, revision=None):
+    def _processor_post(self, key, value, revision=None):
         # We're not interested in letting the user
         #  have their own revision names in the Alveo
         #  module right now.

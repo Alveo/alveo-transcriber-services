@@ -13,7 +13,7 @@ class AlveoListRoutesTests(AlveoTests):
     def testGetList(self):
         DATA_AMOUNT = 12
         for i in range(DATA_AMOUNT):
-            self.postRandomData()
+            self.postRandomData(domain=DOMAIN)
 
         response, status = self.get_json_response(DOMAIN+'/datastore/list/', self.DEFAULT_HEADERS)
         self.assertEqual(len(response['storage_objects']), DATA_AMOUNT, 'Expected to get a list matching the amount of items that were just posted.')
@@ -26,16 +26,16 @@ class AlveoListRoutesTests(AlveoTests):
         responses = []
 
         for i in range(DATASET_AMOUNT):
-            posts.append((self.postRandomData, {'return_sample': True}))
+            posts.append((self.postRandomData, {'return_sample': True, 'domain': DOMAIN}))
 
         for i in range(DATA_AMOUNT):
-            posts.append((self.postRandomData, {'return_sample': False}))
+            posts.append((self.postRandomData, {'return_sample': True, 'domain': DOMAIN}))
 
         random.shuffle(posts)
 
         for post in posts:
             function, args = post
-            response_query, dataset = function(*args)
+            response_query, dataset = function(**args)
             response, status = response_query;
             self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
@@ -65,23 +65,21 @@ class AlveoListRoutesTests(AlveoTests):
         revisions = []
 
         for i in range(DATASET_AMOUNT):
-            params = (
-                    DOMAIN+'/datastore/',
-                    json.dumps(
-                        self.generateSamplePostData(key=KEY)
-                    ),
-                    self.DEFAULT_HEADERS
-                )
+            params = ({
+                    'path': DOMAIN+'/datastore/',
+                    'data': json.dumps(self.generateSamplePostData(key=KEY)),
+                    'headers': self.DEFAULT_HEADERS
+                })
             posts.append((self.post_json_request, params))
 
         for i in range(DATA_AMOUNT):
-            posts.append((self.postRandomData, ()))
+            posts.append((self.postRandomData, {'return_sample': False, 'domain': DOMAIN}))
 
         random.shuffle(posts)
 
         for post in posts:
             function, args = post
-            response, status = function(*args)
+            response, status = function(**args)
             self.assertEqual(200, status, 'Expected OK status when attempting to post valid data while logged in.')
 
             if function == self.post_json_request:
