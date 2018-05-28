@@ -2,8 +2,8 @@
 # Set environment variables for:
 #  ATS_API_DOMAIN, e.g app.alveo.edu.au
 #  ATS_API_KEY, e.g a valid Alveo API key
-#  ATS_URL, e.g https://segmenter.apps.alveo.edu.au
-
+#  ATS_URL, e.g https://segmenter.apps.alveo.edu.au/alveo
+#
 # Attempts to authenticate and retrieve a stored object
 # Example usage:
 #   sh store-retrieve.sh store_id
