@@ -38,16 +38,30 @@ class AlveoStoreRoute(StoreWrapper):
                 403,
                 'You don\'t have permission to read the storage of an external user')
 
+        data = json.loads(query.get_value())
+        original_author = query.versions[0].user
+        revision_author = query.user
+
         return {
             'id': query.id,
             'key': query.key.split(':')[1],
             'revision': query.revision,
-            'transcription': json.loads(query.get_value()),
+            'revision_count': query.versions.count(),
+            'transcription': data,
+            'annotations_total': len(data),
             'timestamp': str(query.timestamp),
             'author': {
-                'original': str(query.versions[0].user),
-                'editor': str(query.user)
-            },
+                'original': {
+                    'ats_id': original_author.id,
+                    'domain': original_author.domain,
+                    'remote_id': original_author.remote_id
+                },
+                'revision': {
+                    'ats_id': revision_author.id,
+                    'domain': revision_author.domain,
+                    'remote_id': revision_author.remote_id
+                }
+            }
         }
 
     def _processor_post(self, key, value, revision=None):
@@ -73,9 +87,7 @@ class AlveoStoreRoute(StoreWrapper):
         if model is None:
             model = Datastore(key, data, revision, g.user)
             db.session.add(model)
-            print("New")
         else:
-            print("Recycling")
             model.set_value(data)
             model.revision = revision
 
