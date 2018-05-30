@@ -51,10 +51,6 @@ class AlveoStoreRoute(StoreWrapper):
         }
 
     def _processor_post(self, key, value, revision=None):
-        # We're not interested in letting the user
-        #  have their own revision names in the Alveo
-        #  module right now.
-        revision = str(uuid.uuid4())
 
         if key is None or len(key) < 2:
             abort(400, 'Key is invalid or too short')
@@ -65,18 +61,24 @@ class AlveoStoreRoute(StoreWrapper):
 
         model = Datastore.query.filter(
             Datastore.key == key).filter(
-            Datastore.revision == revision).filter(
             Datastore.user_id == g.user.id).first()
 
         data = json.dumps(value)
 
+        # We're not interested in letting the user
+        #  have their own revision names in the Alveo
+        #  module right now.
+        revision = str(uuid.uuid4())
+
         if model is None:
             model = Datastore(key, data, revision, g.user)
+            db.session.add(model)
+            print("New")
         else:
+            print("Recycling")
             model.set_value(data)
             model.revision = revision
 
-        db.session.add(model)
         db.session.commit()
 
         return {
