@@ -49,24 +49,3 @@ def before_request():
     g.user = load_user_from_request(request)
 
 
-@app.after_request
-def after_request(response):
-    """ Processes a ready-to-send response
-
-    This will tell the application what we expect back in terms of valid headers, and
-    enable more complicated website applications to  access this web application when
-    hosted on a different address/domain. You can configure which origins are allowed
-    in the global config file.
-
-    Args:
-        Response: Flask response object
-    
-    """
-    response.headers.add('Access-Control-Allow-Origin',
-                         app.config['ACCESS_CONTROL_ALLOW_ORIGIN'])
-    response.headers.add('Access-Control-Allow-Headers',
-                         'Content-Type,Authorization,X-Api-Domain,X-Api-Key')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,POST')
-    return response
-
-
