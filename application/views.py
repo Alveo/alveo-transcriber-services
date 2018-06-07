@@ -26,7 +26,8 @@ def not_found(error):
     return url_error(404, error.description)
 
 
-def server_error():
+def server_error(error):
+    # Error argument is expected even if not used
     return url_error(500, "Internal server error")
 
 
