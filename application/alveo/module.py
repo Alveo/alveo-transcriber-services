@@ -21,7 +21,7 @@ SUPPORTED_STORAGE_KEYS = {
         'type': str,
         'required': True
     },
-    'caption_type': {
+    'cap_type': {
         'type': str,
         'required': False
     }
