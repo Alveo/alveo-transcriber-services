@@ -54,7 +54,7 @@ class AlveoTests(ATSTests):
                 "start": start,
                 "end": end,
                 "speaker": str(random.randint(1, 1000)),
-                "annotation": str(uuid.uuid4())
+                "caption": str(uuid.uuid4())
             }
             transcription.append(annotation)
 

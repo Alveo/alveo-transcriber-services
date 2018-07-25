@@ -17,8 +17,12 @@ SUPPORTED_STORAGE_KEYS = {
         'type': str,
         'required': True
     },
-    'annotation': {
+    'caption': {
         'type': str,
         'required': True
+    },
+    'caption_type': {
+        'type': str,
+        'required': False
     }
 }
