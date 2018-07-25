@@ -3,7 +3,7 @@ import sndhdr
 import uuid
 
 from application import app
-from application.segmentation.speechtools.segmentor import sad
+from application.segmentation.speechtools.segmenter import sad
 from application.datastore.filemanager import FileManager
 
 
@@ -26,7 +26,7 @@ def segment_audio_data(audio_data):
     downloader = FileManager(file_path, audio_data)
 
     # Attempt to segment the file
-    processor = AudioSegmentor(file_path)
+    processor = AudioSegmenter(file_path)
     if not processor.isValid():
         return None
 
@@ -38,8 +38,8 @@ def segment_audio_data(audio_data):
     return result
 
 
-class AudioSegmentor:
-    """ AudioSegmentor is a class for validating and segmenting wave files. """
+class AudioSegmenter:
+    """ AudioSegmenter is a class for validating and segmenting wave files. """
 
     def __init__(self, wave_file):
         self.wave_file = wave_file

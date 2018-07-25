@@ -10,7 +10,7 @@ from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
 from application.misc.modules import get_module_metadata
 from application.segmentation.view_wrapper import SegmenterWrapper
-from application.segmentation.audio_segmentor import segment_audio_data
+from application.segmentation.audio_segmenter import segment_audio_data
 
 
 def shorten_path(path):

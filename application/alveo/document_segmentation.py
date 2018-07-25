@@ -2,7 +2,7 @@ import pyalveo
 import uuid
 
 from application import app
-from application.segmentation.audio_segmentor import segment_audio_data
+from application.segmentation.audio_segmenter import segment_audio_data
 from application.misc.modules import get_module_metadata
 
 
