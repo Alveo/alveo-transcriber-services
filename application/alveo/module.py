@@ -1,6 +1,10 @@
 DOMAIN = "alveo"
 
 SUPPORTED_STORAGE_KEYS = {
+    'id': {
+        'type': str,
+        'required': False
+    },
     'start': {
         'type': float,
         'required': True
