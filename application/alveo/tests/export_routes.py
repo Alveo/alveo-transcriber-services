@@ -81,17 +81,14 @@ class AlveoExportRoutesTests(AlveoTests):
             status,
             'Expected to be rate limited after exceeding threshold')
 
-    def testExportByKeyRevision(self):
+    def testExportByKey(self):
         DATA_AMOUNT = 6
-        REVISION_NAME = 'test_revision'
-        REVISION_NAME_2 = REVISION_NAME + '_backup'
         KEY = str(uuid.uuid4())
 
         for i in range(int(DATA_AMOUNT / 2)):
             self.postRandomData(domain=DOMAIN)
 
-        dataset_1 = self.generateSamplePostData(
-            key=KEY, revision=REVISION_NAME)
+        dataset_1 = self.generateSamplePostData(key=KEY)
         response_1, status = self.post_json_request(
             DOMAIN + '/datastore/', json.dumps(dataset_1), self.DEFAULT_HEADERS)
         self.assertEqual(
@@ -102,8 +99,7 @@ class AlveoExportRoutesTests(AlveoTests):
         for i in range(int(DATA_AMOUNT / 2)):
             self.postRandomData(domain=DOMAIN)
 
-        dataset_2 = self.generateSamplePostData(
-            key=KEY, revision=REVISION_NAME_2)
+        dataset_2 = self.generateSamplePostData(key=KEY)
         response_2, status = self.post_json_request(
             DOMAIN + '/datastore/', json.dumps(dataset_2), self.DEFAULT_HEADERS)
         self.assertEqual(
@@ -124,18 +120,16 @@ class AlveoExportRoutesTests(AlveoTests):
             data), 'a', zipfile.ZIP_DEFLATED, False)
         archive_names = zip_archive.namelist()
         archive_data = zip_archive.namelist()
-        self.assertEqual(len(archive_names), 2,
-                         'Expected same amount of exported as amount posted.')
-
-        with zip_archive.open('%s_%s.json' % (response_1['id'], response_1['revision'])) as myfile:
-            zip_json = json.loads(myfile.read())
-            self.assertEqual(len(zip_json['transcription']), len(
-                json.dumps(dataset_1['value'])))
+        self.assertEqual(len(archive_names), 1,
+                         'Expected only the latest revision to be exported')
 
         with zip_archive.open('%s_%s.json' % (response_2['id'], response_2['revision'])) as myfile:
             zip_json = json.loads(myfile.read())
+            print(zip_json)
             self.assertEqual(len(zip_json['transcription']), len(
                 json.dumps(dataset_2['value'])))
+
+    # TODO Should we be able to export all revisions?
 
     def testOtherDomainExportFail(self):
         self.generateSampleAlveoData()

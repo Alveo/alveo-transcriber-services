@@ -142,7 +142,7 @@ class AlveoListRoutesTests(AlveoTests):
             and response_1['query_revision'] == revisions[0]
             and response_2['query_revision'] == revisions[1]
             and revisions[2] not in [response_1['query_revision'], response_2['query_revision']]
-            and response_1['storage_objects'][0]['id'] != response_2['storage_objects'][0]['id']
+            and response_1['storage_objects'][0]['id'] == response_2['storage_objects'][0]['id']
         ), 'Expected two separate storage objects that have the same key but differing revisions and values.')
 
     def testOtherUserList(self):
