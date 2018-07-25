@@ -50,12 +50,12 @@ class AlveoExportRoutesTests(AlveoTests):
         self.assertEqual(len(archive_names), DATA_AMOUNT + 2,
                          'Expected same amount of exported as amount posted.')
 
-        with zip_archive.open('%s_%s.json' % (response_1['id'], response_1['revision'])) as myfile:
+        with zip_archive.open('%s.json' % dataset_1['key']) as myfile:
             zip_json = json.loads(myfile.read())
             self.assertEqual(len(zip_json['transcription']), len(
                 json.dumps(dataset_1['value'])))
 
-        with zip_archive.open('%s_%s.json' % (response_2['id'], response_2['revision'])) as myfile:
+        with zip_archive.open('%s.json' % dataset_2['key']) as myfile:
             zip_json = json.loads(myfile.read())
             self.assertEqual(len(zip_json['transcription']), len(
                 json.dumps(dataset_2['value'])))
@@ -123,9 +123,8 @@ class AlveoExportRoutesTests(AlveoTests):
         self.assertEqual(len(archive_names), 1,
                          'Expected only the latest revision to be exported')
 
-        with zip_archive.open('%s_%s.json' % (response_2['id'], response_2['revision'])) as myfile:
+        with zip_archive.open('%s.json' % KEY) as myfile:
             zip_json = json.loads(myfile.read())
-            print(zip_json)
             self.assertEqual(len(zip_json['transcription']), len(
                 json.dumps(dataset_2['value'])))
 
