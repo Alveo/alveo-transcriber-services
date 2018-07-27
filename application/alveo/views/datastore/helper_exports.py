@@ -26,10 +26,11 @@ def datastore_export(user_id=None, key=None):
                 },
                 'remote_id': transcription.id,
                 'domain': transcription.key.split(':')[0],
-                'transcription': json.dumps(transcription.get_value()),
-                'storage_spec': stranscription.storage_spec,
-                'version': transcription.version
+                'transcription': transcription.get_value(),
+                'storage_spec': transcription.storage_spec,
+                'version': transcription.versions.count()
             }
+
             zf.writestr(
                 '%s.json' %
                 transcription.key.split(':')[1],

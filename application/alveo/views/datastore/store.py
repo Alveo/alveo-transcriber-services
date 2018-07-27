@@ -59,6 +59,7 @@ class AlveoStoreRoute(StoreWrapper):
             'transcription': data,
             'annotations_total': len(data),
             'timestamp': str(query.timestamp),
+            'storage_spec': query.storage_spec,
             'author': {
                 'original': {
                     'ats_id': original_author.id,
@@ -74,7 +75,6 @@ class AlveoStoreRoute(StoreWrapper):
         }
 
     def _processor_post(self, key, value, storage_spec):
-
         if key is None or len(key) < 2:
             abort(400, 'Key is invalid or too short')
 
