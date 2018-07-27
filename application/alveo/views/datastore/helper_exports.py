@@ -7,9 +7,9 @@ from .helper_query import datastore_query
 from flask import abort
 
 
-def datastore_export(user_id=None, key=None, revision=None):
+def datastore_export(user_id=None, key=None):
     transcriptions = datastore_query(
-        user_id=user_id, key=key, revision=revision)
+        user_id=user_id, key=key)
 
     if transcriptions is None or len(transcriptions) == 0:
         abort(404, 'No documents available to export')

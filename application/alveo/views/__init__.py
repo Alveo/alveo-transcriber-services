@@ -44,22 +44,12 @@ blueprint.add_url_rule(
 )
 
 blueprint.add_url_rule(
-    '/datastore/export/<key>/<revision>',
-    view_func=export_by_key_route
-)
-
-blueprint.add_url_rule(
     '/datastore/user/<user_id>/export/',
     view_func=export_by_user_route,
 )
 
 blueprint.add_url_rule(
     '/datastore/user/<user_id>/export/<key>',
-    view_func=export_by_user_key_route,
-)
-
-blueprint.add_url_rule(
-    '/datastore/user/<user_id>/export/<key>/<revision>',
     view_func=export_by_user_key_route,
 )
 
@@ -74,7 +64,7 @@ blueprint.add_url_rule(
 )
 
 blueprint.add_url_rule(
-    '/datastore/list/<key>/<revision>',
+    '/datastore/list/<key>/revisions',
     view_func=list_by_key_route
 )
 
@@ -89,6 +79,6 @@ blueprint.add_url_rule(
 )
 
 blueprint.add_url_rule(
-    '/datastore/user/<user_id>/list/<key>/<revision>',
+    '/datastore/user/<user_id>/list/<key>/revisions',
     view_func=list_by_user_key_route,
 )

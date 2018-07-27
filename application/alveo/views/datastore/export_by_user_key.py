@@ -14,8 +14,8 @@ class AlveoExportByUserKeyRoute(ExportByUserKeyWrapper):
         limiter.limit("50 per day")
     ]
 
-    def _process_get(self, user_id, key, revision):
-        return datastore_export(user_id=user_id, key=key, revision=revision)
+    def _process_get(self, user_id, key):
+        return datastore_export(user_id=user_id, key=key)
 
 
 export_by_user_key_route = AlveoExportByUserKeyRoute.as_view(

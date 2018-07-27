@@ -14,8 +14,8 @@ class AlveoListByUserKeyRoute(ListByUserKeyWrapper):
         limiter.limit("5000 per day")
     ]
 
-    def _processor_get(self, user_id, key, revision):
-        return datastore_list(user_id=user_id, key=key, revision=revision)
+    def _processor_get(self, user_id, key):
+        return datastore_list(user_id=user_id, key=key)
 
 
 list_by_user_key_route = AlveoListByUserKeyRoute.as_view(

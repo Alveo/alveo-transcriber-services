@@ -87,64 +87,6 @@ class AlveoListRoutesTests(AlveoTests):
         self.assertEqual(response['key'], responses[0][0]
                          ['key'], 'Expected the newly added keys to match.')
 
-    def testGetListByRevision(self):
-        DATA_AMOUNT = 6
-        DATASET_AMOUNT = 3
-        KEY = str(uuid.uuid4())
-
-        posts = []
-        revisions = []
-
-        for i in range(DATASET_AMOUNT):
-            params = ({
-                'path': DOMAIN + '/datastore/',
-                'data': json.dumps(self.generateSamplePostData(key=KEY)),
-                'headers': self.DEFAULT_HEADERS
-            })
-            posts.append((self.post_json_request, params))
-
-        for i in range(DATA_AMOUNT):
-            posts.append(
-                (self.postRandomData, {
-                    'return_sample': False, 'domain': DOMAIN}))
-
-        random.shuffle(posts)
-
-        for post in posts:
-            function, args = post
-            response, status = function(**args)
-            self.assertEqual(
-                200,
-                status,
-                'Expected OK status when attempting to post valid data while logged in.')
-
-            if function == self.post_json_request:
-                revisions.append(response['revision'])
-
-        response_1, status = self.get_json_response(
-            DOMAIN + '/datastore/list/%s/%s' %
-            (KEY, revisions[0]), self.DEFAULT_HEADERS)
-        self.assertEqual(
-            200,
-            status,
-            'Expected OK status when attempting to get valid data while logged in.')
-
-        response_2, status = self.get_json_response(
-            DOMAIN + '/datastore/list/%s/%s' %
-            (KEY, revisions[1]), self.DEFAULT_HEADERS)
-        self.assertEqual(
-            200,
-            status,
-            'Expected OK status when attempting to get valid data while logged in.')
-
-        self.assertTrue((
-            response_1['query_key'] == response_2['query_key']
-            and response_1['query_revision'] == revisions[0]
-            and response_2['query_revision'] == revisions[1]
-            and revisions[2] not in [response_1['query_revision'], response_2['query_revision']]
-            and response_1['storage_objects'][0]['id'] == response_2['storage_objects'][0]['id']
-        ), 'Expected two separate storage objects that have the same key but differing revisions and values.')
-
     def testOtherUserList(self):
         self.generateSampleAlveoData()
         users = User.query.filter(User.domain == DOMAIN).all()

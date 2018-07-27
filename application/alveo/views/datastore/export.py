@@ -14,8 +14,8 @@ class AlveoExportRoute(ExportWrapper):
         limiter.limit("50 per day")
     ]
 
-    def _processor_get(self, user_id, revision):
-        return datastore_export(user_id=user_id, revision=revision)
+    def _processor_get(self, user_id):
+        return datastore_export(user_id=user_id)
 
 
 export_route = AlveoExportRoute.as_view('/alveo/datastore/export')
