@@ -109,6 +109,45 @@ class AlveoDatastoreTests(AlveoTests):
                 list) and response['transcription'][0]['caption'] == data['value'][0]['caption']),
             'Expected matching data on a get response, using the id returned of a previous post request')
 
+    def testGetVersionedData(self):
+        data = self.generateSamplePostData()
+        response, status = self.post_json_request(
+            DOMAIN + '/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
+        self.assertEqual(
+            200,
+            status,
+            'Expected OK status when attempting to post valid data while logged in.')
+
+        storage_id = response['id']
+
+        data_2 = data
+        data_2['value'][0]['caption'] = "REPLACED!"
+
+        response, status = self.post_json_request(
+            DOMAIN + '/datastore/objects', json.dumps(data_2), self.DEFAULT_HEADERS)
+        self.assertEqual(
+            200,
+            status,
+            'Expected OK status when attempting to post valid data while logged in.')
+
+        response_1, status = self.get_json_response(
+            DOMAIN + '/datastore/objects/%s/0' % storage_id, self.DEFAULT_HEADERS)
+        self.assertEqual(
+            200,
+            status,
+            'Expected OK status when attempting to get valid data while logged in.')
+
+        response_2, status = self.get_json_response(
+            DOMAIN + '/datastore/objects/%s/1' % storage_id, self.DEFAULT_HEADERS)
+        self.assertEqual(
+            200,
+            status,
+            'Expected OK status when attempting to get valid data while logged in.')
+
+        self.assertTrue(
+            response_1['transcription'] != response_2['transcription'] and response_2['transcription'][0]['caption'] == "REPLACED!",
+            'Expected matching data on a get response, using the id returned of a previous post request')
+
     def testOtherModuleFail(self):
         self.generateSampleAlveoData()
 
