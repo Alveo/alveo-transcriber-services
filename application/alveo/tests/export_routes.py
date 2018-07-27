@@ -52,13 +52,13 @@ class AlveoExportRoutesTests(AlveoTests):
 
         with zip_archive.open('%s.json' % dataset_1['key']) as myfile:
             zip_json = json.loads(myfile.read())
-            self.assertEqual(len(zip_json['transcription']), len(
-                json.dumps(dataset_1['value'])))
+            self.assertEqual(zip_json['transcription'],
+                json.dumps(dataset_1['value']))
 
         with zip_archive.open('%s.json' % dataset_2['key']) as myfile:
             zip_json = json.loads(myfile.read())
-            self.assertEqual(len(zip_json['transcription']), len(
-                json.dumps(dataset_2['value'])))
+            self.assertEqual(zip_json['transcription'],
+                json.dumps(dataset_2['value']))
 
     def testExportRateLimit(self):
         # Post some random data so we don't get a 404 on our export request
