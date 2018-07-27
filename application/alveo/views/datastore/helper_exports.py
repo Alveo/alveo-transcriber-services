@@ -26,7 +26,7 @@ def datastore_export(user_id=None, key=None):
                 },
                 'remote_id': transcription.id,
                 'domain': transcription.key.split(':')[0],
-                'transcription': transcription.get_value(),
+                'transcription': json.loads(transcription.get_value()),
                 'storage_spec': transcription.storage_spec,
                 'version': transcription.versions.count()
             }
