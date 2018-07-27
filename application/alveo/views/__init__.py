@@ -6,6 +6,7 @@ from .segmentation import segmentation_route
 from .datastore.store import store_route
 from .datastore.export_by_user import export_by_user_route
 from .datastore.list_by_user import list_by_user_route
+from .datastore.list_by_key import list_by_key_route
 
 blueprint = Blueprint(DOMAIN, __name__)
 
@@ -44,6 +45,11 @@ blueprint.add_url_rule(
 blueprint.add_url_rule(
     '/datastore/list/',
     view_func=list_by_user_route,
+)
+
+blueprint.add_url_rule(
+    '/datastore/listall/<object_key>',
+    view_func=list_by_key_route,
 )
 
 blueprint.add_url_rule(

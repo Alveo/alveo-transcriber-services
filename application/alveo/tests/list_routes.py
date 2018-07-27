@@ -24,6 +24,69 @@ class AlveoListRoutesTests(AlveoTests):
             DATA_AMOUNT,
             'Expected to get a list matching the amount of items that were just posted.')
 
+    def testGetListByKey(self):
+        DATA_AMOUNT = 6
+        DATASET_AMOUNT = 2
+
+        posts = []
+        responses = []
+
+        for i in range(DATASET_AMOUNT):
+            posts.append(
+                (self.postRandomData, {
+                    'return_sample': True, 'domain': DOMAIN}))
+
+        for i in range(DATA_AMOUNT):
+            posts.append(
+                (self.postRandomData, {
+                    'return_sample': True, 'domain': DOMAIN}))
+
+        random.shuffle(posts)
+
+        for post in posts:
+            function, args = post
+            response_query, dataset = function(**args)
+            response, status = response_query
+            self.assertEqual(
+                200,
+                status,
+                'Expected OK status when attempting to post valid data while logged in.')
+
+            if args['return_sample']:
+                responses.append((dataset, response))
+
+        response, status = self.get_json_response(
+            DOMAIN + '/datastore/listall/' + responses[0][0]['key'], self.DEFAULT_HEADERS)
+        self.assertEqual(
+            response['storage_objects'][0]['id'],
+            responses[0][1]['id'],
+            'Expected response to contain the storage object that was just posted.')
+
+        response, status = self.get_json_response(
+            DOMAIN + '/datastore/listall/' + responses[0][0]['key'], self.DEFAULT_HEADERS)
+        self.assertEqual(
+            response['storage_objects'][0]['id'],
+            responses[0][1]['id'],
+            'Expected response to contain the storage object that was just posted.')
+
+        response, status = self.get_json_response(
+            DOMAIN + '/datastore/objects/%s' % responses[0][1]['id'], self.DEFAULT_HEADERS)
+        self.assertEqual(
+            200,
+            status,
+            'Expected OK status when attempting to get valid data while logged in.')
+        self.assertEqual(response['key'], responses[0][0]
+                         ['key'], 'Expected the newly added keys to match.')
+
+        response, status = self.get_json_response(
+            DOMAIN + '/datastore/objects/%s' % responses[0][1]['id'], self.DEFAULT_HEADERS)
+        self.assertEqual(
+            200,
+            status,
+            'Expected OK status when attempting to get valid data while logged in.')
+        self.assertEqual(response['key'], responses[0][0]
+['key'], 'Expected the newly added keys to match.')
+
     def testOtherUserList(self):
         self.generateSampleAlveoData()
         users = User.query.filter(User.domain == DOMAIN).all()
