@@ -19,13 +19,13 @@ curl \
         "start": 1.00,
         "end": 3.71,
         "speaker": "A",
-        "annotation": "Example"
+        "caption": "Example"
       },
       {
         "start": 5.21,
         "end": 8.33,
         "speaker": "B",
-        "annotation": "Example 2"
+        "caption": "Example 2"
       }
     ]
   }

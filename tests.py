@@ -84,9 +84,10 @@ class ATSTests(unittest.TestCase):
 
     def postRandomData(self, return_sample=False, domain=''):
         data = self.generateSamplePostData()
+        response = self.post_json_request(domain+'/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
         if return_sample:
-            return self.post_json_request(domain+'/datastore/', json.dumps(data), self.DEFAULT_HEADERS), data
-        return self.post_json_request(domain+'/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+            return response, data
+        return response
 
 if __name__ == '__main__':
     unittest.main()

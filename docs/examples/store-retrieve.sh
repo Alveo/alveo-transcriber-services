@@ -12,4 +12,4 @@ id=$1
 curl \
   --header "X-Api-Domain: $ATS_API_DOMAIN" \
   --header "X-Api-Key: $ATS_API_KEY" \
-$ATS_URL/datastore/?store_id=$id
+$ATS_URL/datastore/?store_id=$id&version=3

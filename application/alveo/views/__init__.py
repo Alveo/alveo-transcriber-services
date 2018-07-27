@@ -4,15 +4,10 @@ from application.alveo.module import DOMAIN
 from . import auth
 from .segmentation import segmentation_route
 from .datastore.store import store_route
-from .datastore.revisions import revisions_route
 from .datastore.export import export_route
-from .datastore.export_by_key import export_by_key_route
 from .datastore.export_by_user import export_by_user_route
-from .datastore.export_by_user_key import export_by_user_key_route
 from .datastore.list import list_route
-from .datastore.list_by_key import list_by_key_route
 from .datastore.list_by_user import list_by_user_route
-from .datastore.list_by_user_key import list_by_user_key_route
 
 blueprint = Blueprint(DOMAIN, __name__)
 
@@ -23,14 +18,15 @@ blueprint.add_url_rule(
 )
 
 blueprint.add_url_rule(
-    '/datastore/',
+    '/datastore/objects',
     view_func=store_route,
-    methods=['GET', 'POST']
+    methods=['POST']
 )
 
 blueprint.add_url_rule(
-    '/datastore/revisions/<store_id>',
-    view_func=revisions_route,
+    '/datastore/objects/',
+    view_func=store_route,
+    methods=['GET']
 )
 
 blueprint.add_url_rule(
@@ -39,18 +35,8 @@ blueprint.add_url_rule(
 )
 
 blueprint.add_url_rule(
-    '/datastore/export/<key>',
-    view_func=export_by_key_route,
-)
-
-blueprint.add_url_rule(
     '/datastore/user/<user_id>/export/',
     view_func=export_by_user_route,
-)
-
-blueprint.add_url_rule(
-    '/datastore/user/<user_id>/export/<key>',
-    view_func=export_by_user_key_route,
 )
 
 blueprint.add_url_rule(
@@ -59,26 +45,6 @@ blueprint.add_url_rule(
 )
 
 blueprint.add_url_rule(
-    '/datastore/list/<key>',
-    view_func=list_by_key_route,
-)
-
-blueprint.add_url_rule(
-    '/datastore/list/<key>/revisions',
-    view_func=list_by_key_route
-)
-
-blueprint.add_url_rule(
     '/datastore/user/<user_id>/list/',
     view_func=list_by_user_route,
-)
-
-blueprint.add_url_rule(
-    '/datastore/user/<user_id>/list/<key>',
-    view_func=list_by_user_key_route,
-)
-
-blueprint.add_url_rule(
-    '/datastore/user/<user_id>/list/<key>/revisions',
-    view_func=list_by_user_key_route,
 )

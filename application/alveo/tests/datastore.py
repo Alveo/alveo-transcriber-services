@@ -12,7 +12,7 @@ class AlveoDatastoreTests(AlveoTests):
     def testPostData(self):
         data = self.generateSamplePostData()
         response, status = self.post_json_request(
-            DOMAIN + '/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
             status,
@@ -22,7 +22,7 @@ class AlveoDatastoreTests(AlveoTests):
         data = self.generateSamplePostData()
         data['value'][3]['thisshouldntwork'] = ''
         response, status = self.post_json_request(
-            DOMAIN + '/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(
             400,
             status,
@@ -35,7 +35,7 @@ class AlveoDatastoreTests(AlveoTests):
         data = self.generateSamplePostData()
         data['value'][2].pop('start', None)
         response, status = self.post_json_request(
-            DOMAIN + '/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(
             400,
             status,
@@ -49,7 +49,7 @@ class AlveoDatastoreTests(AlveoTests):
         data['value'][2].pop('start', None)
         data['value'][2]['starte'] = 0.3
         response, status = self.post_json_request(
-            DOMAIN + '/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(
             400,
             status,
@@ -63,7 +63,7 @@ class AlveoDatastoreTests(AlveoTests):
         data['value'][3].pop('speaker', None)
         data['value'][3]['speaker'] = 1
         response, status = self.post_json_request(
-            DOMAIN + '/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(
             400,
             status,
@@ -76,7 +76,7 @@ class AlveoDatastoreTests(AlveoTests):
         data['value'][3].pop('start', None)
         data['value'][3]['start'] = "test"
         response, status = self.post_json_request(
-            DOMAIN + '/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(
             400,
             status,
@@ -88,7 +88,7 @@ class AlveoDatastoreTests(AlveoTests):
     def testGetData(self):
         data = self.generateSamplePostData()
         response, status = self.post_json_request(
-            DOMAIN + '/datastore/', json.dumps(data), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects', json.dumps(data), self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
             status,
@@ -97,7 +97,7 @@ class AlveoDatastoreTests(AlveoTests):
         storage_id = response['id']
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/?store_id=' + str(storage_id), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects/?store_id=' + str(storage_id), self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
             status,
@@ -128,7 +128,7 @@ class AlveoDatastoreTests(AlveoTests):
             "Expected sample transcription to exist from generated sample data.")
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/?store_id=%s' %
+            DOMAIN + '/datastore/objects/?store_id=%s' %
             transcription.id, self.DEFAULT_HEADERS)
         self.assertEqual(
             403,
