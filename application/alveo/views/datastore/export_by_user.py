@@ -9,12 +9,12 @@ from application import limiter
 class AlveoExportByUserRoute(ExportByUserWrapper):
     decorators = [
         auth_required,
-        limiter.limit("5 per minute"),
-        limiter.limit("25 per hour"),
-        limiter.limit("50 per day")
+        limiter.limit("10 per minute"),
+        limiter.limit("40 per hour"),
+        limiter.limit("200 per day")
     ]
 
-    def _process_get(self, user_id):
+    def _processor_get(self, user_id):
         return datastore_export(user_id=user_id)
 
 

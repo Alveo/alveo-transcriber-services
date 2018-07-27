@@ -64,9 +64,9 @@ class AlveoExportRoutesTests(AlveoTests):
         # Post some random data so we don't get a 404 on our export request
         self.postRandomData(domain=DOMAIN)
 
-        rate_limit = 5
+        rate_limit = 10
 
-        for i in range(rate_limit - 1):
+        for i in range(rate_limit):
             data, is_json, status = self.get_file_response(
                 DOMAIN + '/datastore/export/', self.DEFAULT_HEADERS)
             self.assertEqual(
@@ -94,11 +94,11 @@ class AlveoExportRoutesTests(AlveoTests):
         db.session.commit()
 
         data, is_json, status = self.get_file_response(
-            DOMAIN + '/datastore/user/%s/export/' %
+            DOMAIN + '/datastore/export/%s' %
             user.id, self.DEFAULT_HEADERS)
         self.assertEqual(
-            403,
             status,
+            403,
             'Expected forbidden status when attempting to list store from a different user on another domain, while logged in.')
         self.assertTrue(
             is_json, 'Expected JSON error message about not being accessible')
@@ -112,7 +112,7 @@ class AlveoExportRoutesTests(AlveoTests):
             'Expected sample users to exist from generated sample data.')
 
         data, is_json, status = self.get_file_response(
-            DOMAIN + '/datastore/user/%s/export/' %
+            DOMAIN + '/datastore/export/%s' %
             user.id, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,

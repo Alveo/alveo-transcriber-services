@@ -9,7 +9,7 @@ from application import limiter
 class AlveoListByUserRoute(ListByUserWrapper):
     decorators = [
         auth_required,
-        limiter.limit("50 per minute"),
+        limiter.limit("75 per minute"),
         limiter.limit("1000 per hour"),
         limiter.limit("5000 per day")
     ]

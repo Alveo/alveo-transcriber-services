@@ -4,9 +4,7 @@ from application.alveo.module import DOMAIN
 from . import auth
 from .segmentation import segmentation_route
 from .datastore.store import store_route
-from .datastore.export import export_route
 from .datastore.export_by_user import export_by_user_route
-from .datastore.list import list_route
 from .datastore.list_by_user import list_by_user_route
 
 blueprint = Blueprint(DOMAIN, __name__)
@@ -31,20 +29,20 @@ blueprint.add_url_rule(
 
 blueprint.add_url_rule(
     '/datastore/export/',
-    view_func=export_route,
+    view_func=export_by_user_route,
 )
 
 blueprint.add_url_rule(
-    '/datastore/user/<user_id>/export/',
+    '/datastore/export/<user_id>',
     view_func=export_by_user_route,
 )
 
 blueprint.add_url_rule(
     '/datastore/list/',
-    view_func=list_route,
+    view_func=list_by_user_route,
 )
 
 blueprint.add_url_rule(
-    '/datastore/user/<user_id>/list/',
+    '/datastore/list/<user_id>',
     view_func=list_by_user_route,
 )

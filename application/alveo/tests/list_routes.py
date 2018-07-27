@@ -57,7 +57,7 @@ class AlveoListRoutesTests(AlveoTests):
             "Expected sample transcriptions to exist from generated sample data.")
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/user/%s/list/' % user_1, self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/list/%s' % user_1, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
             status,
@@ -66,7 +66,7 @@ class AlveoListRoutesTests(AlveoTests):
             transcription_list_1), 'Expected the newly added keys to match.')
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/user/%s/list/' % user_2, self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/list/%s' % user_2, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
             status,
@@ -76,7 +76,7 @@ class AlveoListRoutesTests(AlveoTests):
 
         query_key = transcription_2.key.split(':')[1]
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/user/%s/list/' %
+            DOMAIN + '/datastore/list/%s' %
             user_2, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
@@ -108,7 +108,7 @@ class AlveoListRoutesTests(AlveoTests):
         db.session.commit()
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/user/%s/list/' %
+            DOMAIN + '/datastore/list/%s' %
             user.id, self.DEFAULT_HEADERS)
         self.assertEqual(
             403,
