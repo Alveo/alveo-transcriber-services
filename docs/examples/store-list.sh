@@ -21,3 +21,4 @@ curl \
   --header "X-Api-Domain: $ATS_API_DOMAIN" \
   --header "X-Api-Key: $ATS_API_KEY" \
 $ATS_URL/datastore/list/
+# $ATS_URL/datastore/list/<user>

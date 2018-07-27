@@ -14,22 +14,23 @@ curl \
   -d '
   {
     "key": "test-transcription2",
+    "storage_spec": "testing-1",
     "value": [
       {
         "start": 1.00,
         "end": 3.71,
-        "speaker": "A",
+        "speaker": "An",
         "caption": "Example"
       },
       {
         "start": 5.21,
         "end": 8.33,
-        "speaker": "B",
-        "caption": "Example 2"
+        "speaker": "Another",
+        "caption": "Example for you"
       }
     ]
   }
   ' \
   -H "Content-Type: application/json" \
   -X POST \
-  $ATS_URL/datastore/
+  $ATS_URL/datastore/objects

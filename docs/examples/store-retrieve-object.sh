@@ -4,12 +4,13 @@
 #  ATS_API_KEY, e.g a valid Alveo API key
 #  ATS_URL, e.g https://segmenter.apps.alveo.edu.au/alveo
 #
-# Attempts to authenticate and retrieve a list of all revisions#  associated with a storage key.
-#
+# Attempts to authenticate and retrieve a stored object
 # Example usage:
-#   sh store-revisions <store_id>
+#   sh store-retrieve.sh store_id
+id=$1
+version=$2
 
 curl \
   --header "X-Api-Domain: $ATS_API_DOMAIN" \
   --header "X-Api-Key: $ATS_API_KEY" \
-$ATS_URL/datastore/revisions/$1
+$ATS_URL/datastore/objects/$id/$version
