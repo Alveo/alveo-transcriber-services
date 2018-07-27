@@ -9,7 +9,10 @@ class StoreWrapper(QueryWrapper):
             abort(400, "store_id not provided or invalid")
 
         if version != None:
-            version = int(version)
+            try:
+                version = int(version)
+            except:
+                abort(400, "Provided version is not a valid integer")
 
         response = self._processor_get(
             object_id=object_id,
