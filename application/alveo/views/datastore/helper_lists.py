@@ -10,8 +10,6 @@ def datastore_list(user_id=None, key=None):
         })
 
     data = {
-        'query_user_id': user_id,
-        'query_key': key,
         'storage_objects': list_data
     }
 
