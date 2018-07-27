@@ -3,7 +3,7 @@ import unittest
 import json
 
 os.environ['ATS_ENVIRONMENT'] = 'application.config.TestEnvironment'
-from application import app, db
+from application import app, db, limiter
 
 from application.users.model import User 
 from application.datastore.model import Datastore
@@ -25,6 +25,7 @@ class ATSTests(unittest.TestCase):
 
         # Recreate session
         with app.app_context():
+            limiter.reset()
             db.session.close()
             db.drop_all()
             db.create_all()
