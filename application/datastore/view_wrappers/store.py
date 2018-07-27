@@ -4,14 +4,14 @@ from application.misc.query_wrapper import QueryWrapper
 
 
 class StoreWrapper(QueryWrapper):
-    def get(self):
-        store_id = request.args.get('store_id')
-        if store_id is None:
+    def get(self, object_id, version=None):
+        if object_id is None:
             abort(400, "store_id not provided or invalid")
 
         response = self._processor_get(
-            store_id=store_id,
-            user_id=g.user.id
+            object_id=object_id,
+            user_id=g.user.id,
+            version=version
         )
         return jsonify(response)
 

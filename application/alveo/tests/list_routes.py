@@ -85,7 +85,7 @@ class AlveoListRoutesTests(AlveoTests):
 
         query_key = response['storage_objects'][0]['id']
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/objects/?store_id=%s' %
+            DOMAIN + '/datastore/objects/%s' %
             query_key, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,

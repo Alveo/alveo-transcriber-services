@@ -22,9 +22,13 @@ blueprint.add_url_rule(
 )
 
 blueprint.add_url_rule(
-    '/datastore/objects/',
-    view_func=store_route,
-    methods=['GET']
+    '/datastore/objects/<object_id>',
+    view_func=store_route
+)
+
+blueprint.add_url_rule(
+    '/datastore/objects/<object_id>/<version>',
+    view_func=store_route
 )
 
 blueprint.add_url_rule(

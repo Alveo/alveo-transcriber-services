@@ -25,8 +25,8 @@ class AlveoStoreRoute(StoreWrapper):
         limiter.limit("60000 per day")
     ]
 
-    def _processor_get(self, store_id, user_id, version=None):
-        query = Datastore.query.filter(Datastore.id == store_id).first()
+    def _processor_get(self, object_id, user_id=None, version=None):
+        query = Datastore.query.filter(Datastore.id == object_id).first()
 
         if query is None:
             abort(404, 'No match for the provided id')

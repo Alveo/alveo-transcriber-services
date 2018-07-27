@@ -97,7 +97,7 @@ class AlveoDatastoreTests(AlveoTests):
         storage_id = response['id']
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/objects/?store_id=' + str(storage_id), self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/objects/%s' % storage_id, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
             status,
@@ -128,7 +128,7 @@ class AlveoDatastoreTests(AlveoTests):
             "Expected sample transcription to exist from generated sample data.")
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/objects/?store_id=%s' %
+            DOMAIN + '/datastore/objects/%s' %
             transcription.id, self.DEFAULT_HEADERS)
         self.assertEqual(
             403,
