@@ -20,9 +20,9 @@ from application import limiter
 class AlveoStoreRoute(StoreWrapper):
     decorators = [
         auth_required,
-        limiter.limit("250 per minute"),
-        limiter.limit("10000 per hour"),
-        limiter.limit("60000 per day")
+        limiter.limit("1000 per minute"),
+        limiter.limit("20000 per hour"),
+        limiter.limit("100000 per day")
     ]
 
     def _processor_get(self, object_id, user_id=None, version=None):
@@ -38,21 +38,24 @@ class AlveoStoreRoute(StoreWrapper):
                 403,
                 'You don\'t have permission to read the storage of an external user')
 
+        base_query = query
+
         if version != None:
             try:
                 query = query.versions[version]
             except:
                 abort(404, 'Version doesn\'t exist for provided id')
 
-        data = json.loads(query.get_value())
-        original_author = query.versions[0].user
+        data = json.loads(query.value.decode())
+        original_author = base_query.versions[0].user
+        total_versions = base_query.versions.count()
         version_author = query.user
 
         return {
             'id': query.id,
             'key': query.key.split(':')[1],
             'version': version,
-            'total_versions': query.versions.count(),
+            'total_versions': total_versions,
             'transcription': data,
             'annotations_total': len(data),
             'timestamp': str(query.timestamp),

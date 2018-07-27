@@ -8,6 +8,9 @@ class StoreWrapper(QueryWrapper):
         if object_id is None:
             abort(400, "store_id not provided or invalid")
 
+        if version != None:
+            version = int(version)
+
         response = self._processor_get(
             object_id=object_id,
             user_id=g.user.id,
