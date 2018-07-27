@@ -62,7 +62,7 @@ class AlveoTests(ATSTests):
 
         return transcription
 
-    def generateSamplePostData(self, key=None, fields=None, revision=None):
+    def generateSamplePostData(self, key=None, fields=None):
         if key is None:
             key = str(uuid.uuid4())
         if fields is None:
@@ -73,9 +73,6 @@ class AlveoTests(ATSTests):
             "value": [],
             "storage_spec": TEST_STORAGE_SPEC_VERSION
         }
-
-        if revision is not None:
-            data['revision'] = revision
 
         data['value'] = self.generateTranscription(fields)
 
@@ -93,7 +90,6 @@ class AlveoTests(ATSTests):
                     '%s:%s' % (DOMAIN, uuid.uuid4()),
                     json.dumps(self.generateTranscription()),
                     TEST_STORAGE_SPEC_VERSION,
-                    str(uuid.uuid4()),
                     user
                 )
                 db.session.add(datastore)

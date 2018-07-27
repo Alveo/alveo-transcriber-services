@@ -95,7 +95,6 @@ class AlveoDatastoreTests(AlveoTests):
             'Expected OK status when attempting to post valid data while logged in.')
 
         storage_id = response['id']
-        storage_rev = response['revision']
 
         response, status = self.get_json_response(
             DOMAIN + '/datastore/?store_id=' + str(storage_id), self.DEFAULT_HEADERS)
@@ -105,7 +104,7 @@ class AlveoDatastoreTests(AlveoTests):
             'Expected OK status when attempting to get valid data while logged in.')
 
         self.assertTrue(
-            (storage_id == response['id'] and storage_rev == response['revision'] and isinstance(
+            (storage_id == response['id'] and isinstance(
                 response['transcription'],
                 list) and response['transcription'][0]['caption'] == data['value'][0]['caption']),
             'Expected matching data on a get response, using the id returned of a previous post request')

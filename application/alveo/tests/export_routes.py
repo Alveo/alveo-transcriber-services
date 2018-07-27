@@ -121,14 +121,12 @@ class AlveoExportRoutesTests(AlveoTests):
         archive_names = zip_archive.namelist()
         archive_data = zip_archive.namelist()
         self.assertEqual(len(archive_names), 1,
-                         'Expected only the latest revision to be exported')
+                         'Expected only the latest version to be exported')
 
         with zip_archive.open('%s.json' % KEY) as myfile:
             zip_json = json.loads(myfile.read())
             self.assertEqual(len(zip_json['transcription']), len(
                 json.dumps(dataset_2['value'])))
-
-    # TODO Should we be able to export all revisions?
 
     def testOtherDomainExportFail(self):
         self.generateSampleAlveoData()

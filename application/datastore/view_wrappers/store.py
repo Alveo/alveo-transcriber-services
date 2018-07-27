@@ -19,7 +19,6 @@ class StoreWrapper(QueryWrapper):
         data = request.get_json()
         key = None
         value = None
-        revision = None
         storage_spec = None
 
         try:
@@ -35,15 +34,10 @@ class StoreWrapper(QueryWrapper):
 
             if storage_spec is None:
                 abort(400, "storage_spec not provided")
-        try:
-            revision = data['revision']
-        except BaseException:
-            pass
 
         response = self._processor_post(
             key=key,
             value=value,
-            storage_spec=storage_spec,
-            revision=revision
+            storage_spec=storage_spec
         )
         return jsonify(response)
