@@ -16,6 +16,8 @@ ALVEO_API_KEY = None
 ALVEO_API_URL = None
 DEFAULT_HEADERS = None
 
+TEST_STORAGE_SPEC_VERSION = "1.0-test"
+
 alveo_metadata = get_module_metadata('alveo')
 
 if alveo_metadata is None:
@@ -68,7 +70,8 @@ class AlveoTests(ATSTests):
 
         data = {
             "key": key,
-            "value": []
+            "value": [],
+            "storage_spec": TEST_STORAGE_SPEC_VERSION
         }
 
         if revision is not None:
@@ -89,6 +92,7 @@ class AlveoTests(ATSTests):
                 datastore = Datastore(
                     '%s:%s' % (DOMAIN, uuid.uuid4()),
                     json.dumps(self.generateTranscription()),
+                    TEST_STORAGE_SPEC_VERSION,
                     str(uuid.uuid4()),
                     user
                 )

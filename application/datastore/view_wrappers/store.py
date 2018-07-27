@@ -20,16 +20,21 @@ class StoreWrapper(QueryWrapper):
         key = None
         value = None
         revision = None
+        storage_spec = None
 
         try:
             key = data['key']
             value = data['value']
+            storage_spec = data['storage_spec']
         except BaseException:
             if key is None:
                 abort(400, "key not provided or invalid")
 
             if value is None:
                 abort(400, "value not provided or invalid")
+
+            if storage_spec is None:
+                abort(400, "storage_spec not provided")
         try:
             revision = data['revision']
         except BaseException:
@@ -38,6 +43,7 @@ class StoreWrapper(QueryWrapper):
         response = self._processor_post(
             key=key,
             value=value,
+            storage_spec=storage_spec,
             revision=revision
         )
         return jsonify(response)
