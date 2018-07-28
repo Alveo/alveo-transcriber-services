@@ -1,5 +1,6 @@
 import json
 import uuid
+import datetime
 
 from pyalveo import *
 from flask import g, abort
@@ -94,6 +95,7 @@ class AlveoStoreRoute(StoreWrapper):
         else:
             model.set_value(data)
             model.storage_spec = storage_spec 
+            model.timestamp = datetime.datetime.now()
 
         db.session.commit()
 
