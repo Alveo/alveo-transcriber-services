@@ -16,7 +16,7 @@ class Datastore(db.Model):
     value = db.Column(db.LargeBinary, nullable=False)
 
     storage_spec = db.Column(db.String(256), nullable=False)
-    timestamp = db.Column(db.Date, default=datetime.datetime.now)
+    timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User')
