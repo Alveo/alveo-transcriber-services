@@ -54,12 +54,12 @@ class AlveoStoreRoute(StoreWrapper):
 
         return {
             'id': query.id,
-            'key': query.key.split(':')[1],
+            'key': str(query.key.split(':', 1)[1]),
             'version': version,
             'total_versions': total_versions,
             'transcription': data,
             'annotations_total': len(data),
-            'timestamp': str(query.timestamp),
+            'timestamp': query.timestamp,
             'storage_spec': query.storage_spec,
             'author': {
                 'original': {
