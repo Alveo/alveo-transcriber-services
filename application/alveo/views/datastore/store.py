@@ -59,7 +59,7 @@ class AlveoStoreRoute(StoreWrapper):
             'total_versions': total_versions,
             'transcription': data,
             'annotations_total': len(data),
-            'timestamp': query.timestamp,
+            'timestamp': query.timestamp.isoformat(),
             'storage_spec': query.storage_spec,
             'author': {
                 'original': {
