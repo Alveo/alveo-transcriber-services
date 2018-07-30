@@ -109,6 +109,7 @@ class AlveoStoreRoute(StoreWrapper):
         return {
             'id': model.id,
             'version': model.versions.count() - 1,
+            'timestamp': model.timestamp,
             'alias': alias
         }
 
