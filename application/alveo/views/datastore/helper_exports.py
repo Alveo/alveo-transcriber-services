@@ -33,7 +33,7 @@ def datastore_export(user_id=None, key=None):
 
             zf.writestr(
                 '%s.json' %
-                transcription.key.split(':')[1],
+                transcription.key.split(':', 1)[1],
                 json.dumps(data))
     archive.seek(0)
 
