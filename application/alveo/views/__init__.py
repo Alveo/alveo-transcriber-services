@@ -42,17 +42,22 @@ blueprint.add_url_rule(
     view_func=export_by_user_route,
 )
 
+# Lists everything attached to the requesting user
+#  Optional: can provide user_id to view another user
 blueprint.add_url_rule(
     '/datastore/list/',
-    view_func=list_by_user_route,
-)
-
-blueprint.add_url_rule(
-    '/datastore/listall/<object_key>',
     view_func=list_by_key_route,
 )
 
+# Lists everything matching the object_key attached to the requesting user
+#  Optional: can provide user_id to view another user
 blueprint.add_url_rule(
-    '/datastore/list/<user_id>',
+    '/datastore/list/<object_key>',
+    view_func=list_by_key_route,
+)
+
+# Lists everything by user_id
+blueprint.add_url_rule(
+    '/datastore/listall/<user_id>',
     view_func=list_by_user_route,
 )
