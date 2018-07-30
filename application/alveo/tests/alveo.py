@@ -89,8 +89,9 @@ class AlveoTests(ATSTests):
                 datastore = Datastore(
                     '%s:%s' % (DOMAIN, uuid.uuid4()),
                     json.dumps(self.generateTranscription()),
-                    TEST_STORAGE_SPEC_VERSION,
-                    user
+                    storage_spec=TEST_STORAGE_SPEC_VERSION,
+                    user=user,
+                    alias="test"
                 )
                 db.session.add(datastore)
             db.session.add(user)

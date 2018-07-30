@@ -60,6 +60,7 @@ class AlveoStoreRoute(StoreWrapper):
             'version': version,
             'total_versions': total_versions,
             'transcription': data,
+            'alias': query.alias,
             'annotations_total': len(data),
             'timestamp': query.timestamp.isoformat(),
             'storage_spec': query.storage_spec,
@@ -77,9 +78,12 @@ class AlveoStoreRoute(StoreWrapper):
             }
         }
 
-    def _processor_post(self, key, value, storage_spec):
+    def _processor_post(self, key, value, storage_spec, alias=None):
         if key is None or len(key) < 2:
             abort(400, 'Key is invalid or too short')
+
+        if alias is None or len(alias) < 1:
+            alias = "default"
 
         validate_data(value)
 
@@ -87,12 +91,13 @@ class AlveoStoreRoute(StoreWrapper):
 
         model = Datastore.query.filter(
             Datastore.key == key).filter(
+            Datastore.alias == alias).filter(
             Datastore.user_id == g.user.id).first()
 
         data = json.dumps(value)
 
         if model is None:
-            model = Datastore(key, data, storage_spec, g.user)
+            model = Datastore(key, data, storage_spec, g.user, alias)
             db.session.add(model)
         else:
             model.set_value(data)
@@ -103,7 +108,8 @@ class AlveoStoreRoute(StoreWrapper):
 
         return {
             'id': model.id,
-            'version': model.versions.count() - 1
+            'version': model.versions.count() - 1,
+            'alias': alias
         }
 
 

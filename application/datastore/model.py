@@ -18,14 +18,23 @@ class Datastore(db.Model):
     storage_spec = db.Column(db.String(256), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
 
+    alias = db.Column(db.String(256), nullable=False)
+    __table_args__ = (
+        db.UniqueConstraint(
+            'key',
+            'alias',
+            name='_key_alias_uc'),
+    )
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User')
 
-    def __init__(self, key, value, storage_spec, user):
+    def __init__(self, key, value, storage_spec, user, alias):
         self.key = key
         self.set_value(value)
         self.storage_spec = storage_spec 
         self.user = user
+        self.alias = alias
 
     def set_value(self, value):
         self.value = value.encode()

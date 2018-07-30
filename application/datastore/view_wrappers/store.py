@@ -26,11 +26,13 @@ class StoreWrapper(QueryWrapper):
         key = None
         value = None
         storage_spec = None
+        alias = None
 
         try:
             key = data['key']
             value = data['value']
             storage_spec = data['storage_spec']
+            alias = data['alias']
         except BaseException:
             if key is None:
                 abort(400, "key not provided or invalid")
@@ -44,6 +46,7 @@ class StoreWrapper(QueryWrapper):
         response = self._processor_post(
             key=key,
             value=value,
-            storage_spec=storage_spec
+            storage_spec=storage_spec,
+            alias=alias
         )
         return jsonify(response)

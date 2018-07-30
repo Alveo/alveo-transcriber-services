@@ -9,6 +9,7 @@ def datastore_list(user_id=None, object_key=None):
         list_data.append({
             'id': data.id,
             'version': total_versions - 1,
+            'alias': data.alias,
             'total_versions': total_versions,
             'timestamp': data.timestamp.isoformat()
         })
