@@ -50,8 +50,8 @@ class AlveoSegmentationTests(AlveoTests):
         response, status = self.get_json_response(
             DOMAIN + '/segment?remote_url=' + remote_url, self.DEFAULT_HEADERS)
         self.assertEqual(
-            200,
             status,
+            200,
             'Expected status OK when attempting to segment a valid document, again (cache check).')
         self.assertTrue(
             len(

@@ -18,9 +18,14 @@ class AlveoListRoutesTests(AlveoTests):
 
         response, status = self.get_json_response(
             DOMAIN + '/datastore/list/', self.DEFAULT_HEADERS)
+
         self.assertEqual(
-            len(
-                response['storage_objects']),
+            200,
+            status,
+            'Expected OK status when attempting to get valid list while logged in.')
+
+        self.assertEqual(
+            len(response['storage_objects']),
             DATA_AMOUNT,
             'Expected to get a list matching the amount of items that were just posted.')
 
@@ -56,14 +61,14 @@ class AlveoListRoutesTests(AlveoTests):
                 responses.append((dataset, response))
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/listall/' + responses[0][0]['key'], self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/list/%s' % responses[0][0]['key'], self.DEFAULT_HEADERS)
         self.assertEqual(
             response['storage_objects'][0]['id'],
             responses[0][1]['id'],
             'Expected response to contain the storage object that was just posted.')
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/listall/' + responses[0][0]['key'], self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/list/%s' % responses[0][0]['key'], self.DEFAULT_HEADERS)
         self.assertEqual(
             response['storage_objects'][0]['id'],
             responses[0][1]['id'],
@@ -120,7 +125,7 @@ class AlveoListRoutesTests(AlveoTests):
             "Expected sample transcriptions to exist from generated sample data.")
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/list/%s' % user_1, self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/listall/%s' % user_1, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
             status,
@@ -129,7 +134,7 @@ class AlveoListRoutesTests(AlveoTests):
             transcription_list_1), 'Expected the newly added keys to match.')
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/list/%s' % user_2, self.DEFAULT_HEADERS)
+            DOMAIN + '/datastore/listall/%s' % user_2, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
             status,
@@ -139,7 +144,7 @@ class AlveoListRoutesTests(AlveoTests):
 
         query_key = transcription_2.key.split(':')[1]
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/list/%s' %
+            DOMAIN + '/datastore/listall/%s' %
             user_2, self.DEFAULT_HEADERS)
         self.assertEqual(
             200,
@@ -171,9 +176,9 @@ class AlveoListRoutesTests(AlveoTests):
         db.session.commit()
 
         response, status = self.get_json_response(
-            DOMAIN + '/datastore/list/%s' %
+            DOMAIN + '/datastore/listall/%s' %
             user.id, self.DEFAULT_HEADERS)
         self.assertEqual(
-            403,
-            status,
-            'Expected forbidden status when attempting to list store from a different user on another domain, while logged in.')
+                status,
+                403,
+                'Expected forbidden status when attempting to list store from a different user on another domain, while logged in.')
