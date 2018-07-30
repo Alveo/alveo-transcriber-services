@@ -120,6 +120,13 @@ class AlveoDatastoreTests(AlveoTests):
 
         storage_id = response['id']
 
+        response_1, status = self.get_json_response(
+            DOMAIN + '/datastore/objects/%s/0' % storage_id, self.DEFAULT_HEADERS)
+        self.assertEqual(
+            200,
+            status,
+            'Expected OK status when attempting to get valid data while logged in.')
+
         data_2 = data
         data_2['value'][0]['caption'] = "REPLACED!"
 
@@ -130,12 +137,6 @@ class AlveoDatastoreTests(AlveoTests):
             status,
             'Expected OK status when attempting to post valid data while logged in.')
 
-        response_1, status = self.get_json_response(
-            DOMAIN + '/datastore/objects/%s/0' % storage_id, self.DEFAULT_HEADERS)
-        self.assertEqual(
-            200,
-            status,
-            'Expected OK status when attempting to get valid data while logged in.')
 
         response_2, status = self.get_json_response(
             DOMAIN + '/datastore/objects/%s/1' % storage_id, self.DEFAULT_HEADERS)
@@ -147,6 +148,22 @@ class AlveoDatastoreTests(AlveoTests):
         self.assertTrue(
             response_1['transcription'] != response_2['transcription'] and response_2['transcription'][0]['caption'] == "REPLACED!",
             'Expected matching data on a get response, using the id returned of a previous post request')
+
+        self.assertEqual(
+            response_1['version'], 0,
+            "Expected first response to be version 0.")
+
+        self.assertEqual(
+            response_2['version'], 1,
+            "Expected second response to be version 1.")
+
+        self.assertEqual(
+            response_1['total_versions'], 1,
+            "Expected first response to know of one version.")
+
+        self.assertEqual(
+            response_2['total_versions'], 2,
+            "Expected second response to know of two versions.")
 
     def testOtherModuleFail(self):
         self.generateSampleAlveoData()

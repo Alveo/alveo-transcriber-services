@@ -46,6 +46,8 @@ class AlveoStoreRoute(StoreWrapper):
                 query = query.versions[version]
             except:
                 abort(404, 'Version doesn\'t exist for provided id')
+        else:
+            version = query.versions.count() - 1
 
         data = json.loads(query.value.decode())
         original_author = base_query.versions[0].user
@@ -101,6 +103,7 @@ class AlveoStoreRoute(StoreWrapper):
 
         return {
             'id': model.id,
+            'version': model.versions.count() - 1
         }
 
 
