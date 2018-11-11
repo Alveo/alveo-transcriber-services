@@ -6,8 +6,8 @@ from flask import abort, g
 from application import limiter
 from application.alveo.module import DOMAIN
 from application.auth.required import auth_required
-from application.segmentation.cache.model import cache_result, get_cached_result
 from application.alveo.document_segmentation import segment_document
+from application.datastore.binary import create_binary_object, get_binary_object
 from application.misc.modules import get_module_metadata
 from application.segmentation.view_wrapper import SegmenterWrapper
 from application.segmentation.audio_segmenter import segment_audio_data
@@ -54,13 +54,13 @@ class AlveoSegmentationRoute(SegmenterWrapper):
         except APIError as e:
             abort(400, "Response from remote host: \n" + str(e))
 
-        result = get_cached_result(shorten_path(remote_path))
+        result = get_binary_object(shorten_path(remote_path))
         if result is None:
             result = segment_document(remote_path, api_key)
             if result is None:
                 abort(400, 'Could not access requested document')
             else:
-                cache_result(shorten_path(remote_path), result)
+                create_binary_object(shorten_path(remote_path), result)
 
         return result
 
