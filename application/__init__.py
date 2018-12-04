@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -20,6 +21,7 @@ limiter = Limiter(
     default_limits=["100 per minute"]
 )
 redis_queue = Queue(connection=Redis())
+CORS(app)
 
 if app.config['SQLALCHEMY_DATABASE_URI'] is None:
     if not app.config['TESTING']:
