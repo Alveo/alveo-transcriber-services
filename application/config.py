@@ -56,6 +56,14 @@ class ProductionEnvironment(Environment):
         os.environ.get('ALLOW_POST_SEGMENTATION', True))
 
     """
+        Enable or disable POST-based transcription.
+
+        Disabled by default since it would be in a host's best interests to pay for another user's audio to be transcribed.
+    """
+    ALLOW_POST_TRANSCRIPTION = eval_bool(
+        os.environ.get('ALLOW_POST_TRANSCRIPTION', False))
+
+    """
         Set RequestEntityTooLarge threshold.
 
         Set in bytes. Default is 40MB.

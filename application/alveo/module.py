@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 DOMAIN = "alveo"
 
 SUPPORTED_STORAGE_KEYS = {
@@ -26,3 +28,6 @@ SUPPORTED_STORAGE_KEYS = {
         'required': False
     }
 }
+
+def shorten_path(path):
+    return urlparse(path).path.split('/catalog/')[1]

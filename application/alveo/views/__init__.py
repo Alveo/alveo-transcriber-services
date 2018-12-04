@@ -2,6 +2,7 @@ from flask import Blueprint
 from application.alveo.module import DOMAIN
 
 from . import auth
+from .asr import asr_route
 from .segmentation import segmentation_route
 from .datastore.store import store_route
 from .datastore.export_by_user import export_by_user_route
@@ -13,6 +14,12 @@ blueprint = Blueprint(DOMAIN, __name__)
 blueprint.add_url_rule(
     '/segment',
     view_func=segmentation_route,
+    methods=['GET', 'POST']
+)
+
+blueprint.add_url_rule(
+    '/asr',
+    view_func=asr_route,
     methods=['GET', 'POST']
 )
 

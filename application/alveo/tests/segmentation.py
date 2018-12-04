@@ -27,7 +27,7 @@ class AlveoSegmentationTests(AlveoTests):
         response, status = self.get_json_response(
             DOMAIN + '/segment?remote_url=' + invalid_remote_url, self.DEFAULT_HEADERS)
         self.assertTrue(
-            'not-found' in response['description'],
+            'Could not access requested' in response['description'],
             'Expected error to be about an inaccessible Alveo document identifier when attempting to segment with an invalid document identifier.')
         self.assertEqual(
             400,
