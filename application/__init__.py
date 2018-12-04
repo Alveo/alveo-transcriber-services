@@ -7,6 +7,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+from redis import Redis
+from rq import Queue
+
 app = Flask(__name__)
 environment = os.environ.get(
     'ATS_ENVIRONMENT', 'application.config.ProductionEnvironment')
@@ -16,6 +19,7 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["100 per minute"]
 )
+redis_queue = Queue(connection=Redis())
 
 if app.config['SQLALCHEMY_DATABASE_URI'] is None:
     if not app.config['TESTING']:

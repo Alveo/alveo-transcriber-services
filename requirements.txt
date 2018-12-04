@@ -26,3 +26,5 @@ SQLAlchemy-Utils==0.33.3
 urllib3==1.22
 webrtcvad==2.0.10
 Werkzeug==0.14.1
+redis==2.10.6
+rq==0.12.0
