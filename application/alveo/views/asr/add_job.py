@@ -6,10 +6,10 @@ from application.alveo.views.access import verify_access
 from application.auth.required import auth_required
 from application.alveo.services import transcribe_document
 from application.datastore.binary import create_binary_object, get_binary_object
-from application.transcribers.gcloud.view_wrapper import GCloudTranscriberWrapper
-from application.transcribers.gcloud.speech import transcribe
+from application.asr.view_wrappers.add_job import AddJobWrapper
+from application.asr.engines.gcloud.speech import transcribe
 
-class AlveoASRRoute(GCloudTranscriberWrapper):
+class AlveoASRAddJobRoute(AddJobWrapper):
     decorators = [
         auth_required,
         limiter.limit("5 per minute"),
@@ -40,4 +40,4 @@ class AlveoASRRoute(GCloudTranscriberWrapper):
         return result
 
 
-asr_route = AlveoASRRoute.as_view('/alveo/asr')
+add_job_route = AlveoASRAddJobRoute.as_view('/alveo/asr/jobs/add')

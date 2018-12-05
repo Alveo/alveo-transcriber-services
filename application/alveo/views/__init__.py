@@ -2,7 +2,10 @@ from flask import Blueprint
 from application.alveo.module import DOMAIN
 
 from . import auth
-from .asr import asr_route
+from .asr.add_job import add_job_route
+from .asr.cancel_job import cancel_job_route 
+from .asr.retrieve_job import retrieve_job_route 
+from .asr.list_jobs import list_jobs_route
 from .segmentation import segmentation_route
 from .datastore.store import store_route
 from .datastore.export_by_user import export_by_user_route
@@ -18,8 +21,26 @@ blueprint.add_url_rule(
 )
 
 blueprint.add_url_rule(
-    '/asr',
-    view_func=asr_route,
+    '/asr/jobs/add',
+    view_func=add_job_route,
+    methods=['GET', 'POST']
+)
+
+blueprint.add_url_rule(
+    '/asr/jobs/cancel',
+    view_func=cancel_job_route,
+    methods=['GET', 'POST']
+)
+
+blueprint.add_url_rule(
+    '/asr/jobs/retrieve',
+    view_func=retrieve_job_route,
+    methods=['GET', 'POST']
+)
+
+blueprint.add_url_rule(
+    '/asr/jobs',
+    view_func=list_jobs_route,
     methods=['GET', 'POST']
 )
 
