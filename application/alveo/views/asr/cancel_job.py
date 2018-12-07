@@ -36,6 +36,8 @@ class AlveoASRCancelJobRoute(CancelJobWrapper):
 
         job_object.cancel()
         job_model.status = JobTypes.CANCELLED
+        db.session.delete(job_model.datastore)
+        job_model.datastore = None
         db.session.commit()
 
         return {"status": "cancelled", "job_id": job_id}

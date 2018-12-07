@@ -6,3 +6,4 @@ class JobTypes(IntEnum):
     QUEUED = 2
     CANCELLED = 3
     FAILED = 4
+    EXECUTING = 5
