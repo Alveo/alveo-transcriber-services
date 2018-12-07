@@ -25,7 +25,7 @@ class AlveoASRCancelJobRoute(CancelJobWrapper):
         job_model = jobs[0]
         status = job_model.status
 
-        if status is not JobTypes.QUEUED:
+        if status is not JobTypes.QUEUED.value:
             abort(401, "Job ID `%s` is not queued" % job_id)
 
         job_object = redis_queue.fetch_job(job_model.external_id)

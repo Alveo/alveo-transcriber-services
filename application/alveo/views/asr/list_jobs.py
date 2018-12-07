@@ -1,6 +1,7 @@
 from application.alveo.views.asr.helper_job_query import job_query
 from application.asr.view_wrappers.list_jobs import ListJobsWrapper
 from application.auth.required import auth_required
+from application.jobs.types import JobTypes
 
 from application import limiter
 
@@ -20,7 +21,7 @@ class AlveoASRListJobsRoute(ListJobsWrapper):
         for job in query_jobs:
             job_data.append({
                 'id': job.id,
-                'status': job.status
+                "status": JobTypes(job.status).name
             })
 
         data = {
