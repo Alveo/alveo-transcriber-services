@@ -1,7 +1,9 @@
-from .helper_jobs import retrieve_job
+from flask import abort
 
-from application.auth.required import auth_required
+from application.alveo.views.asr.helper_job_query import job_query
 from application.asr.view_wrappers.retrieve_job import RetrieveJobWrapper
+from application.auth.required import auth_required
+from application.jobs.types import JobTypes
 
 from application import limiter
 
@@ -14,10 +16,22 @@ class AlveoASRRetrieveJobRoute(RetrieveJobWrapper):
     ]
 
     def _processor_get(self, user_id, job_id):
-        # Find the job matching the user_id and job_id
-        # If it is finished, return the data from it
-        # If it is not finished, return the status of the job
-        pass # TODO
+        jobs = job_query(user_id=user_id, job_id=job_id)
+
+        if len(jobs) < 1:
+            abort(404, "You have no job matching that job_id")
+
+        job_model = jobs[0]
+        status = job_model.status
+        data = {
+            "job_id": job_id,
+            "status": status
+        }
+
+        if status is JobTypes.finished:
+            data["result"] = job_model.result
+
+        return data
 
 
 retrieve_job_route = AlveoASRRetrieveJobRoute.as_view('/alveo/asr/jobs/get')

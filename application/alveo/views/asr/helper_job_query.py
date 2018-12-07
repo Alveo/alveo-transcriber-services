@@ -16,7 +16,7 @@ def job_query(user_id=None, job_id=None):
         query = Job.query
     else:
         query = Job.query.filter(
-            Job.external_id == '%s:%s' % (DOMAIN, job_id)
+            Job.id == job_id
         )
 
     query = query.filter(Job.user_id == user_id)

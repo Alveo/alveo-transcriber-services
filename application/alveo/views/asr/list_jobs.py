@@ -19,7 +19,7 @@ class AlveoASRListJobsRoute(ListJobsWrapper):
 
         for job in query_jobs:
             job_data.append({
-                'id': job.external_id,
+                'id': job.id,
                 'status': job.status
             })
 
