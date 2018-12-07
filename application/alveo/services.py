@@ -12,6 +12,7 @@ from application.jobs.types import JobTypes
 from application.jobs.model import Job
 from application.misc.modules import get_module_metadata
 
+from google.cloud.speech import enums
 
 def retrieve_doc_as_user(document_id, api_key):
     alveo_metadata = get_module_metadata("alveo")
@@ -49,6 +50,9 @@ def transcribe_document(document_id, api_key):
             print("Error: Job %s doesn't exist in application database" % active_job.id)
             return
 
+        job.status = JobTypes.EXECUTING
+        db.session.commit()
+
         audio_data = retrieve_doc_as_user(document_id, api_key)
         if audio_data is None:
             # Fail job
@@ -59,8 +63,21 @@ def transcribe_document(document_id, api_key):
             db.session.commit()
             return
 
-        # TODO do the transcription
-        transcription = "{}"
+        params = {
+            'audio_data': audio_data,
+            'timeout': 18000,
+            'audio_duration': 61,
+            'sample_rate_hertz': 16000,
+            'language_code': 'en-AU',
+            'storage_bucket': app.config['GCLOUD_STORAGE_BUCKET'],
+            'encoding': enums.RecognitionConfig.AudioEncoding.LINEAR16,
+            'enable_word_time_offsets': True
+        }
+
+        tra = transcribe(params)
+        # TODO process the transcription into something more usable
+
+        transcription = tra
 
         job.status = JobTypes.FINISHED
         job.datastore.timestamp = datetime.now()
