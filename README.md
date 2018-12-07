@@ -1,5 +1,5 @@
 # alveo-transcriber-services
-Repository to provide additional services to the alveo-transcriber web application. Provides transcription storage and automatic audio segmentation.
+Repository to provide additional services to the alveo-transcriber web application. Provides transcription storage, SSAD audio segmentation and access to ASR engines.
 
 ## Config
 1. If deploying this outside of a local address, you will need to generate an SSL certificate to avoid mixed content browser errors
@@ -8,6 +8,7 @@ Repository to provide additional services to the alveo-transcriber web applicati
 ## Running
 1. Install requirements with pip, recommended you use a python virtual environment
 2. Optionally enable debug `export FLASK_DEBUG=1`, else you will have to set a `DATABASE_URI` environment variable (see `application/config.py`)
+3. Consider the use of Google Cloud credentials for ASR support, see ./application/config.py for more information.
 3. If it hasn't been initialised yet, initialise the database with `python utility.py init_db`
 4. `export FLASK_APP=application && python -m flask run`
 
