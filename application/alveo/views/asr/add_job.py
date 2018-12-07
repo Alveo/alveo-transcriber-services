@@ -1,5 +1,4 @@
 from flask import abort, g
-from rq import get_current_job
 from uuid import uuid4
 
 from application import limiter, redis_queue, db
@@ -19,20 +18,6 @@ from application.asr.engines.gcloud.speech import transcribe
 
 ENGINE = "asr-engine-gcloud"
 
-def test():
-    active_job = get_current_job()
-    job = Job.query.filter(Job.external_id == active_job.id).first()
-    if job is None:
-        print("Error: Job %s doesn't exist in application database" % active_job.id)
-        return
-
-    job.status = JobTypes.FINISHED
-    job.datastore.set_value("{'success': true}")
-    db.session.commit()
-    print(job.datastore.get_value())
-    print(job.status)
-    print("Done")
-    #    create_binary_object(short_path, result)
 
 class AlveoASRAddJobRoute(AddJobWrapper):
     decorators = [
@@ -47,22 +32,31 @@ class AlveoASRAddJobRoute(AddJobWrapper):
 
         short_path = shorten_path(remote_path)
 
-        # Check cache first
+        # Check cache first. 
+        #  Note/TODO: Does not check the job queue. Would that even be ideal?
+        #   Another user could cancel their job. Jobs would need multiple authors.
         cached_asr = Datastore.query.filter(
-            Datastore.key == '%s:%s:%s' % (DOMAIN, ENGINE, short_path)).first()
+            Datastore.key == '%s:%s:%s' % (DOMAIN, ENGINE, short_path)).filter(
+            Datastore.user_id == g.user.id).first()
         if cached_asr is not None:
-            return {
-                "status": "cached",
-                "result": export_asrdata(cached_asr)
-            }
+            if cached_asr.alias == "ready":
+                return {
+                    "status": "cached",
+                    "result": export_asrdata(cached_asr)
+                }
+            else:
+                return {
+                    "status": "pending",
+                    "job_id": cached_asr.alias.split(":")[1]
+                }
 
-        worker = redis_queue.enqueue(transcribe_document, (remote_path, api_key))
+        worker = redis_queue.enqueue(transcribe_document, remote_path, api_key)
         ds = Datastore(
             key="%s:%s:%s" % (DOMAIN, ENGINE, short_path),
             value="{}",
             storage_spec="asr-engine-gcloud/json/1.0",
             user=g.user,
-            alias="init"
+            alias="init:%s" % worker.id
         )
         job = Job(
             external_id=worker.id,
