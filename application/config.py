@@ -103,6 +103,14 @@ class ProductionEnvironment(Environment):
             ]')
     )
 
+    """
+        Set the bucket name for Google Cloud Storage.
+
+        A bucket is required in order to use ASR for audio >1 minute in duration.
+    """
+    GCLOUD_STORAGE_BUCKET = os.environ.get("GCLOUD_STORAGE_BUCKET")
+    GOOGLE_APPLICATION_CREDENTIALS = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
+
 
 class TestEnvironment(ProductionEnvironment):
     """
