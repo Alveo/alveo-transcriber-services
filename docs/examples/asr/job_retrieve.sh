@@ -15,4 +15,4 @@ job_id=$1
 curl \
   --header "X-Api-Domain: $ATS_API_DOMAIN" \
   --header "X-Api-Key: $ATS_API_KEY" \
-  $ATS_URL/asr/jobs/add?remote_url=$url
+  $ATS_URL/asr/jobs/retrieve?job_id=$job_id

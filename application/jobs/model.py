@@ -20,7 +20,7 @@ class Job(db.Model):
     datastore_id = db.Column(db.Integer, db.ForeignKey('datastore.id'), nullable=False)
     datastore = db.relationship('Datastore')
 
-    def __init__(self, external_id, description, status, user, datastore):
+    def __init__(self, external_id, description, user, datastore, status=None):
         self.external_id = external_id
         self.description = description
         if status is None:

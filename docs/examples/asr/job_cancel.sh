@@ -14,4 +14,4 @@ job_id=$1
 curl \
   --header "X-Api-Domain: $ATS_API_DOMAIN" \
   --header "X-Api-Key: $ATS_API_KEY" \
-  $ATS_URL/asr/jobs/cancel?job_id=job_id
+  $ATS_URL/asr/jobs/cancel?job_id=$job_id
