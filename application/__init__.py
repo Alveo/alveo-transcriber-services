@@ -71,4 +71,5 @@ login_manager.init_app(app)
 db = SQLAlchemy(app)
 events = {}
 
+import application.shell
 import application.views

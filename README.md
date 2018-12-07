@@ -9,7 +9,7 @@ Repository to provide additional services to the alveo-transcriber web applicati
 1. Install requirements with pip, recommended you use a python virtual environment
 2. Optionally enable debug `export FLASK_DEBUG=1`, else you will have to set a `DATABASE_URI` environment variable (see `application/config.py`)
 3. Consider the use of Google Cloud credentials for ASR support, see ./application/config.py for more information.
-3. If it hasn't been initialised yet, initialise the database with `python utility.py init_db`
+3. If it hasn't been initialised yet, initialise the database with `flask app init_db`
 4. `export FLASK_APP=application && python -m flask run`
 
 ## Unit tests
@@ -48,5 +48,5 @@ $ dokku letsencrypt segmenter
 ```
 Finally, build the database if it hasn't been built already.
 ```bash
-$ dokku run segmenter python utility.py init_db
+$ dokku run segmenter flask app init_db
 ```

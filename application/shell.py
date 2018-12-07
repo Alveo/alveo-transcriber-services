@@ -1,0 +1,1 @@
+from application import shell_extensions

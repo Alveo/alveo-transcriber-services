@@ -4,17 +4,17 @@ import os
 import zipfile
 import json
 
-import click
-
 from application import app, db
-from application.datastore.model import Datastore
 from application.users.model import User 
+from application.datastore.model import Datastore
 
-@click.group()
-def cli():
-    pass
+import click
+from flask_migrate import MigrateCommand
+from flask.cli import AppGroup
 
-@click.command()
+extensions = AppGroup('app')
+
+@extensions.command()
 def init_db():
     db.drop_all()
     db.create_all()
@@ -42,7 +42,7 @@ def export_storage():
 
     return archive
 
-@click.command()
+@extensions.command()
 @click.argument('path')
 def dump_storage(path):
     archive = export_storage()
@@ -50,7 +50,7 @@ def dump_storage(path):
     with open(path, 'wb') as f_out:
         f_out.write(archive.getvalue())
 
-@click.command()
+@extensions.command()
 @click.argument('url')
 def push_storage(url):
     archive = export_storage()
@@ -62,10 +62,6 @@ def push_storage(url):
 
     print(request)
 
-cli.add_command(init_db)
-cli.add_command(dump_storage)
-cli.add_command(push_storage)
 
-if __name__ == '__main__':
-    cli()
+app.cli.add_command(extensions)
 
