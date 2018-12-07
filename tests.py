@@ -75,6 +75,8 @@ class ATSTests(unittest.TestCase):
         db.session.add(testdomain_0)
         db.session.add(testdomain_50)
 
+        db.session.commit()
+
     def testDataGeneration(self):
         self.createSampleData();
         users = User.query.all();
