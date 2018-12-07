@@ -19,9 +19,7 @@ class AddJobWrapper(QueryWrapper):
             remote_path=remote_url
         )
 
-        return jsonify({
-            "results": results
-        })
+        return results
 
     def post(self):
         if not app.config['ALLOW_POST_TRANSCRIPTION']:
@@ -39,6 +37,4 @@ class AddJobWrapper(QueryWrapper):
             audiofile=audiofile
         )
 
-        return jsonify({
-            "results": results
-        })
+        return results
