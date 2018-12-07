@@ -1,3 +1,5 @@
+import json
+
 from flask import abort
 
 from application.alveo.views.asr.helper_job_query import job_query
@@ -23,6 +25,7 @@ class AlveoASRRetrieveJobRoute(RetrieveJobWrapper):
 
         job = jobs[0]
         status = job.status
+        ds_object = job.datastore
         data = {
             "job_id": job_id,
             "status": JobTypes(status).name,
@@ -30,7 +33,11 @@ class AlveoASRRetrieveJobRoute(RetrieveJobWrapper):
         }
 
         if status is JobTypes.FINISHED.value:
-            data["result"] = job.result
+            data["result"] = {
+                "timestamp": ds_object.timestamp,
+                "storage_spec": ds_object.storage_spec,
+                "data": ds_object.get_value()
+            }
 
         return data
 
