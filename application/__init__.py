@@ -20,7 +20,7 @@ limiter = Limiter(
     key_func=get_remote_address,
     default_limits=["100 per minute"]
 )
-redis_queue = Queue(connection=Redis())
+redis_queue = Queue(connection=Redis(), default_timeout=18000)
 CORS(app)
 
 if app.config['SQLALCHEMY_DATABASE_URI'] is None:
