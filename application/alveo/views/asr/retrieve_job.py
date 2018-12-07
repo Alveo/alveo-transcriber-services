@@ -28,7 +28,7 @@ class AlveoASRRetrieveJobRoute(RetrieveJobWrapper):
             "status": status
         }
 
-        if status is JobTypes.finished:
+        if status is JobTypes.FINISHED:
             data["result"] = job_model.result
 
         return data
