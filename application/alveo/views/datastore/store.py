@@ -2,7 +2,6 @@ import json
 import uuid
 import datetime
 
-from pyalveo import *
 from flask import g, abort
 
 from application import db

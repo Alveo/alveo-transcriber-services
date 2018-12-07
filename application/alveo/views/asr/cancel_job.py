@@ -1,12 +1,11 @@
 from flask import abort
 
 from application.alveo.views.asr.helper_job_query import job_query
-
-from application.auth.required import auth_required
 from application.asr.view_wrappers.cancel_job import CancelJobWrapper
+from application.auth.required import auth_required
 from application.jobs.types import JobTypes
 
-from application import limiter, redis_queue
+from application import limiter, redis_queue, db
 
 
 class AlveoASRCancelJobRoute(CancelJobWrapper):

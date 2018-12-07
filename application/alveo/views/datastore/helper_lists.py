@@ -1,4 +1,4 @@
-from .helper_query import datastore_query
+from application.alveo.views.datastore.helper_query import datastore_query
 
 
 def datastore_list(user_id=None, object_key=None):

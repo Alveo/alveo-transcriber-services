@@ -2,7 +2,7 @@ import zipfile
 import io
 import json
 
-from .helper_query import datastore_query
+from application.alveo.views.datastore.helper_query import datastore_query
 
 from flask import abort
 

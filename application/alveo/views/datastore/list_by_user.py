@@ -1,4 +1,4 @@
-from .helper_lists import datastore_list
+from application.alveo.views.datastore.helper_lists import datastore_list
 
 from application.auth.required import auth_required
 from application.datastore.view_wrappers.list_by_user import ListByUserWrapper
