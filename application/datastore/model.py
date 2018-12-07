@@ -22,8 +22,8 @@ class Datastore(db.Model):
     __table_args__ = (
         db.UniqueConstraint(
             'key',
-            'alias',
-            name='_key_alias_uc'),
+            'user_id',
+            name='_key_user_uc'),
     )
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

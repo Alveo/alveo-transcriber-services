@@ -17,7 +17,9 @@ class Job(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User')
 
-    datastore_id = db.Column(db.Integer, db.ForeignKey('datastore.id'), nullable=False)
+    # Note that the datastore is not read-only, it is possible to edit via the API.
+    #  Is this ideal?
+    datastore_id = db.Column(db.Integer, db.ForeignKey('datastore.id'), nullable=True)
     datastore = db.relationship('Datastore')
 
     def __init__(self, external_id, description, user, datastore, status=None):
@@ -25,6 +27,8 @@ class Job(db.Model):
         self.description = description
         if status is None:
             status = JobTypes.QUEUED
+        if datastore is None:
+            raise IOError("Datastore must not be null")
         self.status = status
         self.user = user
         self.datastore = datastore
