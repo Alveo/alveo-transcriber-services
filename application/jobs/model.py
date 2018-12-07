@@ -10,6 +10,8 @@ class Job(db.Model):
 
     external_id = db.Column(db.String(256), nullable=False)
 
+    description = db.Column(db.String(512), nullable=False)
+
     status = db.Column(db.Integer(), nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -18,8 +20,9 @@ class Job(db.Model):
     datastore_id = db.Column(db.Integer, db.ForeignKey('datastore.id'), nullable=False)
     datastore = db.relationship('Datastore')
 
-    def __init__(self, external_id, status, user, datastore):
+    def __init__(self, external_id, description, status, user, datastore):
         self.external_id = external_id
+        self.description = description
         if status is None:
             status = JobTypes.QUEUED
         self.status = status

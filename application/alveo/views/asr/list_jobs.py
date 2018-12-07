@@ -21,7 +21,8 @@ class AlveoASRListJobsRoute(ListJobsWrapper):
         for job in query_jobs:
             job_data.append({
                 'id': job.id,
-                "status": JobTypes(job.status).name
+                'status': JobTypes(job.status).name,
+                'description': job.description
             })
 
         data = {

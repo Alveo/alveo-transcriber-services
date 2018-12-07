@@ -21,15 +21,16 @@ class AlveoASRRetrieveJobRoute(RetrieveJobWrapper):
         if len(jobs) < 1:
             abort(404, "You have no job matching that job_id")
 
-        job_model = jobs[0]
-        status = job_model.status
+        job = jobs[0]
+        status = job.status
         data = {
             "job_id": job_id,
-            "status": JobTypes(status).name
+            "status": JobTypes(status).name,
+            "description": job.description
         }
 
         if status is JobTypes.FINISHED.value:
-            data["result"] = job_model.result
+            data["result"] = job.result
 
         return data
 

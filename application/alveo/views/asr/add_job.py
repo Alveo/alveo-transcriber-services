@@ -44,7 +44,12 @@ class AlveoASRAddJobRoute(AddJobWrapper):
         # Enqueued the function
         worker = redis_queue.enqueue(test)
         ds = Datastore("justatest-%s" % uuid4(), "{}", "", g.user, "Noalias")
-        job = Job(worker.id, JobTypes.QUEUED, g.user, ds)
+        job = Job(
+            external_id=worker.id,
+            user=g.user,
+            datastore=ds,
+            description="This is just a test job"
+        )
         db.session.add(ds)
         db.session.add(job)
         db.session.commit()
