@@ -1,7 +1,6 @@
-from .helper_jobs import list_jobs
-
-from application.auth.required import auth_required
+from application.alveo.views.asr.helper_job_query import job_query
 from application.asr.view_wrappers.list_jobs import ListJobsWrapper
+from application.auth.required import auth_required
 
 from application import limiter
 
@@ -15,8 +14,20 @@ class AlveoASRListJobsRoute(ListJobsWrapper):
     ]
 
     def _processor_get(self, user_id):
-        # Return all jobs matching the user_id
-        pass # TODO
+        query_jobs = job_query(user_id=user_id)
+        job_data = []
+
+        for job in query_jobs:
+            job_data.append({
+                'id': job.external_id,
+                'status': job.status
+            })
+
+        data = {
+            'jobs': job_data
+        }
+
+        return data
 
 
 list_jobs_route = AlveoASRListJobsRoute.as_view('/alveo/asr/jobs')
