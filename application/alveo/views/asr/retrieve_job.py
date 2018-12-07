@@ -2,6 +2,7 @@ import json
 
 from flask import abort
 
+from application.alveo.views.asr.helper_exporter import export_asrdata
 from application.alveo.views.asr.helper_job_query import job_query
 from application.asr.view_wrappers.retrieve_job import RetrieveJobWrapper
 from application.auth.required import auth_required
@@ -33,11 +34,7 @@ class AlveoASRRetrieveJobRoute(RetrieveJobWrapper):
         }
 
         if status is JobTypes.FINISHED.value:
-            data["result"] = {
-                "timestamp": ds_object.timestamp,
-                "storage_spec": ds_object.storage_spec,
-                "data": ds_object.get_value()
-            }
+            data["result"] = export_asrdata(ds_object)
 
         return data
 
