@@ -1,9 +1,12 @@
-from .helper_jobs import cancel_job
+from flask import abort
+
+from application.alveo.views.asr.helper_job_query import job_query
 
 from application.auth.required import auth_required
 from application.asr.view_wrappers.cancel_job import CancelJobWrapper
+from application.jobs.types import JobTypes
 
-from application import limiter
+from application import limiter, redis_queue
 
 
 class AlveoASRCancelJobRoute(CancelJobWrapper):
@@ -15,9 +18,28 @@ class AlveoASRCancelJobRoute(CancelJobWrapper):
     ]
 
     def _processor_get(self, user_id, job_id):
-        # Find the job matching the user_id and job_id
-        # Switch it to cancelled status, cancel it on redis
-        pass # TODO
+        jobs = job_query(user_id=user_id, job_id=job_id)
+
+        if len(jobs) < 1:
+            abort(404, "You have no job matching that job_id")
+
+        job_model = jobs[0]
+        status = job_model.status
+
+        if status is not JobTypes.queued:
+            abort(401, "Job ID `%s` is not queued" % job_id)
+
+        job_object = redis_queue.fetch_job(job_model.external_id)
+
+        if job_object is None:
+            job_model.status = JobTypes.failed
+            abort(401, "Job ID `%s` couldn't be found. Moving to 'failed' pool" % job_id)
+
+        job_object.cancel()
+        job_model.status = JobTypes.cancelled
+        db.session.commit()
+
+        return {"status": "cancelled", "job_id": job_id}
 
 
 cancel_job_route = AlveoASRCancelJobRoute.as_view('/alveo/asr/jobs/cancel')
