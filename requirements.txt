@@ -31,7 +31,7 @@ MarkupSafe==1.0
 mccabe==0.6.1
 mysqlclient==1.3.12
 oauthlib==2.0.7
-protobuf==3.6.1
+protobuf==3.18.3
 psycopg2-binary==2.7.4
 pyalveo==1.0.5
 pyasn1==0.4.4
